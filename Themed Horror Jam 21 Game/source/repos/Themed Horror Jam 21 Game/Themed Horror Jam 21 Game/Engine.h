@@ -6,7 +6,7 @@
 using namespace sf;
 enum  dir
 {
-	up,down,left,right
+	down, left, right,up
 };
 class Engine
 {
@@ -29,7 +29,7 @@ private:
 	// Create and open a window for the game
 	RenderWindow window;
 	dir direction[4];
-	float speed = 0.5f;
+	float speed = 200.0f;
 	Engine();
 };
 
