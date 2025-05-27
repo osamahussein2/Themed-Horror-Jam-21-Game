@@ -1,15 +1,26 @@
 #include "Engine.h"
-#include "Player.h"
-#include "Text.h"
 
 Engine* Engine::engineInstance = nullptr;
 
 Engine::Engine()
+    : currentState(GameState::Menu)
+    , player(nullptr)
+    , initialText(nullptr)
 {
 }
 
 Engine::~Engine()
 {
+    if (player)
+    {
+        delete player;
+        player = nullptr;
+    }
+    if (initialText)
+    {
+        delete initialText;
+        initialText = nullptr;
+    }
 }
 
 Engine* Engine::Instance()
@@ -21,6 +32,7 @@ Engine* Engine::Instance()
 
     return engineInstance;
 }
+
 
 void Engine::RunEngine()
 {
@@ -34,20 +46,8 @@ void Engine::RunEngine()
     // Create and open a window for the game
     window = RenderWindow(videoMode, "Themed Horror Jam 21 Game", State::Fullscreen);
 
-    // Create player object
-    Player player;
-
-    // Setup text here
-    Game::Text initialText;
-
-    // Initialize the player
-    player.Initialize("Art Assets/RedImage.png",
-        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f),
-        Vector2f(2.0f, 2.0f));
-
-    // Initialize the text objects from the Game's namespace here (to prevent conflict with SFML's text object)
-    initialText.InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, sf::Color::White,
-        sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
+    // Initialize the menu
+    gameMenu.Initialize(resolution);
 
     // Delta time for smooth movement
     Clock deltaClock;
@@ -55,25 +55,126 @@ void Engine::RunEngine()
     while (window.isOpen())
     {
         float deltaTime = deltaClock.restart().asSeconds();
+        //// Handle window close event
+        // this is bugged I don't know why 
+        //Event event;
+        //while (window.pollEvent(event))
+        //{
+        //    if (event.type == Event::Closed)
+        //    {
+        //        window.close();
+        //    }
+        //}
 
-        if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+        // Handle different game states
+        switch (currentState)
         {
-            window.close();
+        case GameState::Menu:
+            UpdateMenu(deltaTime);
+            RenderMenu();
+            break;
+            
+        case GameState::Playing:
+            UpdateGame(deltaTime);
+            RenderGame();
+            break;
+            
+        case GameState::Paused:
+            UpdateMenu(deltaTime);
+            RenderMenu();
+            break;
         }
-
-        // Update player
-        player.Update(deltaTime);
-
-        // Clear window
-        window.clear();
-
-        // Draw our game scene here
-        player.Draw(window);
-       // window.draw(initialText.LoadText()); // Draw text to the window
 
         // Display
         window.display();
     }
+}
+
+void Engine::InitializeGame()
+{
+    // Create game objects only when starting the game
+    if (!player)
+    {
+        player = new Player();
+        player->Initialize("Art Assets/RedImage.png",
+            Vector2f(resolution.x / 2.0f, resolution.y / 2.0f),
+            Vector2f(2.0f, 2.0f));
+    }
+
+    if (!initialText)
+    {
+        initialText = new Game::Text();
+        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, sf::Color::White,
+            sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
+    }
+}
+
+void Engine::UpdateMenu(float deltaTime)
+{
+    MenuAction action = gameMenu.Update(deltaTime);
+    
+    switch (action)
+    {
+    case MenuAction::StartGame:
+        InitializeGame();
+        currentState = GameState::Playing;
+        break;
+        
+    case MenuAction::ExitGame:
+        window.close();
+        break;
+        
+    case MenuAction::BackToMain:
+        if (currentState == GameState::Paused)
+        {
+            currentState = GameState::Playing;
+        }
+        break;
+        
+    default:
+        // No action needed
+        break;
+    }
+}
+
+void Engine::UpdateGame(float deltaTime)
+{
+    // Check for escape key to pause/return to menu
+    if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+    {
+        currentState = GameState::Paused;
+        gameMenu.ResetToMainMenu();
+        return;
+    }
+
+    // Update game objects
+    if (player)
+    {
+        player->Update(deltaTime);
+    }
+}
+
+void Engine::RenderMenu()
+{
+    gameMenu.Render(window);
+}
+
+void Engine::RenderGame()
+{
+    // Clear window
+    window.clear();
+
+    // Draw game objects
+    if (player)
+    {
+        player->Draw(window);
+    }
+    
+    // Uncomment to draw text
+    // if (initialText)
+    // {
+    //     window.draw(initialText->LoadText());
+    // }
 }
 
 void Engine::DeleteEngineInstance()
