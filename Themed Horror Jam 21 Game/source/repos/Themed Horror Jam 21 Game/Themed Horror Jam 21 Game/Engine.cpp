@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "SpriteTexture.h"
+#include "Text.h"
 
 Engine* Engine::engineInstance = nullptr;
 
@@ -37,8 +38,15 @@ void Engine::RunEngine()
 	// Setup sprite texture objects here
 	SpriteTexture red;
 
+    // Setup text here
+    Game::Text initialText;
+
 	// Initialize the sprite texture objects here
 	red.InitializeSprite("Art Assets/RedImage.png", sf::Vector2f(0.0f, 0.0f));
+
+    // Initialize the text objects from the Game's namespace here (to prevent conflict with SFML's text object)
+    initialText.InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, sf::Color::White, 
+        sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
 
 	Sprite redSprite = red.LoadSprite();
 
@@ -152,8 +160,10 @@ void Engine::RunEngine()
         }
 
         window.clear();
+
 		// Draw our game scene here (and load the sprite texture objects here as well)
 		window.draw(redSprite);
+        window.draw(initialText.LoadText()); // Draw text to the window
 
 		// Display
 		window.display();
