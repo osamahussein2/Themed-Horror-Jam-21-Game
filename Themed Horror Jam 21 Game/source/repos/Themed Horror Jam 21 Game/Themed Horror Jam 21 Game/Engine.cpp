@@ -69,7 +69,7 @@ void Engine::RunEngine()
 
         // Draw our game scene here
         player.Draw(window);
-        window.draw(initialText.LoadText()); // Draw text to the window
+       // window.draw(initialText.LoadText()); // Draw text to the window
 
         // Display
         window.display();
