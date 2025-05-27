@@ -22,6 +22,8 @@ public:
 	void DeleteEngineInstance();
 	static Engine* Instance();
 	RenderWindow* GetWindow() { return &window; }
+	void SetResolution(unsigned int width, unsigned int height);
+	void SetResolution(Vector2f newResolution);
 private:
 	static Engine* engineInstance;
 	// Create a video mode object
