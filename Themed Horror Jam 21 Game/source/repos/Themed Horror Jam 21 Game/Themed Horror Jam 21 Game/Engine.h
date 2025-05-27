@@ -21,6 +21,7 @@ public:
 	void RunEngine();
 	void DeleteEngineInstance();
 	static Engine* Instance();
+	RenderWindow* GetWindow() { return &window; }
 private:
 	static Engine* engineInstance;
 	// Create a video mode object
