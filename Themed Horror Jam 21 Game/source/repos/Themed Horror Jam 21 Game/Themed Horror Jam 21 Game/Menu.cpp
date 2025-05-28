@@ -567,13 +567,13 @@ void Menu::ToggleFullscreen()
     if (fullscreenStatus[currentFullscreenStatus] == "Off")
     {
         Engine::Instance()->GetWindow()->close();
-        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Game", sf::State::Windowed);
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", sf::State::Windowed);
     }
 
     // If fullscreen status is set to on, change the window state to fullscreen mode
     else if (fullscreenStatus[currentFullscreenStatus] == "On")
     {
         Engine::Instance()->GetWindow()->close();
-        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Game", sf::State::Fullscreen);
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
     }
 }

@@ -48,11 +48,23 @@ private:
 	Player* player;
 	Game::Text* initialText;
 
+	std::vector<Game::Text*> dialogueTexts;
+
+	// Input handling
+	float inputCooldown;
+	const float INPUT_DELAY = 0.15f;
+
 	Engine();
 	void InitializeGame();
 	void UpdateMenu(float deltaTime);
 	void UpdateGame(float deltaTime);
 	void RenderMenu();
 	void RenderGame();
+
+	int maxDialogueTexts = 3;
+
+	bool hideDialogue;
+
+	int currentDialogueIndex;
 };
 #endif

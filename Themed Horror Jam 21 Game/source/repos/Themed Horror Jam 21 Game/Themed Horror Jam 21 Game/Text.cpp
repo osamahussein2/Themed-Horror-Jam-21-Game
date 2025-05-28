@@ -11,8 +11,6 @@ Game::Text::~Text()
 sf::Text Game::Text::InitializeText(const char* filePath_, sf::String string_, float characterSize_, bool centerText_,
 	bool alignTextRight_, sf::Color textColor_, sf::Vector2f initialTextPos_)
 {
-	textPosition = initialTextPos_; // Return the text position being passed in to parameter
-
 	// Open the font from the file
 	font.openFromFile(filePath_);
 

@@ -16,14 +16,13 @@ namespace Game
 
 		sf::Text LoadText();
 
-		sf::Vector2f GetTextPosition() { return textPosition; }
-		sf::Vector2f GetTextSize() { return textSize; }
+		sf::Vector2f GetTextPosition() { return text.getPosition(); }
+		void SetTextPosition(sf::Vector2f newPosition_) { text.setPosition(newPosition_); }
 
 	private:
 		sf::Text text;
 		sf::Font font;
 
-		sf::Vector2f textPosition;
 		sf::Vector2f textSize;
 	};
 }

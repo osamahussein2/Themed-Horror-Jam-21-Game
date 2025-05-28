@@ -6,6 +6,9 @@ Engine::Engine()
     : currentState(GameState::Menu)
     , player(nullptr)
     , initialText(nullptr)
+    , currentDialogueIndex(0)
+    , hideDialogue(false)
+    , inputCooldown(INPUT_DELAY)
 {
 }
 
@@ -75,12 +78,12 @@ void Engine::RunEngine()
             UpdateMenu(deltaTime);
             RenderMenu();
             break;
-            
+
         case GameState::Playing:
             UpdateGame(deltaTime);
             RenderGame();
             break;
-            
+
         case GameState::Paused:
             UpdateMenu(deltaTime);
             RenderMenu();
@@ -94,6 +97,8 @@ void Engine::RunEngine()
 
 void Engine::InitializeGame()
 {
+    inputCooldown = INPUT_DELAY;
+
     // Create game objects only when starting the game
     if (!player)
     {
@@ -106,9 +111,29 @@ void Engine::InitializeGame()
     if (!initialText)
     {
         initialText = new Game::Text();
-        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true,false, sf::Color::White,
+        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, false, sf::Color::White,
             sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
     }
+
+    dialogueTexts.clear();
+    dialogueTexts.resize(maxDialogueTexts);
+
+    for (int i = 0; i < dialogueTexts.size(); i++)
+    {
+        if (!dialogueTexts[i])
+        {
+            dialogueTexts[i] = new Game::Text();
+        }
+    }
+
+    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", "Welcome to game!", 50.0f, false, false,
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+
+    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", "Play!", 50.0f, false, false,
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+
+    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", "Go!", 50.0f, false, false,
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 }
 
 void Engine::UpdateMenu(float deltaTime)
@@ -117,25 +142,25 @@ void Engine::UpdateMenu(float deltaTime)
     Vector2f mousePos = window.mapPixelToCoords(mousePixelPos);  // Convert to world coordinat
 
     MenuAction action = gameMenu.Update(deltaTime, mousePos);
-    
+
     switch (action)
     {
     case MenuAction::StartGame:
         InitializeGame();
         currentState = GameState::Playing;
         break;
-        
+
     case MenuAction::ExitGame:
         window.close();
         break;
-        
+
     case MenuAction::BackToMain:
         if (currentState == GameState::Paused)
         {
             currentState = GameState::Playing;
         }
         break;
-        
+
     default:
         // No action needed
         break;
@@ -144,12 +169,40 @@ void Engine::UpdateMenu(float deltaTime)
 
 void Engine::UpdateGame(float deltaTime)
 {
+    // Update input cooldown
+    if (inputCooldown > 0.0f)
+    {
+        inputCooldown -= deltaTime;
+    }
+
     // Check for escape key to pause/return to menu
     if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
     {
         currentState = GameState::Paused;
         gameMenu.ResetToMainMenu();
         return;
+    }
+
+    // Press enter key to skip dialogue
+    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && currentDialogueIndex >= 0)
+    {
+        currentDialogueIndex += 1;
+
+        // Hide the dialogue for now once the end dialogue is reached
+        if (currentDialogueIndex > dialogueTexts.size() - 1) 
+        { 
+            currentDialogueIndex = dialogueTexts.size() - 1; 
+            hideDialogue = true;
+        }
+
+        inputCooldown = INPUT_DELAY;
+    }
+
+    // Move the dialogue texts on the left and bottom sides of the screen
+    if (dialogueTexts[currentDialogueIndex])
+    {
+        dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(player->getPosition().x - 900.0f,
+            player->getPosition().y + 300.0f));
     }
 
     // Update game objects
@@ -176,6 +229,11 @@ void Engine::RenderGame()
     {
         player->Draw(window);
         window.setView(playerView); // Make sure the window is set to the player view in-game
+    }
+    
+    if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
+    {
+        window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
     }
     
     // Uncomment to draw text
