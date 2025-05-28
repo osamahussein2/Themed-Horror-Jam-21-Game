@@ -27,10 +27,10 @@ void Player::Initialize(const char* spritePath, Vector2f position, Vector2f scal
     playerSprite = new Sprite(playerTexture.LoadSprite());
 
     // Setup base rectangles for each direction (idle frames)
-    baseDir[down] = IntRect({ 0, 38 * 0 }, { 19, 38 });  // Row 0  
-    baseDir[left] = IntRect({ 0, 38 * 1 }, { 19, 38 });  // Row 1
-    baseDir[right] = IntRect({ 0, 38 * 2 }, { 19, 38 }); // Row 2
-    baseDir[up] = IntRect({ 0, 38 * 3 }, { 19, 38 });    // Row 3
+    baseDir[down] = IntRect({ 0, Pixelhight * 0 }, { PixelWidth, Pixelhight });  // Row 0  
+    baseDir[left] = IntRect({ 0, Pixelhight * 1 }, { PixelWidth, Pixelhight });  // Row 1
+    baseDir[right] = IntRect({ 0, Pixelhight * 2 }, { PixelWidth, Pixelhight }); // Row 2
+    baseDir[up] = IntRect({ 0, Pixelhight * 3 }, { PixelWidth, Pixelhight });    // Row 3
 
     // Set initial properties
     playerSprite->setTextureRect(baseDir[down]);
@@ -124,19 +124,19 @@ void Player::setAnimationFrame()
 
     if (currentDirection == up)
     {
-        currentFrame = IntRect({ 19 * animationFrame, 38 * 3 }, { 19, 38 }); // Row 3 for up walk
+        currentFrame = IntRect({ PixelWidth * animationFrame, Pixelhight * 3 }, { PixelWidth, Pixelhight }); // Row 3 for up walk
     }
     else if (currentDirection == down)
     {
-        currentFrame = IntRect({ 19 * animationFrame, 38 * 0 }, { 19, 38 }); // Row 0 for down walk
+        currentFrame = IntRect({ PixelWidth * animationFrame, Pixelhight * 0 }, { PixelWidth, Pixelhight }); // Row 0 for down walk
     }
     else if (currentDirection == left)
     {
-        currentFrame = IntRect({ 19 * animationFrame, 38 * 1 }, { 19, 38 }); // Row 1 for left walk
+        currentFrame = IntRect({ PixelWidth * animationFrame, Pixelhight * 1 }, { PixelWidth, Pixelhight }); // Row 1 for left walk
     }
     else if (currentDirection == right)
     {
-        currentFrame = IntRect({ 19 * animationFrame, 38 * 2 }, { 19, 38 }); // Row 2 for right walk
+        currentFrame = IntRect({ PixelWidth * animationFrame, Pixelhight * 2 }, { PixelWidth, Pixelhight }); // Row 2 for right walk
     }
 
     playerSprite->setTextureRect(currentFrame);

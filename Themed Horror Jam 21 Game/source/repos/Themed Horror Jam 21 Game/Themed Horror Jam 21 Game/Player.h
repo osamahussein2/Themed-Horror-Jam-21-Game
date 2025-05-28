@@ -17,7 +17,8 @@ class Player
 private:
     SpriteTexture playerTexture;
     Sprite* playerSprite;
-
+    int  PixelWidth = 32;
+    int  Pixelhight = 50;
     // Animation variables
     int currentDirection;
     int animationFrame;
