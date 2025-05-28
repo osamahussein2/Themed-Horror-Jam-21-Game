@@ -38,6 +38,9 @@ private:
 	// Game state management
 	GameState currentState;
 
+	// Create a an SFML View for main menu and for following player around in-game
+	View mainMenuView, playerView;
+
 	// Menu system
 	Menu gameMenu;
 

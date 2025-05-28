@@ -46,6 +46,10 @@ void Engine::RunEngine()
     // Create and open a window for the game
     window = RenderWindow(videoMode, "Themed Horror Jam 21 Game", State::Fullscreen);
 
+    // Initialize SFML View for both the main menu and player
+    mainMenuView = View(sf::FloatRect(Vector2f(0, 0), Vector2f(resolution.x, resolution.y)));
+    playerView = View(sf::FloatRect(Vector2f(0, 0), Vector2f(resolution.x, resolution.y)));
+
     // Initialize the menu
     gameMenu.Initialize(resolution);
 
@@ -151,6 +155,7 @@ void Engine::UpdateGame(float deltaTime)
     // Update game objects
     if (player)
     {
+        playerView.setCenter(player->getPosition()); // Center the camera where the player position's is
         player->Update(deltaTime);
     }
 }
@@ -158,6 +163,7 @@ void Engine::UpdateGame(float deltaTime)
 void Engine::RenderMenu()
 {
     gameMenu.Render(window);
+    window.setView(mainMenuView); // Make sure the window is set to the main menu view
 }
 
 void Engine::RenderGame()
@@ -169,6 +175,7 @@ void Engine::RenderGame()
     if (player)
     {
         player->Draw(window);
+        window.setView(playerView); // Make sure the window is set to the player view in-game
     }
     
     // Uncomment to draw text
