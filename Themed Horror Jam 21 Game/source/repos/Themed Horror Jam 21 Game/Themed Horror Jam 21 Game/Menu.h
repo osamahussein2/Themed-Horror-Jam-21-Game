@@ -21,12 +21,17 @@ enum class MenuAction
     StartGame,
     ExitGame,
     GoToSettings,
+    GoToAbout,
+    BackToMain
+};
+
+enum class SettingsMenuAction
+{
+    ModifyNone,
     ModifyVolume,
     ModifyDifficulty,
     ModifyFullscreen,
-    ModifyResolution,
-    GoToAbout,
-    BackToMain
+    ModifyResolution
 };
 
 class Menu
@@ -36,7 +41,7 @@ public:
     ~Menu();
 
     // Initialize the menu with screen resolution
-    void Initialize(Vector2f screenResolution);
+    void Initialize(Vector2u screenResolution);
 
     // Update menu logic
     MenuAction Update(float deltaTime, Vector2f mousePos);  // Add mousePos parameter
@@ -72,7 +77,7 @@ private:
     const float INPUT_DELAY = 0.15f;
 
     // Screen resolution
-    Vector2f resolution;
+    Vector2u resolution;
 
     // Text objects for main menu
     Game::Text titleText;
@@ -139,7 +144,7 @@ private:
     bool wasEnterPressed;
     bool wasEscapePressed;
 
-    MenuAction settingsAction = MenuAction::None;
+    SettingsMenuAction settingsAction = SettingsMenuAction::ModifyNone;
 };
 
 #endif

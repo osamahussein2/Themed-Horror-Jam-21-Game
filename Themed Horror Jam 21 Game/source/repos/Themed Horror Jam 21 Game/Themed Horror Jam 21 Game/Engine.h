@@ -21,14 +21,17 @@ public:
 	void RunEngine();
 	void DeleteEngineInstance();
 	static Engine* Instance();
+
 	RenderWindow* GetWindow() { return &window; }
-	void SetResolution(unsigned int width, unsigned int height);
-	void SetResolution(Vector2f newResolution);
+
+	Vector2u GetResolution() { return resolution; }
+	void SetResolution(Vector2u newResolution) { resolution = newResolution; }
+
 private:
 	static Engine* engineInstance;
 	// Create a video mode object
 	VideoMode videoMode;
-	Vector2f resolution;
+	Vector2u resolution;
 	// Create and open a window for the game
 	RenderWindow window;
 

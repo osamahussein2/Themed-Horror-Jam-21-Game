@@ -36,7 +36,7 @@ Menu::~Menu()
 {
 }
 
-void Menu::Initialize(Vector2f screenResolution)
+void Menu::Initialize(Vector2u screenResolution)
 {
     resolution = screenResolution;
 
@@ -193,8 +193,11 @@ void Menu::UpdateSettingsMenuColors()
         fullscreenStatus[currentFullscreenStatus], std::to_string(resolutionSize[currentResolutionSize].x) + "x" +
         std::to_string(resolutionSize[currentResolutionSize].y) };
 
-    if (settingsAction == MenuAction::None && selectedColor != Color::Yellow) selectedColor = Color::Yellow;
-    else if (settingsAction != MenuAction::None && selectedColor == Color::Yellow) selectedColor = modifySettingColor;
+    if (settingsAction == SettingsMenuAction::ModifyNone && selectedColor != Color::Yellow) 
+        selectedColor = Color::Yellow;
+
+    else if (settingsAction != SettingsMenuAction::ModifyNone && selectedColor == Color::Yellow) 
+        selectedColor = modifySettingColor;
 
     float startY = resolution.y / 3.0f;
     float startY2 = resolution.y / 3.35f;
@@ -303,6 +306,7 @@ MenuAction Menu::HandleMainMenuInput(Vector2f mousePos)
             break;
         case 1: // Settings
             currentState = MenuState::Settings;
+            settingsAction = SettingsMenuAction::ModifyNone;
             action = MenuAction::GoToSettings;
             break;
         case 2: // About
@@ -331,6 +335,8 @@ MenuAction Menu::HandleMainMenuInput(Vector2f mousePos)
 }
 MenuAction Menu::HandleSettingsInput()
 {
+    MenuAction action = MenuAction::None;
+
     // Track current input states
     bool isUpPressed = Keyboard::isKeyPressed(Keyboard::Key::Up);
     bool isDownPressed = Keyboard::isKeyPressed(Keyboard::Key::Down);
@@ -340,14 +346,14 @@ MenuAction Menu::HandleSettingsInput()
     bool isEscapePressed = Keyboard::isKeyPressed(Keyboard::Key::Escape);
 
     // Check for key press events (not held)
-    if (isUpPressed && !wasUpPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::None)
+    if (isUpPressed && !wasUpPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
     {
         selectedSettingsOption--;
         if (selectedSettingsOption < 0) selectedSettingsOption = maxSettingsOptions - 1;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
-    else if (isDownPressed && !wasDownPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::None)
+    else if (isDownPressed && !wasDownPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
     {
         selectedSettingsOption++;
         if (selectedSettingsOption >= maxSettingsOptions) selectedSettingsOption = 0;
@@ -356,14 +362,14 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // Modify the volume controls
-    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyVolume)
+    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyVolume)
     {
         volume -= 1;
         if (volume <= 0) volume = 0;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
-    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyVolume)
+    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyVolume)
     {
         volume += 1;
         if (volume >= 100) volume = 100;
@@ -372,14 +378,14 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // Modify the difficulty
-    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyDifficulty)
+    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyDifficulty)
     {
         currentDifficulty--;
         if (currentDifficulty <= 0) currentDifficulty = 0;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
-    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyDifficulty)
+    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyDifficulty)
     {
         currentDifficulty++;
         if (currentDifficulty >= difficulty.size() - 1) currentDifficulty = difficulty.size() - 1;
@@ -388,7 +394,8 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // Modify fullscreen
-    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyFullscreen)
+    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && 
+        settingsAction == SettingsMenuAction::ModifyFullscreen)
     {
         currentFullscreenStatus--;
         if (currentFullscreenStatus <= 0) currentFullscreenStatus = 0;
@@ -396,7 +403,8 @@ MenuAction Menu::HandleSettingsInput()
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
-    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyFullscreen)
+    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && 
+        settingsAction == SettingsMenuAction::ModifyFullscreen)
     {
         currentFullscreenStatus++;
         if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
@@ -406,14 +414,16 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // Modify resolution
-    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyResolution)
+    else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && 
+        settingsAction == SettingsMenuAction::ModifyResolution)
     {
         currentResolutionSize--;
         if (currentResolutionSize <= 0) currentResolutionSize = 0;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
-    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::ModifyResolution)
+    else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && 
+        settingsAction == SettingsMenuAction::ModifyResolution)
     {
         currentResolutionSize++;
         if (currentResolutionSize >= resolutionSize.size() - 1) currentResolutionSize = resolutionSize.size() - 1;
@@ -422,24 +432,24 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // Check if enter was pressed and the action is equal to none
-    else if (isEnterPressed && !wasEnterPressed && inputCooldown <= 0.0f && settingsAction == MenuAction::None)
+    else if (isEnterPressed && !wasEnterPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
     {
         switch (selectedSettingsOption)
         {
         case 0: // Volume
-            settingsAction = MenuAction::ModifyVolume;
+            settingsAction = SettingsMenuAction::ModifyVolume;
             UpdateSettingsMenuColors();
             break;
         case 1: // Difficulty
-            settingsAction = MenuAction::ModifyDifficulty;
+            settingsAction = SettingsMenuAction::ModifyDifficulty;
             UpdateSettingsMenuColors();
             break;
         case 2: // Fullscreen
-            settingsAction = MenuAction::ModifyFullscreen;
+            settingsAction = SettingsMenuAction::ModifyFullscreen;
             UpdateSettingsMenuColors();
             break;
         case 3: // Resolution
-            settingsAction = MenuAction::ModifyResolution;
+            settingsAction = SettingsMenuAction::ModifyResolution;
             UpdateSettingsMenuColors();
             break;
         }
@@ -447,25 +457,25 @@ MenuAction Menu::HandleSettingsInput()
     }
 
     // If enter key is pressed and the action isn't equal to none, set it back to none again
-    else if (isEnterPressed && !wasEnterPressed && inputCooldown <= 0.0f && settingsAction != MenuAction::None)
+    else if (isEnterPressed && !wasEnterPressed && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
     {
-        settingsAction = MenuAction::None;
+        settingsAction = SettingsMenuAction::ModifyNone;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
 
     // If escape key is pressed and the action is equal to none, go back to the main menu
-    else if (isEscapePressed && !wasEscapePressed && inputCooldown <= 0.0f && settingsAction == MenuAction::None)
+    else if (isEscapePressed && !wasEscapePressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
     {
         currentState = MenuState::MainMenu;
-        settingsAction = MenuAction::BackToMain;
+        action = MenuAction::BackToMain;
         inputCooldown = INPUT_DELAY;
     }
 
     // If escape key is pressed and the action isn't equal to none, set it to none again
-    else if (isEscapePressed && !wasEscapePressed && inputCooldown <= 0.0f && settingsAction != MenuAction::None)
+    else if (isEscapePressed && !wasEscapePressed && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
     {
-        settingsAction = MenuAction::None;
+        settingsAction = SettingsMenuAction::ModifyNone;
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
@@ -478,7 +488,7 @@ MenuAction Menu::HandleSettingsInput()
     wasEnterPressed = isEnterPressed;
     wasEscapePressed = isEscapePressed;
 
-    return settingsAction;
+    return action;
 }
 MenuAction Menu::HandleSubMenuInput()
 {
@@ -531,6 +541,15 @@ void Menu::Render(RenderWindow& window)
 
     case MenuState::Settings:
         window.draw(settingsContentText.LoadText());
+        for (auto& settingText : settingMenuTexts)
+        {
+            window.draw(settingText.LoadText());
+        }
+        for (auto& settingOptionsText : settingMenuOptionsTexts)
+        {
+            window.draw(settingOptionsText.LoadText());
+        }
+        window.draw(settingsInstructionsText.LoadText());
         break;
     }
 }
@@ -540,4 +559,21 @@ void Menu::ResetToMainMenu()
     currentState = MenuState::MainMenu;
     selectedMainOption = 0;
     UpdateMainMenuColors();
+}
+
+void Menu::ToggleFullscreen()
+{
+    // If fullscreen status is set to off, change the window state to windowed mode
+    if (fullscreenStatus[currentFullscreenStatus] == "Off")
+    {
+        Engine::Instance()->GetWindow()->close();
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Game", sf::State::Windowed);
+    }
+
+    // If fullscreen status is set to on, change the window state to fullscreen mode
+    else if (fullscreenStatus[currentFullscreenStatus] == "On")
+    {
+        Engine::Instance()->GetWindow()->close();
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Game", sf::State::Fullscreen);
+    }
 }
