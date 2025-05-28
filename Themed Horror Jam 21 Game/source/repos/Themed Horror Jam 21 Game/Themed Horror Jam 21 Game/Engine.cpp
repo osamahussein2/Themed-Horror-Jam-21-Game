@@ -104,14 +104,17 @@ void Engine::InitializeGame()
     if (!initialText)
     {
         initialText = new Game::Text();
-        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, sf::Color::White,
+        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true,false, sf::Color::White,
             sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
     }
 }
 
 void Engine::UpdateMenu(float deltaTime)
 {
-    MenuAction action = gameMenu.Update(deltaTime);
+    Vector2i mousePixelPos = Mouse::getPosition(window);  // Get pixel coordinates
+    Vector2f mousePos = window.mapPixelToCoords(mousePixelPos);  // Convert to world coordinat
+
+    MenuAction action = gameMenu.Update(deltaTime, mousePos);
     
     switch (action)
     {

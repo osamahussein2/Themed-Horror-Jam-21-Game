@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Text.h"
+#include "Button.h"  // Add this include
 #include <vector>
 
 using namespace sf;
@@ -20,6 +21,10 @@ enum class MenuAction
     StartGame,
     ExitGame,
     GoToSettings,
+    ModifyVolume,
+    ModifyDifficulty,
+    ModifyFullscreen,
+    ModifyResolution,
     GoToAbout,
     BackToMain
 };
@@ -34,7 +39,7 @@ public:
     void Initialize(Vector2f screenResolution);
 
     // Update menu logic
-    MenuAction Update(float deltaTime);
+    MenuAction Update(float deltaTime, Vector2f mousePos);  // Add mousePos parameter
 
     // Render the menu
     void Render(RenderWindow& window);
@@ -45,6 +50,11 @@ public:
     // Reset to main menu
     void ResetToMainMenu();
 
+    static int GetVolume() { return volume; }
+    static std::string GetDifficulty() { return difficulty[currentDifficulty]; }
+    static std::string GetFullscreenStatus() { return fullscreenStatus[currentFullscreenStatus]; }
+    static Vector2u GetResolutionSize() { return resolutionSize[currentResolutionSize]; }
+
 private:
     // Menu state management
     MenuState currentState;
@@ -52,6 +62,10 @@ private:
     // Main menu variables
     int selectedMainOption;
     int maxMainOptions;
+
+    // Settings menu variables
+    int selectedSettingsOption;
+    int maxSettingsOptions;
 
     // Input handling
     float inputCooldown;
@@ -63,31 +77,69 @@ private:
     // Text objects for main menu
     Game::Text titleText;
     std::vector<Game::Text> mainMenuTexts;
+    std::vector<Game::Text> settingMenuTexts;
+    std::vector<Game::Text> settingMenuOptionsTexts;
     Game::Text instructionsText;
+    Game::Text settingsInstructionsText;
+
+    // Button objects for main menu
+    std::vector<Button> mainMenuButtons;  // Add this
 
     // Text objects for sub-menus
     Game::Text aboutContentText;
     Game::Text settingsContentText;
     Game::Text backInstructionText;
 
+ 
+
     // Colors
     Color selectedColor;
+    Color modifySettingColor;
     Color normalColor;
     Color titleColor;
 
+    // Button colors
+    Color buttonIdleColor;
+    Color buttonHoverColor;
+    Color buttonActiveColor;
+
+    // Static variables
+    static int volume;
+    static std::vector<std::string> difficulty;
+    static std::vector<std::string> fullscreenStatus;
+    static std::vector<Vector2u> resolutionSize;
+
+    static int currentDifficulty;
+    static int currentFullscreenStatus;
+    static int currentResolutionSize;
+
     // Private methods
     void CreateMainMenuTexts();
+    void CreateMainMenuButtons();  
     void CreateAboutText();
     void CreateSettingsText();
+
     void UpdateMainMenuColors();
-    MenuAction HandleMainMenuInput();
-    MenuAction HandleSubMenuInput();
+    void UpdateSettingsMenuColors();
+
+    void ToggleFullscreen();
+
+    MenuAction HandleMainMenuInput(Vector2f mousePos);  // Add mousePos parameter
+    MenuAction HandleSettingsInput();
+    MenuAction HandleSubMenuInput();   // Add mousePos parameter
+
+    // Mouse position functions
+    void MouseChangeSelectedMainMenuOption();
 
     // Input state tracking
     bool wasUpPressed;
     bool wasDownPressed;
+    bool wasLeftPressed;
+    bool wasRightPressed;
     bool wasEnterPressed;
     bool wasEscapePressed;
+
+    MenuAction settingsAction = MenuAction::None;
 };
 
 #endif

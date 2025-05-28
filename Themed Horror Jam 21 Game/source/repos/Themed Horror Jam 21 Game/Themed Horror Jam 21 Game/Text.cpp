@@ -9,8 +9,10 @@ Game::Text::~Text()
 }
 
 sf::Text Game::Text::InitializeText(const char* filePath_, sf::String string_, float characterSize_, bool centerText_,
-	sf::Color textColor_, sf::Vector2f initialTextPos_)
+	bool alignTextRight_, sf::Color textColor_, sf::Vector2f initialTextPos_)
 {
+	textPosition = initialTextPos_; // Return the text position being passed in to parameter
+
 	// Open the font from the file
 	font.openFromFile(filePath_);
 
@@ -26,19 +28,24 @@ sf::Text Game::Text::InitializeText(const char* filePath_, sf::String string_, f
 	// Choose a color
 	text.setFillColor(textColor_);
 
+	textSize = sf::Vector2f(text.getGlobalBounds().size.x / 2.0f, text.getGlobalBounds().size.y / 2.0f);
+
 	sf::FloatRect textRect = text.getLocalBounds();
 
+	// If the center is true, then center the text
 	if (centerText_ == true)
 	{
-		text.setOrigin(sf::Vector2f(textRect.position.x +
-			textRect.size.x / 2.0f,
-			textRect.position.y +
-			textRect.size.y / 2.0f));
+		text.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x / 2.0f,
+			textRect.position.y + textRect.size.y / 2.0f));
 	}
 
+	// If center text is false, then align the text left or right depending on the align text boolean
 	else if (centerText_ == false)
 	{
-		text.setOrigin(sf::Vector2f(textRect.position.x, textRect.position.y));
+		if (alignTextRight_ == false) text.setOrigin(sf::Vector2f(textRect.position.x, textRect.position.y));
+
+		else if (alignTextRight_ == true)
+			text.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x, textRect.position.y + textRect.size.y));
 	}
 
 	text.setPosition(initialTextPos_);
