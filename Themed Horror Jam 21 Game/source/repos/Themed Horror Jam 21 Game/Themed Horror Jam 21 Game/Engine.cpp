@@ -55,16 +55,14 @@ void Engine::RunEngine()
     while (window.isOpen())
     {
         float deltaTime = deltaClock.restart().asSeconds();
-        //// Handle window close event
-        // this is bugged I don't know why 
-        //Event event;
-        //while (window.pollEvent(event))
-        //{
-        //    if (event.type == Event::Closed)
-        //    {
-        //        window.close();
-        //    }
-        //}
+        // do not chage
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+            {
+                window.close();
+            }
+        }
 
         // Handle different game states
         switch (currentState)
