@@ -126,7 +126,6 @@ void Engine::InitializeGame()
     }
 
     // Create game objects only when starting the game
-  
     if (!initialText)
     {
         initialText = new Game::Text();
@@ -139,16 +138,15 @@ void Engine::InitializeGame()
     {
         dialoguePanel = new DialoguePanel();
 
-        float outlineThickness = 4.0f;
         float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
-        float panelHeight = 200.0f; // Reasonable height for dialogue
+        float panelHeight = 700.0f; // Reasonable height for dialogue
 
         // Center the panel horizontally and position at bottom
         float panelX = (resolution.x - panelWidth) / 2.0f;
         float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
 
-        dialoguePanel->InitializeDialoguePanel(Vector2f(panelX, panelY),
-            Vector2f(panelWidth, panelHeight), Color::Red, Color::Blue, outlineThickness);
+        dialoguePanel->InitializeDialoguePanel("Art Assets/chat_box_0.png", Vector2f(panelX, panelY),
+            Vector2f(panelWidth, panelHeight));
     }
 
     dialogueTexts.clear();
@@ -223,23 +221,20 @@ void Engine::UpdateGame(float deltaTime)
     if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
     {
         currentState = GameState::Paused;
+        typewriterEffect.Reset(); // For now, reset dialogue state when going back to the main menu
         gameMenu.ResetToMainMenu();
         return;
     }
-
-
 
     // Move the dialogue texts on the left and bottom sides of the screen
     if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
         // Position text in the center of the dialogue panel
-        float textX = (resolution.x / 2.0f)-900; // Center horizontally
-        float textY = resolution.y - 150.0f; // Position within the dialogue panel area
+        float textX = (resolution.x / 2.0f) - 890; // Center horizontally
+        float textY = resolution.y - 335.0f; // Position within the dialogue panel area
 
         dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
     }
-
-
 
     if (!hideDialogue)
     {
@@ -291,8 +286,6 @@ void Engine::RenderGame()
 
     // Draw the background FIRST (so it appears behind everything else)
     gameBackground.Draw(window);
-
-  
     
     // Only render the dialogue texts and panel when hide dialogue is false
     if (dialogueTexts[currentDialogueIndex] && !hideDialogue)

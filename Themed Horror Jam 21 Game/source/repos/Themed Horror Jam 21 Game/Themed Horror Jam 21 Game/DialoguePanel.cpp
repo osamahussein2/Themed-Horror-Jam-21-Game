@@ -8,13 +8,12 @@ DialoguePanel::~DialoguePanel()
 {
 }
 
-void DialoguePanel::InitializeDialoguePanel(Vector2f position, Vector2f scale, Color outlineColor_, Color fillColor_,
-	float outlineThickness_)
+void DialoguePanel::InitializeDialoguePanel(const char* filePath_, Vector2f position, Vector2f scale)
 {
+	texture.loadFromFile(filePath_);
+
+	dialoguePanel.setTexture(&texture);
 	dialoguePanel.setSize(scale);
-	dialoguePanel.setFillColor(fillColor_);
-	dialoguePanel.setOutlineColor(outlineColor_);
-	dialoguePanel.setOutlineThickness(outlineThickness_);
 	dialoguePanel.setPosition(position);
 }
 

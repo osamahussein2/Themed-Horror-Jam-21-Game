@@ -9,13 +9,13 @@ class DialoguePanel
 {
 private:
     RectangleShape dialoguePanel;
+    Texture texture;
 
 public:
     DialoguePanel();
     ~DialoguePanel();
 
-    void InitializeDialoguePanel(Vector2f position, Vector2f scale, Color outlineColor_, Color fillColor_, 
-        float outlineThickness_);
+    void InitializeDialoguePanel(const char* filePath_, Vector2f position, Vector2f scale);
 
     void DrawDialoguePanel(RenderWindow& window);
 
