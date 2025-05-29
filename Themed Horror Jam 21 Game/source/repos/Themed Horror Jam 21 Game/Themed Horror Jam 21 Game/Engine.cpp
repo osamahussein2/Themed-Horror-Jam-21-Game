@@ -4,7 +4,7 @@ Engine* Engine::engineInstance = nullptr;
 
 Engine::Engine()
     : currentState(GameState::Menu)
-    , player(nullptr)
+
     , initialText(nullptr)
     , currentDialogueIndex(0)
     , hideDialogue(false)
@@ -15,11 +15,7 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-    if (player)
-    {
-        delete player;
-        player = nullptr;
-    }
+
     if (initialText)
     {
         delete initialText;
@@ -130,14 +126,7 @@ void Engine::InitializeGame()
     }
 
     // Create game objects only when starting the game
-    if (!player)
-    {
-        player = new Player();
-        player->Initialize("Art Assets/Player.png",
-            Vector2f(resolution.x / 2.0f, resolution.y / 2.0f),
-            Vector2f(2.0f, 2.0f));
-    }
-
+  
     if (!initialText)
     {
         initialText = new Game::Text();
@@ -151,9 +140,15 @@ void Engine::InitializeGame()
         dialoguePanel = new DialoguePanel();
 
         float outlineThickness = 4.0f;
+        float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
+        float panelHeight = 200.0f; // Reasonable height for dialogue
 
-        dialoguePanel->InitializeDialoguePanel(Vector2f(resolution.x / resolution.x * outlineThickness, 
-            resolution.y - 300.0f), Vector2f(resolution.x - 10.0f, 295.0f), Color::Red, Color::Blue, outlineThickness);
+        // Center the panel horizontally and position at bottom
+        float panelX = (resolution.x - panelWidth) / 2.0f;
+        float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
+
+        dialoguePanel->InitializeDialoguePanel(Vector2f(panelX, panelY),
+            Vector2f(panelWidth, panelHeight), Color::Red, Color::Blue, outlineThickness);
     }
 
     dialogueTexts.clear();
@@ -232,25 +227,19 @@ void Engine::UpdateGame(float deltaTime)
         return;
     }
 
-    // Move the dialogue panel more on the left and bottom sides of the screen than dialogue texts themselves
-    if (dialoguePanel)
-    {
-        dialoguePanel->SetPosition(Vector2f(player->getPosition().x - 955.0f, player->getPosition().y + 235.0f));
-    }
+
 
     // Move the dialogue texts on the left and bottom sides of the screen
     if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
-        dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(player->getPosition().x - 900.0f,
-            player->getPosition().y + 300.0f));
+        // Position text in the center of the dialogue panel
+        float textX = (resolution.x / 2.0f)-900; // Center horizontally
+        float textY = resolution.y - 150.0f; // Position within the dialogue panel area
+
+        dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
     }
 
-    // Update game objects
-    if (player)
-    {
-        playerView.setCenter(player->getPosition()); // Center the camera where the player position's is
-        player->Update(deltaTime);
-    }
+
 
     if (!hideDialogue)
     {
@@ -303,12 +292,7 @@ void Engine::RenderGame()
     // Draw the background FIRST (so it appears behind everything else)
     gameBackground.Draw(window);
 
-    // Draw game objects
-    if (player)
-    {
-        player->Draw(window);
-        window.setView(playerView); // Make sure the window is set to the player view in-game
-    }
+  
     
     // Only render the dialogue texts and panel when hide dialogue is false
     if (dialogueTexts[currentDialogueIndex] && !hideDialogue)

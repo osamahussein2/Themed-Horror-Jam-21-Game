@@ -90,23 +90,24 @@ void RenderBackground::ScaleToFitScreen(sf::Vector2u screenResolution)
     if (isLoaded)
     {
         // Get the texture size
-        sf::Vector2u textureSize = backgroundSprite.getTexture().getSize();
+        sf::Vector2u textureSize = backgroundTexture.getSize();
 
-        // Calculate scale factors to fit the screen
+        // Calculate scale factors
         float scaleX = static_cast<float>(screenResolution.x) / static_cast<float>(textureSize.x);
         float scaleY = static_cast<float>(screenResolution.y) / static_cast<float>(textureSize.y);
 
         // Use the larger scale factor to ensure the background covers the entire screen
+        // This maintains aspect ratio but may crop parts of the image
         float scale = std::max(scaleX, scaleY);
 
-        // Apply the scale
+        // Apply uniform scaling
         backgroundSprite.setScale({ scale, scale });
 
         // Center the background on screen
-        sf::Vector2f spriteSize = sf::Vector2f(textureSize.x * scale, textureSize.y * scale);
+        sf::Vector2f scaledSize = sf::Vector2f(textureSize.x * scale, textureSize.y * scale);
         sf::Vector2f centerPosition = sf::Vector2f(
-            (screenResolution.x - spriteSize.x) / 2.0f,
-            (screenResolution.y - spriteSize.y) / 2.0f
+            (static_cast<float>(screenResolution.x) - scaledSize.x) / 2.0f,
+            (static_cast<float>(screenResolution.y) - scaledSize.y) / 2.0f
         );
 
         backgroundSprite.setPosition(centerPosition);

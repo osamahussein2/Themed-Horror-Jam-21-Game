@@ -148,7 +148,6 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="RenderBackground.cpp" />
     <ClCompile Include="SpriteTexture.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -159,7 +158,6 @@
     <ClInclude Include="DialoguePanel.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="RenderBackground.h" />
     <ClInclude Include="SpriteTexture.h" />
     <ClInclude Include="Text.h" />

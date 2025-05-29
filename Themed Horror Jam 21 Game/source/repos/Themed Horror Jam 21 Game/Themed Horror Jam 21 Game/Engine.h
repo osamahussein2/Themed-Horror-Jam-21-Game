@@ -2,7 +2,7 @@
 #define ENGINE_H
 #include <SFML/Graphics.hpp>
 #include "Menu.h"
-#include "Player.h"
+
 #include "Text.h"
 #include "DialoguePanel.h"
 #include "TypewriterEffect.h"
@@ -51,7 +51,7 @@ private:
 	Menu gameMenu;
 
 	// Game objects
-	Player* player;
+
 	Game::Text* initialText;
 
 	std::vector<Game::Text*> dialogueTexts;
