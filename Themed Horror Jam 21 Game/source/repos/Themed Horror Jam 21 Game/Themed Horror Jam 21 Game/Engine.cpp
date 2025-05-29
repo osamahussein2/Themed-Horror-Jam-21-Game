@@ -145,7 +145,7 @@ void Engine::InitializeGame()
         float panelX = (resolution.x - panelWidth) / 2.0f;
         float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
 
-        dialoguePanel->InitializeDialoguePanel("Art Assets/chat_box_0.png", Vector2f(panelX, panelY),
+        dialoguePanel->InitializeDialoguePanel("Art Assets/chat_box_3.png", Vector2f(panelX, panelY),
             Vector2f(panelWidth, panelHeight));
     }
 
