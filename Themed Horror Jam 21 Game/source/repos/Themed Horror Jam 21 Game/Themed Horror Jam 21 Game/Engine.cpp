@@ -36,6 +36,11 @@ Engine::~Engine()
 
         dialogueTexts.clear();
     }
+
+    if (dialoguePanel)
+    {
+        delete dialoguePanel;
+    }
 }
 
 Engine* Engine::Instance()
