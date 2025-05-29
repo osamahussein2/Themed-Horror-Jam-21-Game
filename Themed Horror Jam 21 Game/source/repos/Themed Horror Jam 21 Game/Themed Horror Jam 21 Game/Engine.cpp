@@ -4,12 +4,14 @@ Engine* Engine::engineInstance = nullptr;
 
 Engine::Engine()
     : currentState(GameState::Menu)
-
     , initialText(nullptr)
     , currentDialogueIndex(0)
     , hideDialogue(false)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
+    , dialoguePanel(nullptr)
+    , dialogueSystemInitialized(false)
+    , typeTextTime(0.0f)
 {
 }
 
@@ -38,6 +40,8 @@ Engine::~Engine()
     {
         delete dialoguePanel;
     }
+
+    if (!dialoguePanelTextures.empty()) dialoguePanelTextures.clear();
 }
 
 Engine* Engine::Instance()
@@ -145,6 +149,10 @@ void Engine::InitializeGame()
         float panelX = (resolution.x - panelWidth) / 2.0f;
         float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
 
+        // Initialize dialogue panel texture strings (Index from 0-4, or in other words, from 1st element to 5th element)
+        dialoguePanelTextures = { "Art Assets/chat_box_0.png", "Art Assets/chat_box_1.png",
+            "Art Assets/chat_box_2.png", "Art Assets/chat_box_3.png", "Art Assets/chat_box_4.png" };
+
         dialoguePanel->InitializeDialoguePanel("Art Assets/chat_box_3.png", Vector2f(panelX, panelY),
             Vector2f(panelWidth, panelHeight));
     }
@@ -240,6 +248,8 @@ void Engine::UpdateGame(float deltaTime)
     {
         typewriterEffect.Update(deltaTime);
 
+        UpdateDialoguePanelTexture();
+
         // Update the current dialogue text
         if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
             && dialogueTexts[currentDialogueIndex])
@@ -320,6 +330,38 @@ void Engine::InitializeDialogueSystem()
 
     // Initialize with ALL dialogues at once
     typewriterEffect.Initialize(allDialogueData);
+}
+
+void Engine::UpdateDialoguePanelTexture()
+{
+    // Change dialogue panel textures based on current dialogue index
+    switch (currentDialogueIndex)
+    {
+    case 0:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+        }
+
+        break;
+
+    case 1:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+        }
+        break;
+
+    case 2:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 void Engine::DeleteEngineInstance()

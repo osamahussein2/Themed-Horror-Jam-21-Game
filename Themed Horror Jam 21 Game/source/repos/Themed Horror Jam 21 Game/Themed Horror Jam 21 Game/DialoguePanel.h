@@ -11,6 +11,8 @@ private:
     RectangleShape dialoguePanel;
     Texture texture;
 
+    const char* filePath;
+
 public:
     DialoguePanel();
     ~DialoguePanel();
@@ -21,6 +23,9 @@ public:
 
     Vector2f GetPosition() const;
     void SetPosition(Vector2f position);
+
+    const char* GetDialoguePanelTexture();
+    void SetDialoguePanelTexture(const char* filePath_);
 };
 
 #endif

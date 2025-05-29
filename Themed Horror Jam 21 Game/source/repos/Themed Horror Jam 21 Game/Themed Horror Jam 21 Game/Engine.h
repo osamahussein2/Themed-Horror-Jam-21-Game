@@ -71,11 +71,15 @@ private:
 	void RenderMenu();
 	void RenderGame();
 	void InitializeDialogueSystem();
+	void UpdateDialoguePanelTexture();
+
 	int maxDialogueTexts = 3;
 
 	bool hideDialogue;
 	bool skippedTypewriting;
 
 	int currentDialogueIndex;
+
+	std::vector<std::string> dialoguePanelTextures;
 };
 #endif
