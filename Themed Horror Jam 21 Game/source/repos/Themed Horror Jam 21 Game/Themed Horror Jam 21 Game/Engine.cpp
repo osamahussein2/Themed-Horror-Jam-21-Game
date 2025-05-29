@@ -24,6 +24,18 @@ Engine::~Engine()
         delete initialText;
         initialText = nullptr;
     }
+
+    // Only if the dialogue texts aren't empty, delete the dialogue texts and clear the vector
+    if (!dialogueTexts.empty())
+    {
+        for (int i = 0; i < dialogueTexts.size(); i++)
+        {
+            delete dialogueTexts[i];
+            dialogueTexts[i] = nullptr;
+        }
+
+        dialogueTexts.clear();
+    }
 }
 
 Engine* Engine::Instance()
@@ -97,13 +109,16 @@ void Engine::RunEngine()
 
 void Engine::InitializeGame()
 {
-    inputCooldown = INPUT_DELAY;
+    // Initialize or reset game variables
+    if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
+    if (currentDialogueIndex != 0) currentDialogueIndex = 0;
+    if (hideDialogue != false) hideDialogue = false;
 
     // Create game objects only when starting the game
     if (!player)
     {
         player = new Player();
-        player->Initialize("Art Assets/RedImage.png",
+        player->Initialize("Art Assets/Player.png",
             Vector2f(resolution.x / 2.0f, resolution.y / 2.0f),
             Vector2f(2.0f, 2.0f));
     }
@@ -113,6 +128,17 @@ void Engine::InitializeGame()
         initialText = new Game::Text();
         initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, false, sf::Color::White,
             sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
+    }
+
+    // Initialize dialogue panel if isn't already
+    if (!dialoguePanel)
+    {
+        dialoguePanel = new DialoguePanel();
+
+        float outlineThickness = 4.0f;
+
+        dialoguePanel->InitializeDialoguePanel(Vector2f(resolution.x / resolution.x * outlineThickness, 
+            resolution.y - 300.0f), Vector2f(resolution.x - 10.0f, 295.0f), Color::Red, Color::Blue, outlineThickness);
     }
 
     dialogueTexts.clear();
@@ -184,7 +210,8 @@ void Engine::UpdateGame(float deltaTime)
     }
 
     // Press enter key to skip dialogue
-    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && currentDialogueIndex >= 0)
+    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && currentDialogueIndex >= 0
+        && !dialogueTexts.empty())
     {
         currentDialogueIndex += 1;
 
@@ -198,8 +225,14 @@ void Engine::UpdateGame(float deltaTime)
         inputCooldown = INPUT_DELAY;
     }
 
+    // Move the dialogue panel more on the left and bottom sides of the screen than dialogue texts themselves
+    if (dialoguePanel)
+    {
+        dialoguePanel->SetPosition(Vector2f(player->getPosition().x - 955.0f, player->getPosition().y + 235.0f));
+    }
+
     // Move the dialogue texts on the left and bottom sides of the screen
-    if (dialogueTexts[currentDialogueIndex])
+    if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
         dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(player->getPosition().x - 900.0f,
             player->getPosition().y + 300.0f));
@@ -231,9 +264,25 @@ void Engine::RenderGame()
         window.setView(playerView); // Make sure the window is set to the player view in-game
     }
     
+    // Only render the dialogue texts and panel when hide dialogue is false
     if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
+        if (dialoguePanel)
+        {
+            dialoguePanel->DrawDialoguePanel(window);
+        }
+
         window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
+    }
+
+    // Otherwise, delete the dialogue texts and hide the dialogue panel
+    else if (hideDialogue)
+    {
+        for (int i = 0; i < dialogueTexts.size(); i++)
+        {
+            delete dialogueTexts[i];
+            dialogueTexts[i] = nullptr;
+        }
     }
     
     // Uncomment to draw text

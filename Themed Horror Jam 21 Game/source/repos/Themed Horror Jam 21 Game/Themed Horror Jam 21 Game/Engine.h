@@ -4,6 +4,7 @@
 #include "Menu.h"
 #include "Player.h"
 #include "Text.h"
+#include "DialoguePanel.h"
 
 using namespace sf;
 
@@ -49,6 +50,8 @@ private:
 	Game::Text* initialText;
 
 	std::vector<Game::Text*> dialogueTexts;
+
+	DialoguePanel* dialoguePanel;
 
 	// Input handling
 	float inputCooldown;
