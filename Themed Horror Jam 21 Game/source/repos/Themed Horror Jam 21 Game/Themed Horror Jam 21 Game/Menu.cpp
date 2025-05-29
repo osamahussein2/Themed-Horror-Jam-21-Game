@@ -29,11 +29,14 @@ Menu::Menu()
     , wasRightPressed(false)
     , wasEnterPressed(false)
     , wasEscapePressed(false)
+    , settingsBackButton(nullptr)
 {
 }
 
 Menu::~Menu()
 {
+    delete settingsBackButton;
+    settingsBackButton = nullptr;
 }
 
 void Menu::Initialize(Vector2u screenResolution)
@@ -44,6 +47,7 @@ void Menu::Initialize(Vector2u screenResolution)
     CreateMainMenuButtons();
     CreateAboutText();
     CreateSettingsText();
+    CreateSettingsButtons();
 }
 
 void Menu::CreateMainMenuTexts()
@@ -99,6 +103,37 @@ void Menu::CreateMainMenuButtons()
     float backButtonY = resolution.y - 150.0f;
 }
 
+void Menu::CreateSettingsButtons()
+{
+    // Clear existing buttons
+    settingMenuButtons.clear();
+    settingMenuButtons.reserve(maxSettingsOptions);
+
+    float buttonWidth = 700.0f;
+    float buttonHeight = 65.0f;
+    float startY = resolution.y / 3.4f;
+    float spacing = 100.0f;
+
+    for (int i = 0; i < maxSettingsOptions; i++)
+    {
+        float buttonX = (resolution.x - buttonWidth) / 1.75f;
+        float buttonY = startY + (i * spacing);
+
+        settingMenuButtons.emplace_back(buttonX, buttonY, buttonWidth, buttonHeight,
+            buttonIdleColor, buttonHoverColor, buttonActiveColor);
+    }
+
+    // Initialize back button (positioned at bottom of screen)
+    float backButtonX = (resolution.x - 100.0f) / 2.0f;
+    float backButtonY = resolution.y - 150.0f;
+
+    if (!settingsBackButton)
+    {
+        settingsBackButton = new Button(backButtonX, backButtonY, 200.0f, 50.0f,
+            buttonIdleColor, buttonHoverColor, buttonActiveColor);
+    }
+}
+
 void Menu::CreateAboutText()
 {
     std::string aboutContent = "HORROR GAME\n\n"
@@ -149,8 +184,8 @@ void Menu::CreateSettingsText()
         fullscreenStatus[currentFullscreenStatus], std::to_string(resolutionSize[currentResolutionSize].x) + "x" +
         std::to_string(resolutionSize[currentResolutionSize].y) };
 
-    float startY = resolution.y / 3.0f;
-    float startY2 = resolution.y / 3.35f;
+    float startY = resolution.y / 2.95f;
+    float startY2 = resolution.y / 3.355f;
 
     float spacing = 100.0f;
 
@@ -162,6 +197,9 @@ void Menu::CreateSettingsText()
 
         settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
             textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
+
+        settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+            textColor, Vector2f(resolution.x / 2.0f, resolution.y / 1.155f));
     }
 
     // Instructions for settings menu
@@ -199,8 +237,8 @@ void Menu::UpdateSettingsMenuColors()
     else if (settingsAction != SettingsMenuAction::ModifyNone && selectedColor == Color::Yellow) 
         selectedColor = modifySettingColor;
 
-    float startY = resolution.y / 3.0f;
-    float startY2 = resolution.y / 3.35f;
+    float startY = resolution.y / 2.95f;
+    float startY2 = resolution.y / 3.355f;
 
     float spacing = 100.0f;
 
@@ -212,6 +250,9 @@ void Menu::UpdateSettingsMenuColors()
 
         settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
             textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
+
+        settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+            sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 1.155f));
     }
 }
 MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
@@ -236,7 +277,14 @@ MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
         break;
 
     case MenuState::Settings:
-        action = (inputCooldown <= 0.0f) ? HandleSettingsInput() : MenuAction::None;
+        for (auto& button : settingMenuButtons)
+        {
+            button.update(mousePos);
+        }
+
+        settingsBackButton->update(mousePos);
+
+        action = (inputCooldown <= 0.0f) ? HandleSettingsInput(mousePos) : MenuAction::None;
         break;
     case MenuState::About:
         action = (inputCooldown <= 0.0f) ? HandleSubMenuInput() : MenuAction::None;
@@ -333,7 +381,7 @@ MenuAction Menu::HandleMainMenuInput(Vector2f mousePos)
 
     return action;
 }
-MenuAction Menu::HandleSettingsInput()
+MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
 {
     MenuAction action = MenuAction::None;
 
@@ -344,6 +392,89 @@ MenuAction Menu::HandleSettingsInput()
     bool isRightPressed = Keyboard::isKeyPressed(Keyboard::Key::Right);
     bool isEnterPressed = Keyboard::isKeyPressed(Keyboard::Key::Enter);
     bool isEscapePressed = Keyboard::isKeyPressed(Keyboard::Key::Escape);
+
+    // Check for button clicks first
+    for (int i = 0; i < maxSettingsOptions; i++)
+    {
+        if (settingMenuButtons[i].isHovered() && settingsAction == SettingsMenuAction::ModifyNone)
+        {
+            switch (i)
+            {
+            case 0: // Volume
+                if (selectedSettingsOption != 0) selectedSettingsOption = 0;
+                UpdateSettingsMenuColors();
+                break;
+            case 1: // Difficulty
+                if (selectedSettingsOption != 1) selectedSettingsOption = 1;
+                UpdateSettingsMenuColors();
+                break;
+            case 2: // Fullscreen
+                if (selectedSettingsOption != 2) selectedSettingsOption = 2;
+                UpdateSettingsMenuColors();
+                break;
+            case 3: // Resolution
+                if (selectedSettingsOption != 3) selectedSettingsOption = 3;
+                UpdateSettingsMenuColors();
+                break;
+            }
+        }
+        else if (settingMenuButtons[i].isPressed() && inputCooldown <= 0.0f && 
+            settingsAction == SettingsMenuAction::ModifyNone)
+        {
+            switch (i)
+            {
+            case 0: // Volume
+                settingsAction = SettingsMenuAction::ModifyVolume;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+                break;
+            case 1: // Difficulty
+                settingsAction = SettingsMenuAction::ModifyDifficulty;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+                break;
+            case 2: // Fullscreen
+                settingsAction = SettingsMenuAction::ModifyFullscreen;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+                break;
+            case 3: // Resolution
+                settingsAction = SettingsMenuAction::ModifyResolution;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+                break;
+            }
+        }
+
+        // If the mouse was pressed and the settings action isn't set to none, set it to none
+        else if (settingMenuButtons[i].isPressed() && inputCooldown <= 0.0f && 
+            settingsAction != SettingsMenuAction::ModifyNone)
+        {
+            settingsAction = SettingsMenuAction::ModifyNone;
+            UpdateSettingsMenuColors();
+            inputCooldown = INPUT_DELAY;
+        }
+    }
+
+    // If settings back button is pressed and settings action is set to none, go back to the main menu
+    if (settingsBackButton->isPressed() && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
+    {
+        currentState = MenuState::MainMenu;
+
+        /* Caused a glitch where you launch the game and quit to main menu to go back to settings and press the back
+        button, it goes back to the game for some reason */
+        //action = MenuAction::BackToMain;
+
+        inputCooldown = INPUT_DELAY;
+    }
+
+    // If settings back button is pressed and settings action is NOT set to none, set it to none
+    else if (settingsBackButton->isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+    {
+        settingsAction = SettingsMenuAction::ModifyNone;
+        UpdateSettingsMenuColors();
+        inputCooldown = INPUT_DELAY;
+    }
 
     // Check for key press events (not held)
     if (isUpPressed && !wasUpPressed && inputCooldown <= 0.0f && settingsAction == SettingsMenuAction::ModifyNone)
@@ -541,6 +672,15 @@ void Menu::Render(RenderWindow& window)
 
     case MenuState::Settings:
         window.draw(settingsContentText.LoadText());
+
+        for (auto& button : settingMenuButtons)
+        {
+            button.draw(&window);
+        }
+
+        settingsBackButton->draw(&window);
+        window.draw(settingsBackText.LoadText());
+
         for (auto& settingText : settingMenuTexts)
         {
             window.draw(settingText.LoadText());

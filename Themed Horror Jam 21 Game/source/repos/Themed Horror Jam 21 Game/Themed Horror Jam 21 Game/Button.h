@@ -32,6 +32,7 @@ class Button
 		~Button();
 		//accessors
 		const bool isPressed() const ;
+		const bool isHovered() const;
 		//functions
 		void update(sf::Vector2f mousePos);
 		void draw(sf::RenderTarget* target);

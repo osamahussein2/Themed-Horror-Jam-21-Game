@@ -22,6 +22,11 @@ const bool Button::isPressed() const {
 	return this->buttonState == BTN_Active;
 }
 
+const bool Button::isHovered() const
+{
+	return buttonState == BTN_HOVER;
+}
+
 void Button::update(Vector2f mousePos)
 {
 	this->buttonState = BTN_IDLE;

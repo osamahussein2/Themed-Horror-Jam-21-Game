@@ -89,6 +89,7 @@ private:
 
     // Button objects for main menu
     std::vector<Button> mainMenuButtons;  // Add this
+    std::vector<Button> settingMenuButtons;
 
     // Text objects for sub-menus
     Game::Text aboutContentText;
@@ -123,6 +124,7 @@ private:
     void CreateMainMenuButtons();  
     void CreateAboutText();
     void CreateSettingsText();
+    void CreateSettingsButtons();
 
     void UpdateMainMenuColors();
     void UpdateSettingsMenuColors();
@@ -130,7 +132,7 @@ private:
     void ToggleFullscreen();
 
     MenuAction HandleMainMenuInput(Vector2f mousePos);  // Add mousePos parameter
-    MenuAction HandleSettingsInput();
+    MenuAction HandleSettingsInput(Vector2f mousePos);
     MenuAction HandleSubMenuInput();   // Add mousePos parameter
 
     // Mouse position functions
@@ -145,6 +147,9 @@ private:
     bool wasEscapePressed;
 
     SettingsMenuAction settingsAction = SettingsMenuAction::ModifyNone;
+
+    Button* settingsBackButton;
+    Game::Text settingsBackText;
 };
 
 #endif

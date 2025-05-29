@@ -126,7 +126,7 @@ void Engine::InitializeGame()
     if (!gameBackground.IsLoaded())
     {
         // Replace "Art Assets/Background.png" with your actual background image path
-        gameBackground.Initialize("Art Assets/Background.png", resolution);
+        gameBackground.Initialize("Art Assets/Background.jpg", resolution);
     }
 
     // Create game objects only when starting the game
