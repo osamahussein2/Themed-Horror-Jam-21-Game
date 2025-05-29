@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Text.h"
 #include "DialoguePanel.h"
+#include "TypewriterEffect.h"
 
 using namespace sf;
 
@@ -29,6 +30,8 @@ public:
 	void SetResolution(Vector2u newResolution) { resolution = newResolution; }
 
 private:
+	TypewriterEffect typewriterEffect;
+	bool dialogueSystemInitialized;
 	static Engine* engineInstance;
 	// Create a video mode object
 	VideoMode videoMode;
@@ -65,7 +68,7 @@ private:
 	void UpdateGame(float deltaTime);
 	void RenderMenu();
 	void RenderGame();
-
+	void InitializeDialogueSystem();
 	void UpdateText(float deltaTime, float maxTimerThreshold);
 
 	int maxDialogueTexts = 3;
