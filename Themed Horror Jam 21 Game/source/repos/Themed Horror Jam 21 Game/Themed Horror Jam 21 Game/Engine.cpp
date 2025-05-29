@@ -209,7 +209,7 @@ void Engine::UpdateMenu(float deltaTime)
 
 void Engine::UpdateGame(float deltaTime)
 {
-    /*UpdateText(deltaTime, 0.2f);*/
+  
 
     // Update input cooldown
     if (inputCooldown > 0.0f)
@@ -225,34 +225,6 @@ void Engine::UpdateGame(float deltaTime)
         return;
     }
 
-    // Press enter key to skip dialogue
-    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && currentDialogueIndex >= 0
-        && !dialogueTexts.empty() && !skippedTypewriting)
-    {
-        skippedTypewriting = true;
-
-        inputCooldown = INPUT_DELAY;
-    }
-
-    // Press enter key to go to next dialogue
-    else if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && currentDialogueIndex >= 0
-        && !dialogueTexts.empty() && skippedTypewriting)
-    {
-        skippedTypewriting = false;
-
-        if (typeTextTime != 0.0f) typeTextTime = 0.0f;
-        currentDialogueIndex += 1;
-
-        // Hide the dialogue for now once the end dialogue is reached
-        if (currentDialogueIndex > dialogueTexts.size() - 1) 
-        { 
-            currentDialogueIndex = dialogueTexts.size() - 1; 
-            hideDialogue = true;
-        }
-
-        inputCooldown = INPUT_DELAY;
-    }
-
     // Move the dialogue panel more on the left and bottom sides of the screen than dialogue texts themselves
     if (dialoguePanel)
     {
@@ -260,7 +232,7 @@ void Engine::UpdateGame(float deltaTime)
     }
 
     // Move the dialogue texts on the left and bottom sides of the screen
-    if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
+    if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
         dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(player->getPosition().x - 900.0f,
             player->getPosition().y + 300.0f));
@@ -272,6 +244,7 @@ void Engine::UpdateGame(float deltaTime)
         playerView.setCenter(player->getPosition()); // Center the camera where the player position's is
         player->Update(deltaTime);
     }
+
     if (!hideDialogue)
     {
         typewriterEffect.Update(deltaTime);
@@ -285,7 +258,7 @@ void Engine::UpdateGame(float deltaTime)
         }
     }
 
-    // Handle input for skipping/advancing dialogue
+    // SIMPLIFIED: Handle input for skipping/advancing dialogue (REMOVE the old system)
     if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && !hideDialogue)
     {
         if (!typewriterEffect.IsCurrentDialogueComplete())
@@ -297,7 +270,7 @@ void Engine::UpdateGame(float deltaTime)
         {
             // Move to next dialogue
             typewriterEffect.NextDialogue();
-            currentDialogueIndex++;
+            currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex(); // Sync indices
         }
         else
         {
@@ -356,217 +329,15 @@ void Engine::RenderGame()
 }
 void Engine::InitializeDialogueSystem()
 {
-    // Create dialogue data with different typing speeds for variety
-    std::vector<TypewriterEffect::DialogueData> dialogueData = {
-        TypewriterEffect::DialogueData("Welcome to game!", 8.0f),  // Fast typing
-        TypewriterEffect::DialogueData("Play!", 12.0f),           // Very fast
-        TypewriterEffect::DialogueData("Go!", 10.0f)              // Fast
+    std::vector<TypewriterEffect::DialogueData> allDialogueData = {
+         TypewriterEffect::DialogueData("Welcome to game!", 8.0f),  // Fast typing
+         TypewriterEffect::DialogueData("Play!", 12.0f),           // Very fast
+         TypewriterEffect::DialogueData("Go!", 10.0f)              // Fast
     };
 
-    typewriterEffect.Initialize(dialogueData);
+    // Initialize with ALL dialogues at once
+    typewriterEffect.Initialize(allDialogueData);
 }
-
-//void Engine::UpdateText(float deltaTime, float maxTimerThreshold)
-//{
-//    // Update the text when the dialogue isn't hidden yet
-//    if (!hideDialogue)
-//    {
-//        // First dialogue
-//        if (currentDialogueIndex == 0)
-//        {
-//            typeTextTime += deltaTime;
-//
-//            if (!skippedTypewriting)
-//            {
-//                if (typeTextTime >= 0.0f && typeTextTime < maxTimerThreshold)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "W")
-//                        dialogueTexts[0]->SetTypewriterString("W");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold && typeTextTime < maxTimerThreshold * 2)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "We")
-//                        dialogueTexts[0]->SetTypewriterString("We");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 2 && typeTextTime < maxTimerThreshold * 3)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Wel")
-//                        dialogueTexts[0]->SetTypewriterString("Wel");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 3 && typeTextTime < maxTimerThreshold * 4)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welc")
-//                        dialogueTexts[0]->SetTypewriterString("Welc");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 4 && typeTextTime < maxTimerThreshold * 5)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welco")
-//                        dialogueTexts[0]->SetTypewriterString("Welco");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 5 && typeTextTime < maxTimerThreshold * 6)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcom")
-//                        dialogueTexts[0]->SetTypewriterString("Welcom");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 5 && typeTextTime < maxTimerThreshold * 6)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 6 && typeTextTime < maxTimerThreshold * 7)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome ")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome ");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 7 && typeTextTime < maxTimerThreshold * 8)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome t")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome t");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 8 && typeTextTime < maxTimerThreshold * 9)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 9 && typeTextTime < maxTimerThreshold * 10)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to ")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to ");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 10 && typeTextTime < maxTimerThreshold * 11)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to g")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to g");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 11 && typeTextTime < maxTimerThreshold * 12)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to ga")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to ga");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 12 && typeTextTime < maxTimerThreshold * 13)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to gam")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to gam");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 13 && typeTextTime < maxTimerThreshold * 14)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to game")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to game");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 14 && typeTextTime < maxTimerThreshold * 15)
-//                {
-//                    if (dialogueTexts[0]->GetString() != "Welcome to game!")
-//                        dialogueTexts[0]->SetTypewriterString("Welcome to game!");
-//
-//                    if (!skippedTypewriting) skippedTypewriting = true;
-//                }
-//            }
-//
-//            else
-//            {
-//                if (dialogueTexts[0]->GetString() != "Welcome to game!")
-//                    dialogueTexts[0]->SetTypewriterString("Welcome to game!");
-//            }
-//        }
-//
-//        // Second dialogue
-//        if (currentDialogueIndex == 1)
-//        {
-//            typeTextTime += deltaTime;
-//
-//            if (!skippedTypewriting)
-//            {
-//                if (typeTextTime >= 0.0f && typeTextTime < maxTimerThreshold)
-//                {
-//                    if (dialogueTexts[1]->GetString() != "P")
-//                        dialogueTexts[1]->SetTypewriterString("P");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold && typeTextTime < maxTimerThreshold * 2)
-//                {
-//                    if (dialogueTexts[1]->GetString() != "Pl")
-//                        dialogueTexts[1]->SetTypewriterString("Pl");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 2 && typeTextTime < maxTimerThreshold * 3)
-//                {
-//                    if (dialogueTexts[1]->GetString() != "Pla")
-//                        dialogueTexts[1]->SetTypewriterString("Pla");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 3 && typeTextTime < maxTimerThreshold * 4)
-//                {
-//                    if (dialogueTexts[1]->GetString() != "Play")
-//                        dialogueTexts[1]->SetTypewriterString("Play");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 4 && typeTextTime < maxTimerThreshold * 5)
-//                {
-//                    if (dialogueTexts[1]->GetString() != "Play!")
-//                        dialogueTexts[1]->SetTypewriterString("Play!");
-//
-//                    if (!skippedTypewriting) skippedTypewriting = true;
-//                }
-//            }
-//
-//            else
-//            {
-//                if (dialogueTexts[1]->GetString() != "Play!")
-//                    dialogueTexts[1]->SetTypewriterString("Play!");
-//            }
-//        }
-//
-//        // Third dialogue
-//        if (currentDialogueIndex == 2)
-//        {
-//            typeTextTime += deltaTime;
-//
-//            if (!skippedTypewriting)
-//            {
-//                if (typeTextTime >= 0.0f && typeTextTime < maxTimerThreshold)
-//                {
-//                    if (dialogueTexts[2]->GetString() != "G")
-//                        dialogueTexts[2]->SetTypewriterString("G");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold && typeTextTime < maxTimerThreshold * 2)
-//                {
-//                    if (dialogueTexts[2]->GetString() != "Go")
-//                        dialogueTexts[2]->SetTypewriterString("Go");
-//                }
-//
-//                else if (typeTextTime >= maxTimerThreshold * 2 && typeTextTime < maxTimerThreshold * 3)
-//                {
-//                    if (dialogueTexts[2]->GetString() != "Go!")
-//                        dialogueTexts[2]->SetTypewriterString("Go!");
-//
-//                    if (!skippedTypewriting) skippedTypewriting = true;
-//                }
-//            }
-//
-//            else
-//            {
-//                if (dialogueTexts[2]->GetString() != "Go!")
-//                    dialogueTexts[2]->SetTypewriterString("Go!");
-//            }
-//        }
-//    }
-//}
 
 void Engine::DeleteEngineInstance()
 {
