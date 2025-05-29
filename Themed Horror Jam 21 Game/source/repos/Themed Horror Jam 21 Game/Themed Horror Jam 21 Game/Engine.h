@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "DialoguePanel.h"
 #include "TypewriterEffect.h"
+#include "RenderBackground.h"
 
 using namespace sf;
 
@@ -30,6 +31,7 @@ public:
 	void SetResolution(Vector2u newResolution) { resolution = newResolution; }
 
 private:
+	RenderBackground gameBackground;
 	TypewriterEffect typewriterEffect;
 	bool dialogueSystemInitialized;
 	static Engine* engineInstance;
@@ -69,8 +71,6 @@ private:
 	void RenderMenu();
 	void RenderGame();
 	void InitializeDialogueSystem();
-	void UpdateText(float deltaTime, float maxTimerThreshold);
-
 	int maxDialogueTexts = 3;
 
 	bool hideDialogue;

@@ -122,6 +122,13 @@ void Engine::InitializeGame()
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
 
+    // Initialize the background image
+    if (!gameBackground.IsLoaded())
+    {
+        // Replace "Art Assets/Background.png" with your actual background image path
+        gameBackground.Initialize("Art Assets/Background.png", resolution);
+    }
+
     // Create game objects only when starting the game
     if (!player)
     {
@@ -293,6 +300,9 @@ void Engine::RenderGame()
     // Clear window
     window.clear();
 
+    // Draw the background FIRST (so it appears behind everything else)
+    gameBackground.Draw(window);
+
     // Draw game objects
     if (player)
     {
@@ -321,11 +331,7 @@ void Engine::RenderGame()
         }
     }
     
-    // Uncomment to draw text
-    // if (initialText)
-    // {
-    //     window.draw(initialText->LoadText());
-    // }
+ 
 }
 void Engine::InitializeDialogueSystem()
 {
