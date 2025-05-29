@@ -51,6 +51,8 @@ private:
 
 	std::vector<Game::Text*> dialogueTexts;
 
+	float typeTextTime;
+
 	DialoguePanel* dialoguePanel;
 
 	// Input handling
@@ -64,9 +66,12 @@ private:
 	void RenderMenu();
 	void RenderGame();
 
+	void UpdateText(float deltaTime, float maxTimerThreshold);
+
 	int maxDialogueTexts = 3;
 
 	bool hideDialogue;
+	bool skippedTypewriting;
 
 	int currentDialogueIndex;
 };

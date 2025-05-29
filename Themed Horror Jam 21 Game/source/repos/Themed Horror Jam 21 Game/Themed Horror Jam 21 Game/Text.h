@@ -16,6 +16,11 @@ namespace Game
 
 		sf::Text LoadText();
 
+		size_t GetStringSize() { return text.getString().getSize(); }
+		sf::String GetString() { return text.getString(); }
+
+		void SetTypewriterString(sf::String string_)  { text.setString(string_); }
+
 		sf::Vector2f GetTextPosition() { return text.getPosition(); }
 		void SetTextPosition(sf::Vector2f newPosition_) { text.setPosition(newPosition_); }
 
