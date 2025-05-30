@@ -179,10 +179,7 @@ void Menu::CreateSettingsText()
         resolutionSize = { Vector2u(1600, 900), Vector2u(Engine::Instance()->GetResolution().x, 
             Engine::Instance()->GetResolution().y) };
 
-        Engine::Instance()->GetWindow()->close();
-
-        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
-            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+        currentResolutionSize = 1;
     }
 
     else if (Engine::Instance()->GetResolution() == Vector2u(1600, 900))
@@ -191,10 +188,7 @@ void Menu::CreateSettingsText()
         resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y), 
             Vector2u(1920, 1080) };
 
-        Engine::Instance()->GetWindow()->close();
-
-        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
-            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+        currentResolutionSize = 0;
     }
 
     else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) && 
