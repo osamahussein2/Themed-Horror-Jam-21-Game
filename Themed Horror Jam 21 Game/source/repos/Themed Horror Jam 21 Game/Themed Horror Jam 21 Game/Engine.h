@@ -30,6 +30,9 @@ public:
 	Vector2u GetResolution() { return resolution; }
 	void SetResolution(Vector2u newResolution) { resolution = newResolution; }
 
+	View GetMainMenuView();
+	void SetMainMenuView(Vector2f position, Vector2f scale);
+
 private:
 	RenderBackground gameBackground;
 	TypewriterEffect typewriterEffect;
