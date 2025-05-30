@@ -8,14 +8,14 @@ DialoguePanel::~DialoguePanel()
 {
 }
 
-void DialoguePanel::InitializeDialoguePanel(const char* filePath_, Vector2f position, Vector2f scale)
+void DialoguePanel::InitializeDialoguePanel(const char* filePath_, Vector2f position, Vector2f size)
 {
 	filePath = filePath_;
 
 	texture.loadFromFile(filePath_);
 
 	dialoguePanel.setTexture(&texture);
-	dialoguePanel.setSize(scale);
+	dialoguePanel.setSize(size);
 	dialoguePanel.setPosition(position);
 }
 
@@ -44,4 +44,14 @@ void DialoguePanel::SetDialoguePanelTexture(const char* filePath_)
 	texture.loadFromFile(filePath_);
 
 	dialoguePanel.setTexture(&texture);
+}
+
+Vector2f DialoguePanel::GetSize() const
+{
+	return dialoguePanel.getSize();
+}
+
+void DialoguePanel::SetSize(Vector2f size)
+{
+	return dialoguePanel.setSize(size);
 }

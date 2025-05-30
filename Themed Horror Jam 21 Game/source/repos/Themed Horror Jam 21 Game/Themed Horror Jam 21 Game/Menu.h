@@ -130,6 +130,7 @@ private:
     void UpdateSettingsMenuColors();
 
     void ToggleFullscreen();
+    void ChangeResolution();
 
     MenuAction HandleMainMenuInput(Vector2f mousePos);  // Add mousePos parameter
     MenuAction HandleSettingsInput(Vector2f mousePos);

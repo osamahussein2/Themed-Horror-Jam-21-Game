@@ -169,11 +169,45 @@ void Menu::CreateSettingsText()
     fullscreenStatus.resize(2);
 
     resolutionSize.clear();
-    resolutionSize.resize(1);
 
     difficulty = { "Easy", "Normal", "Hard" };
     fullscreenStatus = { "Off", "On" };
-    resolutionSize = { Vector2u(resolution.x, resolution.y) };
+
+    if (Engine::Instance()->GetResolution() == Vector2u(1920, 1080))
+    {
+        resolutionSize.resize(2);
+        resolutionSize = { Vector2u(1600, 900), Vector2u(Engine::Instance()->GetResolution().x, 
+            Engine::Instance()->GetResolution().y) };
+
+        Engine::Instance()->GetWindow()->close();
+
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
+            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+    }
+
+    else if (Engine::Instance()->GetResolution() == Vector2u(1600, 900))
+    {
+        resolutionSize.resize(2);
+        resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y), 
+            Vector2u(1920, 1080) };
+
+        Engine::Instance()->GetWindow()->close();
+
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
+            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+    }
+
+    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) && 
+        Engine::Instance()->GetResolution() != Vector2u(1600, 900))
+    {
+        resolutionSize.resize(1);
+        resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y)};
+
+        Engine::Instance()->GetWindow()->close();
+
+        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
+            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+    }
 
     settingsContentText.InitializeText("Fonts/Roboto-Regular.ttf", "SETTINGS\n\n", 35.0f, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
@@ -550,6 +584,7 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
     {
         currentResolutionSize--;
         if (currentResolutionSize <= 0) currentResolutionSize = 0;
+        ChangeResolution();
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
@@ -558,6 +593,7 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
     {
         currentResolutionSize++;
         if (currentResolutionSize >= resolutionSize.size() - 1) currentResolutionSize = resolutionSize.size() - 1;
+        ChangeResolution();
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
@@ -715,5 +751,51 @@ void Menu::ToggleFullscreen()
     {
         Engine::Instance()->GetWindow()->close();
         Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+    }
+}
+
+void Menu::ChangeResolution()
+{
+    // If fullscreen status is set to off, change the window state to windowed mode
+    if (resolutionSize[currentResolutionSize] == Vector2u(1600, 900))
+    {
+        Engine::Instance()->SetResolution(Vector2u(1600, 900));
+
+        if (fullscreenStatus[currentFullscreenStatus] == "On")
+        {
+            Engine::Instance()->GetWindow()->close();
+
+            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
+                sf::State::Fullscreen);
+        }
+
+        else if (fullscreenStatus[currentFullscreenStatus] == "Off")
+        {
+            Engine::Instance()->GetWindow()->close();
+
+            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
+                sf::State::Windowed);
+        }
+    }
+
+    else if (resolutionSize[currentResolutionSize] == Vector2u(1920, 1080))
+    {
+        Engine::Instance()->SetResolution(Vector2u(1920, 1080));
+
+        if (fullscreenStatus[currentFullscreenStatus] == "On")
+        {
+            Engine::Instance()->GetWindow()->close();
+
+            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
+                sf::State::Fullscreen);
+        }
+
+        else if (fullscreenStatus[currentFullscreenStatus] == "Off")
+        {
+            Engine::Instance()->GetWindow()->close();
+
+            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
+                sf::State::Windowed);
+        }
     }
 }

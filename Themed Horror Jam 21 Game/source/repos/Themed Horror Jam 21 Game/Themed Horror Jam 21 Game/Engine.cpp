@@ -174,14 +174,14 @@ void Engine::InitializeGame()
         dialogueSystemInitialized = true;
     }
 
-    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", "Welcome to game!", 50.0f, false, false,
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White, 
+        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 
-    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", "Play!", 50.0f, false, false,
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White, 
+        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 
-    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", "Go!", 50.0f, false, false,
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White, 
+        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 }
 
 void Engine::UpdateMenu(float deltaTime)
@@ -237,11 +237,51 @@ void Engine::UpdateGame(float deltaTime)
     // Move the dialogue texts on the left and bottom sides of the screen
     if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
-        // Position text in the center of the dialogue panel
-        float textX = (resolution.x / 2.0f) - 890; // Center horizontally
-        float textY = resolution.y - 335.0f; // Position within the dialogue panel area
+        if (resolution == Vector2u(1920, 1080)) // Change text position once resolution changes
+        {
+            float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
+            float panelHeight = 700.0f; // Reasonable height for dialogue
 
-        dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
+            // Center the panel horizontally and position at bottom
+            float panelX = (resolution.x - panelWidth) / 2.0f;
+            float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
+
+            if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
+                dialoguePanel->SetPosition(Vector2f(panelX, panelY));
+
+            if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
+                dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
+
+            // Position text just inside of the left side edge of dialogue panel
+            float textX = (resolution.x / 22.0f);
+            float textY = resolution.y / 1.45f;
+
+            if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
+                dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
+        }
+
+        else if (resolution == Vector2u(1600, 900)) // Change text position once resolution changes
+        {
+            float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
+            float panelHeight = 700.0f; // Reasonable height for dialogue
+
+            // Center the panel horizontally and position at bottom
+            float panelX = (resolution.x - panelWidth) / 2.0f;
+            float panelY = resolution.y - panelHeight + 130.0f; // 50px from bottom
+
+            if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY)) 
+                dialoguePanel->SetPosition(Vector2f(panelX, panelY)); 
+
+            if (dialoguePanel->GetSize() != Vector2f(panelWidth + 320.0f, panelHeight))
+                dialoguePanel->SetSize(Vector2f(panelWidth + 320.0f, panelHeight));
+
+            // Position text just inside of the left side edge of dialogue panel
+            float textX = (resolution.x / 20.0f);
+            float textY = resolution.y / 1.2f;
+
+            if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
+                dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
+        }
     }
 
     if (!hideDialogue)
