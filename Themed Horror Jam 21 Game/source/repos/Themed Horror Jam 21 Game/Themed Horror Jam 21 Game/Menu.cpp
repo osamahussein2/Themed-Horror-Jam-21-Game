@@ -9,6 +9,10 @@ std::vector<Vector2u> Menu::resolutionSize;
 int Menu::currentDifficulty = 1;
 int Menu::currentFullscreenStatus = 1;
 int Menu::currentResolutionSize = 0;
+
+// Constant variables only reserved for this Menu.cpp file
+const float ABOUT_CONTENT_CHARACTER_SIZE = 35.0f;
+
 Menu::Menu()
     : currentState(MenuState::MainMenu)
     , selectedMainOption(0)
@@ -145,7 +149,7 @@ void Menu::CreateAboutText()
         "Programmer/Graphics by ScriptFox\n"
         "Game Design/Writing by fauxdude97\n";
 
-    aboutContentText.InitializeText("Fonts/Roboto-Regular.ttf", aboutContent, 35.0f, true, false,
+    aboutContentText.InitializeText("Fonts/Roboto-Regular.ttf", aboutContent, ABOUT_CONTENT_CHARACTER_SIZE, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 
     backInstructionText.InitializeText("Fonts/Roboto-Regular.ttf",
@@ -240,68 +244,42 @@ void Menu::UpdateMainMenuColors()
 {
     std::vector<std::string> menuOptions = { "Start Game", "Settings", "About", "Exit" };
 
-    // Update main menu UI position based on resolution
-    if (resolution == Vector2u(1920, 1080) || resolution == Vector2u(1600, 900))
+    // Main menu buttons
+    float buttonWidth = 300.0f;
+    float buttonHeight = 60.0f;
+
+    for (int i = 0; i < maxMainOptions; i++)
     {
-        // Main menu buttons
-        float buttonWidth = 300.0f;
-        float buttonHeight = 60.0f;
-
-        for (int i = 0; i < maxMainOptions; i++)
-        {
-            float startY = resolution.y / 2.0f - 20.0f;  // Slightly offset to align with text
-            float spacing = 80.0f;
-            float buttonX = (resolution.x - buttonWidth) / 2.0f;
-            float buttonY = startY + (i * spacing);
-
-            if (mainMenuButtons[i].GetPosition() != Vector2f(buttonX, buttonY))
-                mainMenuButtons[i].SetPosition(Vector2f(buttonX, buttonY));
-        }
-
-        // Main menu texts
-        float startY = resolution.y / 2.0f;
+        float startY = resolution.y / 2.0f - 20.0f;  // Slightly offset to align with text
         float spacing = 80.0f;
+        float buttonX = (resolution.x - buttonWidth) / 2.0f;
+        float buttonY = startY + (i * spacing);
 
-        titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", 80.0f, true,
-            false, titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
-
-        for (int i = 0; i < maxMainOptions; i++)
-        {
-            Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
-            mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
-                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
-        }
-
-        // Instructions
-        instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
-            "Use UP/DOWN arrows to navigate • ENTER to select • ESC to exit",
-            25.0f, true, false, Color({ 128, 128,128 }),
-            Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+        if (mainMenuButtons[i].GetPosition() != Vector2f(buttonX, buttonY))
+            mainMenuButtons[i].SetPosition(Vector2f(buttonX, buttonY));
     }
 
-    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) &&
-        Engine::Instance()->GetResolution() != Vector2u(1600, 900))
+    // Main menu texts
+    float startY = resolution.y / 2.0f;
+    float spacing = 80.0f;
+
+    titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", 80.0f, true,
+        false, titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
+
+    for (int i = 0; i < maxMainOptions; i++)
     {
-        float startY = resolution.y / 2.0f;
-        float spacing = 80.0f;
-
-        titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", 80.0f, true,
-            false, titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
-
-        for (int i = 0; i < maxMainOptions; i++)
-        {
-            Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
-            mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
-                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
-        }
-
-        // Instructions
-        instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
-            "Use UP/DOWN arrows to navigate • ENTER to select • ESC to exit",
-            25.0f, true, false, Color({ 128, 128,128 }),
-            Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+        Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
+        mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
+            textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
     }
+
+    // Instructions
+    instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
+        "Use UP/DOWN arrows to navigate • ENTER to select • ESC to exit",
+        25.0f, true, false, Color({ 128, 128,128 }),
+        Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
 }
+
 void Menu::UpdateSettingsMenuColors()
 {
     std::vector<std::string> settingTexts = { "Volume", "Difficulty", "Fullscreen", "Resolution" };
@@ -310,93 +288,77 @@ void Menu::UpdateSettingsMenuColors()
         fullscreenStatus[currentFullscreenStatus], std::to_string(resolutionSize[currentResolutionSize].x) + "x" +
         std::to_string(resolutionSize[currentResolutionSize].y) };
 
-    if (settingsAction == SettingsMenuAction::ModifyNone && selectedColor != Color::Yellow) 
+    if (settingsAction == SettingsMenuAction::ModifyNone && selectedColor != Color::Yellow)
         selectedColor = Color::Yellow;
 
-    else if (settingsAction != SettingsMenuAction::ModifyNone && selectedColor == Color::Yellow) 
+    else if (settingsAction != SettingsMenuAction::ModifyNone && selectedColor == Color::Yellow)
         selectedColor = modifySettingColor;
 
     // Update settings UI position based on resolution
-    if (resolution == Vector2u(1920, 1080) || resolution == Vector2u(1600, 900))
-    {
+
         // Setting menu buttons
-        float buttonWidth = 700.0f;
-        float buttonHeight = 65.0f;
+    float buttonWidth = 700.0f;
+    float buttonHeight = 65.0f;
 
-        for (int i = 0; i < maxSettingsOptions; i++)
-        {
-            float startY = resolution.y / 3.4f;
-            float spacing = 100.0f;
-            float buttonX = (resolution.x - buttonWidth) / 1.75f;
-            float buttonY = startY + (i * spacing);
-
-            if (settingMenuButtons[i].GetPosition() != Vector2f(buttonX, buttonY))
-                settingMenuButtons[i].SetPosition(Vector2f(buttonX, buttonY));
-        }
-
-        if (settingsContentText.GetTextPosition() != Vector2f(resolution.x / 2.0f, resolution.y / 5.0f))
-            settingsContentText.SetTextPosition(Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
-
-        // Initialize back button (positioned at bottom of screen)
-        float backButtonX = (resolution.x - 100.0f) / 2.0f;
-        float backButtonY = resolution.y - 200.0f;
-
-        if (settingsBackButton->GetPosition() != Vector2f(backButtonX, backButtonY))
-            settingsBackButton->SetPosition(Vector2f(backButtonX, backButtonY));
-
-        if (settingsInstructionsText.GetTextPosition() != Vector2f(resolution.x / 2.0f, resolution.y - 80.0f))
-            settingsInstructionsText.SetTextPosition(Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
-
-        float startY = resolution.y / 2.95f;
-        float startY2 = resolution.y / 3.3f;
-
+    for (int i = 0; i < maxSettingsOptions; i++)
+    {
+        float startY = resolution.y / 3.4f;
         float spacing = 100.0f;
+        float buttonX = (resolution.x - buttonWidth) / 1.75f;
+        float buttonY = startY + (i * spacing);
 
-        for (int i = 0; i < maxSettingsOptions; i++)
-        {
-            Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
-            settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
-                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
-
-            settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
-                textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
-
-            settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
-                sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y - 200.0f));
-        }
+        if (settingMenuButtons[i].GetPosition() != Vector2f(buttonX, buttonY))
+            settingMenuButtons[i].SetPosition(Vector2f(buttonX, buttonY));
     }
 
-    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) &&
-        Engine::Instance()->GetResolution() != Vector2u(1600, 900))
+    if (settingsContentText.GetTextPosition() != Vector2f(resolution.x / 2.0f, resolution.y / 5.0f))
+        settingsContentText.SetTextPosition(Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
+
+    // Initialize back button (positioned at bottom of screen)
+    float backButtonX = (resolution.x - 100.0f) / 2.0f;
+    float backButtonY = resolution.y - 200.0f;
+
+    if (settingsBackButton->GetPosition() != Vector2f(backButtonX, backButtonY))
+        settingsBackButton->SetPosition(Vector2f(backButtonX, backButtonY));
+
+    if (settingsInstructionsText.GetTextPosition() != Vector2f(resolution.x / 2.0f, resolution.y - 80.0f))
+        settingsInstructionsText.SetTextPosition(Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+
+    float startY = resolution.y / 2.95f;
+    float startY2 = resolution.y / 3.3f;
+
+    float spacing = 100.0f;
+
+    for (int i = 0; i < maxSettingsOptions; i++)
     {
-        float startY = resolution.y / 2.95f;
-        float startY2 = resolution.y / 3.3f;
+        Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
+        settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
+            textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
 
-        float spacing = 100.0f;
+        settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
+            textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
 
-        for (int i = 0; i < maxSettingsOptions; i++)
-        {
-            Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
-            settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
-                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
-
-            settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
-                textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
-
-            settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
-                textColor, Vector2f(resolution.x / 2.0f, resolution.y - 200.0f));
-        }
-
-        // Instructions for settings menu
-        settingsInstructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
-            "Use UP/DOWN arrows to navigate • Use LEFT/RIGHT arrows to modify setting • ENTER to select • ESC to go back to main menu",
-            25.0f, true, false, Color({ 128, 128,128 }),
-            Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+        settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+            sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y - 200.0f));
     }
 }
+
+void Menu::UpdateAboutUIPlacement()
+{
+    // Adjusts the character size based on its initial character size and screen resolution
+    float adjustedCharacterSize = ABOUT_CONTENT_CHARACTER_SIZE * 
+        (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+    if (aboutContentText.GetTextPosition() != Vector2f(resolution.x / 2.0f, resolution.y / 2.0f))
+        aboutContentText.SetTextPosition(Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+
+    if (aboutContentText.GetCharaterSize() != adjustedCharacterSize)
+        aboutContentText.SetCharacterSize(adjustedCharacterSize);
+}
+
 MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
 {
-    if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+    //if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
 
     // Update input cooldown
     if (inputCooldown > 0.0f)
@@ -866,12 +828,14 @@ void Menu::ChangeResolution()
     // If fullscreen status is set to off, change the window state to windowed mode
     if (resolutionSize[currentResolutionSize] == Vector2u(1600, 900))
     {
-        Engine::Instance()->SetResolution(Vector2u(1600, 900));
+        resolution = Vector2u(1600, 900);
 
-        if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+        Engine::Instance()->SetResolution(resolution);
+        Engine::Instance()->SetMainMenuView(Vector2f(0.0f, 0.0f), Vector2f(resolution));
 
         UpdateMainMenuColors();
         UpdateSettingsMenuColors();
+        UpdateAboutUIPlacement();
 
         if (fullscreenStatus[currentFullscreenStatus] == "On")
         {
@@ -892,12 +856,14 @@ void Menu::ChangeResolution()
 
     else if (resolutionSize[currentResolutionSize] == Vector2u(1920, 1080))
     {
-        Engine::Instance()->SetResolution(Vector2u(1920, 1080));
+        resolution = Vector2u(1920, 1080);
 
-        if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+        Engine::Instance()->SetResolution(resolution);
+        Engine::Instance()->SetMainMenuView(Vector2f(0.0f, 0.0f), Vector2f(resolution));
 
         UpdateMainMenuColors();
         UpdateSettingsMenuColors();
+        UpdateAboutUIPlacement();
 
         if (fullscreenStatus[currentFullscreenStatus] == "On")
         {

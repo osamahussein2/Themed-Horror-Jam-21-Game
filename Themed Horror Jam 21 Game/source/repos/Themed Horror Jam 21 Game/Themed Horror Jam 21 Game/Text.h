@@ -33,6 +33,9 @@ namespace Game
 		sf::String GetText() { return text.getString(); }
 		void SetText(sf::String string_) { text.setString(string_); }
 
+		float GetCharaterSize() { return text.getCharacterSize(); }
+		void SetCharacterSize(float newCharacterSize) { text.setCharacterSize(newCharacterSize); }
+
 	private:
 		sf::Text text;
 		sf::Font font;

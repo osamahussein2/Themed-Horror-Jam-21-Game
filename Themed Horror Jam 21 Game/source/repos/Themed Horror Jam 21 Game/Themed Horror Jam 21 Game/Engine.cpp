@@ -248,9 +248,9 @@ void Engine::UpdateGame(float deltaTime)
         if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
             dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
 
-        // Position text just inside of the left side edge of dialogue panel
-        float textX = (resolution.x / 22.0f);
-        float textY = resolution.y / 1.45f;
+        // Position text just inside of the dialogue panel
+        float textX = panelX + 25;
+        float textY = panelY + 400.0f;
 
         if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
             dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
@@ -374,6 +374,16 @@ void Engine::UpdateDialoguePanelTexture()
     default:
         break;
     }
+}
+
+View Engine::GetMainMenuView()
+{
+    return mainMenuView;
+}
+
+void Engine::SetMainMenuView(Vector2f position, Vector2f scale)
+{
+    mainMenuView = View(sf::FloatRect(Vector2f(position), Vector2f(scale)));
 }
 
 void Engine::DeleteEngineInstance()
