@@ -40,6 +40,9 @@ class Button
 		sf::Vector2f GetPosition() { return shape.getPosition(); }
 		void SetPosition(Vector2f newPosition) { shape.setPosition(newPosition); }
 
+		sf::Vector2f GetSize() { return shape.getSize(); }
+		void SetSize(Vector2f newSize) { shape.setSize(newSize); }
+
 		sf::Color GetColor() { return shape.getFillColor(); }
 		void SetColor(sf::Color newColor) { shape.setFillColor(newColor); }
 };
