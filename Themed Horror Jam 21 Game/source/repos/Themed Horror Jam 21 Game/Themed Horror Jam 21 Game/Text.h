@@ -27,6 +27,12 @@ namespace Game
 		sf::Vector2f GetTextPosition() { return text.getPosition(); }
 		void SetTextPosition(sf::Vector2f newPosition_) { text.setPosition(newPosition_); }
 
+		sf::Color GetTextColor() { return text.getFillColor(); }
+		void SetTextColor(sf::Color newColor_) { text.setFillColor(newColor_); }
+
+		sf::String GetText() { return text.getString(); }
+		void SetText(sf::String string_) { text.setString(string_); }
+
 	private:
 		sf::Text text;
 		sf::Font font;

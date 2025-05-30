@@ -36,6 +36,12 @@ class Button
 		//functions
 		void update(sf::Vector2f mousePos);
 		void draw(sf::RenderTarget* target);
+
+		sf::Vector2f GetPosition() { return shape.getPosition(); }
+		void SetPosition(Vector2f newPosition) { shape.setPosition(newPosition); }
+
+		sf::Color GetColor() { return shape.getFillColor(); }
+		void SetColor(sf::Color newColor) { shape.setFillColor(newColor); }
 };
 
 #endif

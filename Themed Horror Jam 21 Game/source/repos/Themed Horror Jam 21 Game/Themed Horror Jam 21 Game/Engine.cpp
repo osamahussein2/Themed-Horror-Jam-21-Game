@@ -217,8 +217,6 @@ void Engine::UpdateMenu(float deltaTime)
 
 void Engine::UpdateGame(float deltaTime)
 {
-  
-
     // Update input cooldown
     if (inputCooldown > 0.0f)
     {
@@ -237,51 +235,25 @@ void Engine::UpdateGame(float deltaTime)
     // Move the dialogue texts on the left and bottom sides of the screen
     if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
     {
-        if (resolution == Vector2u(1920, 1080)) // Change text position once resolution changes
-        {
-            float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
-            float panelHeight = 700.0f; // Reasonable height for dialogue
+        float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
+        float panelHeight = 700.0f; // Reasonable height for dialogue
 
-            // Center the panel horizontally and position at bottom
-            float panelX = (resolution.x - panelWidth) / 2.0f;
-            float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
+        // Center the panel horizontally and position at bottom
+        float panelX = (resolution.x - panelWidth) / 2.0f;
+        float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
 
-            if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
-                dialoguePanel->SetPosition(Vector2f(panelX, panelY));
+        if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
+            dialoguePanel->SetPosition(Vector2f(panelX, panelY));
 
-            if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
-                dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
+        if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
+            dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
 
-            // Position text just inside of the left side edge of dialogue panel
-            float textX = (resolution.x / 22.0f);
-            float textY = resolution.y / 1.45f;
+        // Position text just inside of the left side edge of dialogue panel
+        float textX = (resolution.x / 22.0f);
+        float textY = resolution.y / 1.45f;
 
-            if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
-                dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
-        }
-
-        else if (resolution == Vector2u(1600, 900)) // Change text position once resolution changes
-        {
-            float panelWidth = resolution.x - 100.0f; // Leave some margin on sides
-            float panelHeight = 700.0f; // Reasonable height for dialogue
-
-            // Center the panel horizontally and position at bottom
-            float panelX = (resolution.x - panelWidth) / 2.0f;
-            float panelY = resolution.y - panelHeight + 130.0f; // 50px from bottom
-
-            if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY)) 
-                dialoguePanel->SetPosition(Vector2f(panelX, panelY)); 
-
-            if (dialoguePanel->GetSize() != Vector2f(panelWidth + 320.0f, panelHeight))
-                dialoguePanel->SetSize(Vector2f(panelWidth + 320.0f, panelHeight));
-
-            // Position text just inside of the left side edge of dialogue panel
-            float textX = (resolution.x / 20.0f);
-            float textY = resolution.y / 1.2f;
-
-            if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
-                dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
-        }
+        if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
+            dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
     }
 
     if (!hideDialogue)
