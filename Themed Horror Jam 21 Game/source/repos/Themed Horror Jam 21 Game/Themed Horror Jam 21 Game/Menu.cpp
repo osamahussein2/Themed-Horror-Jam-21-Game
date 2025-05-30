@@ -213,7 +213,7 @@ void Menu::CreateSettingsText()
         std::to_string(resolutionSize[currentResolutionSize].y) };
 
     float startY = resolution.y / 2.95f;
-    float startY2 = resolution.y / 3.355f;
+    float startY2 = resolution.y / 3.3f;
 
     float spacing = 100.0f;
 
@@ -241,14 +241,31 @@ void Menu::UpdateMainMenuColors()
 {
     std::vector<std::string> menuOptions = { "Start Game", "Settings", "About", "Exit" };
 
-    float startY = resolution.y / 2.0f;
-    float spacing = 80.0f;
-
-    for (int i = 0; i < maxMainOptions; i++)
+    // Update main menu UI position based on resolution
+    if (resolution == Vector2u(1920, 1080))
     {
-        Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
-        mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true,false,
-            textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+        float startY = resolution.y / 2.0f;
+        float spacing = 80.0f;
+
+        for (int i = 0; i < maxMainOptions; i++)
+        {
+            Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
+            mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
+                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+        }
+    }
+
+    else if (resolution == Vector2u(1600, 900))
+    {
+        float startY = resolution.y / 1.65f;
+        float spacing = 80.0f;
+
+        for (int i = 0; i < maxMainOptions; i++)
+        {
+            Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
+            mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
+                textColor, Vector2f(resolution.x / 1.66f, startY + (i * spacing)));
+        }
     }
 }
 void Menu::UpdateSettingsMenuColors()
@@ -265,26 +282,53 @@ void Menu::UpdateSettingsMenuColors()
     else if (settingsAction != SettingsMenuAction::ModifyNone && selectedColor == Color::Yellow) 
         selectedColor = modifySettingColor;
 
-    float startY = resolution.y / 2.95f;
-    float startY2 = resolution.y / 3.355f;
-
-    float spacing = 100.0f;
-
-    for (int i = 0; i < maxSettingsOptions; i++)
+    // Update settings UI position based on resolution
+    if (resolution == Vector2u(1920, 1080))
     {
-        Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
-        settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
-            textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+        float startY = resolution.y / 2.95f;
+        float startY2 = resolution.y / 3.3f;
 
-        settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
-            textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
+        float spacing = 100.0f;
 
-        settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
-            sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 1.155f));
+        for (int i = 0; i < maxSettingsOptions; i++)
+        {
+            Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
+            settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
+                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+
+            settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
+                textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
+
+            settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+                sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 1.155f));
+        }
+    }
+
+    else if (resolution == Vector2u(1600, 900))
+    {
+        float startY = resolution.y / 2.45f;
+        float startY2 = resolution.y / 2.75f;
+
+        float spacing = 100.0f;
+
+        for (int i = 0; i < maxSettingsOptions; i++)
+        {
+            Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
+            settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
+                textColor, Vector2f(resolution.x / 1.65f, startY + (i * spacing)));
+
+            settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
+                textColor, Vector2f(resolution.x / 1.4f, startY2 + (i * spacing)));
+
+            settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+                sf::Color::White, Vector2f(resolution.x / 1.675f, resolution.y / 0.965f));
+        }
     }
 }
 MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
 {
+    if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+
     // Update input cooldown
     if (inputCooldown > 0.0f)
     {
@@ -755,6 +799,11 @@ void Menu::ChangeResolution()
     {
         Engine::Instance()->SetResolution(Vector2u(1600, 900));
 
+        if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+
+        UpdateMainMenuColors();
+        UpdateSettingsMenuColors();
+
         if (fullscreenStatus[currentFullscreenStatus] == "On")
         {
             Engine::Instance()->GetWindow()->close();
@@ -775,6 +824,11 @@ void Menu::ChangeResolution()
     else if (resolutionSize[currentResolutionSize] == Vector2u(1920, 1080))
     {
         Engine::Instance()->SetResolution(Vector2u(1920, 1080));
+
+        if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
+
+        UpdateMainMenuColors();
+        UpdateSettingsMenuColors();
 
         if (fullscreenStatus[currentFullscreenStatus] == "On")
         {
