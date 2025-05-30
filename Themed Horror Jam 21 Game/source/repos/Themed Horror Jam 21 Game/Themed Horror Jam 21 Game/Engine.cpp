@@ -150,10 +150,10 @@ void Engine::InitializeGame()
         float panelY = resolution.y - panelHeight - 50.0f; // 50px from bottom
 
         // Initialize dialogue panel texture strings (Index from 0-4, or in other words, from 1st element to 5th element)
-        dialoguePanelTextures = { "Art Assets/chat_box_0.png", "Art Assets/chat_box_1.png",
-            "Art Assets/chat_box_2.png", "Art Assets/chat_box_3.png", "Art Assets/chat_box_4.png" };
+        dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
+            "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
 
-        dialoguePanel->InitializeDialoguePanel("Art Assets/chat_box_3.png", Vector2f(panelX, panelY),
+        dialoguePanel->InitializeDialoguePanel("Art Assets/Ui/chat_box_3.png", Vector2f(panelX, panelY),
             Vector2f(panelWidth, panelHeight));
     }
 
