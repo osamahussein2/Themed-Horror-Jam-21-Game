@@ -197,11 +197,10 @@ void Menu::CreateSettingsText()
         resolutionSize.resize(1);
         resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y)};
 
-        Engine::Instance()->GetWindow()->close();
-
-        Engine::Instance()->GetWindow()->create(sf::VideoMode(Vector2u(Engine::Instance()->GetResolution().x,
-            Engine::Instance()->GetResolution().y)), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
+        currentResolutionSize = 0;
     }
+
+    resolution = Engine::Instance()->GetResolution();
 
     settingsContentText.InitializeText("Fonts/Roboto-Regular.ttf", "SETTINGS\n\n", 35.0f, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
@@ -267,6 +266,26 @@ void Menu::UpdateMainMenuColors()
                 textColor, Vector2f(resolution.x / 1.66f, startY + (i * spacing)));
         }
     }
+
+    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) &&
+        Engine::Instance()->GetResolution() != Vector2u(1600, 900))
+    {
+        float startY = resolution.y / 2.0f;
+        float spacing = 80.0f;
+
+        for (int i = 0; i < maxMainOptions; i++)
+        {
+            Color textColor = (i == selectedMainOption) ? selectedColor : normalColor;
+            mainMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", menuOptions[i], 50.0f, true, false,
+                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+        }
+
+        // Instructions
+        instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
+            "Use UP/DOWN arrows to navigate • ENTER to select • ESC to exit",
+            25.0f, true, false, Color({ 128, 128,128 }),
+            Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+    }
 }
 void Menu::UpdateSettingsMenuColors()
 {
@@ -323,6 +342,34 @@ void Menu::UpdateSettingsMenuColors()
             settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
                 sf::Color::White, Vector2f(resolution.x / 1.675f, resolution.y / 0.965f));
         }
+    }
+
+    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) &&
+        Engine::Instance()->GetResolution() != Vector2u(1600, 900))
+    {
+        float startY = resolution.y / 2.95f;
+        float startY2 = resolution.y / 3.3f;
+
+        float spacing = 100.0f;
+
+        for (int i = 0; i < maxSettingsOptions; i++)
+        {
+            Color textColor = (i == selectedSettingsOption) ? selectedColor : normalColor;
+            settingMenuTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingTexts[i], 50.0f, false, true,
+                textColor, Vector2f(resolution.x / 2.0f, startY + (i * spacing)));
+
+            settingMenuOptionsTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", settingOptions[i], 50.0f, false, false,
+                textColor, Vector2f(resolution.x / 1.75f, startY2 + (i * spacing)));
+
+            settingsBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", 50.0f, false, false,
+                textColor, Vector2f(resolution.x / 2.0f, resolution.y / 1.155f));
+        }
+
+        // Instructions for settings menu
+        settingsInstructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
+            "Use UP/DOWN arrows to navigate • Use LEFT/RIGHT arrows to modify setting • ENTER to select • ESC to go back to main menu",
+            25.0f, true, false, Color({ 128, 128,128 }),
+            Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
     }
 }
 MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
