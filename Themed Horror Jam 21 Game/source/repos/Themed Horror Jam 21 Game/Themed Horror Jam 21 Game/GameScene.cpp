@@ -128,6 +128,7 @@ void GameScene::Update(float deltaTime)
                     "Art Assets/SurgeryRoom/Death.png",
                     "Art Assets/SurgeryRoom/Timer/Timer_start.png"
                 );
+                
             }
         }
 
@@ -143,6 +144,7 @@ void GameScene::Render(RenderWindow& window)
     {
         // Draw surgery room when active
         surgeryRoom.Draw(window);
+        
     }
     else
     {

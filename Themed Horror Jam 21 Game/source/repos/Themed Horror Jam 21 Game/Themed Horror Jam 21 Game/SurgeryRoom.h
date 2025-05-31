@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
 
+
+
 using namespace sf;
 class SurgeryRoom
 {
@@ -27,36 +29,43 @@ public:
 	// Check if surgery room is loaded successfully
 	bool IsLoaded() const { return isLoaded; }
 	int TimerValue = 0;
+
+	Sprite BouttomUISprite;
+	Sprite TopUISprite;
+	Sprite LifeSprite;
+	Sprite DeathSprite;
+	Sprite TimerSprite;
 private:
+
+	
+
+	SpriteTexture BouttomUISpriteTexture;
+	Texture BouttomUITexture;
+
+
+
+	SpriteTexture TopUISpriteTexture;
+	Texture TopUITexture;
+
+
+
+	SpriteTexture LifeSpriteTexture;
+	Texture LifeTexture;
+
 
 	SpriteTexture backgroundSpriteTexture;
 	Texture backgroundTexture;
 	Sprite backgroundSprite;
 
-	SpriteTexture BouttomUISpriteTexture;
-	Texture BouttomUITexture;
-	Sprite BouttomUISprite;
-
-
-	SpriteTexture TopUISpriteTexture;
-	Texture TopUITexture;
-	Sprite TopUISprite;
-
-
-	SpriteTexture LifeSpriteTexture;
-	Texture LifeTexture;
-	Sprite LifeSprite;
-
-
 
 	SpriteTexture DeathSpriteTexture;
 	Texture DeathTexture;
-	Sprite DeathSprite;
+	
 
 
 	SpriteTexture TimerSpriteTexture;
 	Texture TimerTexture;
-	Sprite TimerSprite;
+
 
 	bool isLoaded;
 	// Helper function to scale background to fit screen

@@ -36,6 +36,19 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         // Scale the background to fit the screen
         ScaleToFitScreen(screenResolution);
 
+        // Position the bottom UI sprite at the bottom center of the screen
+        sf::FloatRect bottomUIBounds = BouttomUISprite.getLocalBounds();
+        float bottomUIX = (static_cast<float>(screenResolution.x) - bottomUIBounds.size.x) / 2.0f;
+        float bottomUIY = static_cast<float>(screenResolution.y) - bottomUIBounds.size.y;
+        BouttomUISprite.setPosition({ bottomUIX, bottomUIY });
+
+        // Optionally position other UI elements as well
+        // Position top UI at top center
+        sf::FloatRect topUIBounds = TopUISprite.getLocalBounds();
+        float topUIX = (static_cast<float>(screenResolution.x) - topUIBounds.size.x) / 2.0f;
+        float topUIY = 0.0f;
+        TopUISprite.setPosition({ topUIX, topUIY });
+
         isLoaded = true;
         return true;
     }
