@@ -8,12 +8,14 @@ RenderBackground::~RenderBackground()
 {
 }
 
-bool RenderBackground::Initialize(const char* filePath, sf::Vector2u screenResolution)
+bool RenderBackground::Initialize(const char* filePath_, sf::Vector2u screenResolution)
 {
     try
     {
+        filePath = filePath_;
+
         // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath, sf::Vector2f(0.0f, 0.0f));
+        backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath_, sf::Vector2f(0.0f, 0.0f));
 
         // Scale the background to fit the screen
         ScaleToFitScreen(screenResolution);
@@ -28,12 +30,14 @@ bool RenderBackground::Initialize(const char* filePath, sf::Vector2u screenResol
     }
 }
 
-bool RenderBackground::Initialize(const char* filePath, sf::Vector2f position, sf::Vector2f scale)
+bool RenderBackground::Initialize(const char* filePath_, sf::Vector2f position, sf::Vector2f scale)
 {
     try
     {
+        filePath = filePath_;
+
         // Use the SpriteTexture class to load the background
-       backgroundSpriteTexture.InitializeSprite(filePath, position);
+       backgroundSpriteTexture.InitializeSprite(filePath_, position);
 
         // Set custom scale
         backgroundSprite.setScale(scale);
@@ -83,6 +87,21 @@ void RenderBackground::SetScale(sf::Vector2f scale)
 Sprite& RenderBackground::GetSprite()
 {
     return backgroundSprite;
+}
+
+const char* RenderBackground::GetTexture()
+{
+    return backgroundSpriteTexture.GetTexture();
+}
+
+void RenderBackground::SetTexture(const char* filePath_)
+{
+    backgroundSpriteTexture.SetTexture(filePath_);
+}
+
+void RenderBackground::Unload()
+{
+    isLoaded = false;
 }
 
 void RenderBackground::ScaleToFitScreen(sf::Vector2u screenResolution)

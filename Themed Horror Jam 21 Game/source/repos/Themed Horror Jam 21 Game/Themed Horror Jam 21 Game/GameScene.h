@@ -46,10 +46,16 @@ private:
     int maxDialogueTexts = 3;
 
     std::vector<std::string> dialoguePanelTextures;
+    std::vector<std::string> sceneTextures;
+
+    SpriteTexture person;
 
     void InitializeGame();
     void InitializeDialogueSystem();
+
     void UpdateDialoguePanelTexture();
+
+    bool operationScene;
 };
 
 #endif

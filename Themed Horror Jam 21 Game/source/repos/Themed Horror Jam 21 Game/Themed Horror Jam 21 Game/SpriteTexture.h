@@ -14,9 +14,14 @@ public:
 	sf::Sprite InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_);
 	sf::Sprite LoadSprite();
 
+	const char* GetTexture();
+	void SetTexture(const char* filePath_);
+
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
+
+	const char* filePath;
 };
 
 #endif

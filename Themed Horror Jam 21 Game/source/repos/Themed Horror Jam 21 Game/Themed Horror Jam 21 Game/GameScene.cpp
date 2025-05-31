@@ -14,6 +14,7 @@ GameScene::GameScene()
     , dialogueSystemInitialized(false)
     , surgeryRoomActive(false)
     , typeTextTime(0.0f)
+    , operationScene(false)
 {
 }
 
@@ -117,6 +118,8 @@ void GameScene::Update(float deltaTime)
             // Activate surgery room when dialogue ends
             if (!surgeryRoomActive)
             {
+                gameBackground.Unload();
+
                 surgeryRoomActive = true;
                 // Initialize surgery room with your asset paths
                 surgeryRoom.Initialize(
@@ -128,11 +131,40 @@ void GameScene::Update(float deltaTime)
                     "Art Assets/SurgeryRoom/Death.png",
                     "Art Assets/SurgeryRoom/Timer/Timer_start.png"
                 );
-                
+
+                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2(resolution.x / 2.238f,
+                    resolution.y / 2.5f));
             }
         }
 
         inputCooldown = INPUT_DELAY;
+    }
+
+    // If surgery room is active
+    if (surgeryRoomActive)
+    {
+        Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
+        Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
+
+        if (person.LoadSprite().getGlobalBounds().contains(mousePos))
+        {
+            if (Mouse::isButtonPressed(Mouse::Button::Left))
+            {
+                if (!operationScene)
+                {
+                    operationScene = true;
+
+                    if (!gameBackground.IsLoaded())
+                        gameBackground.Initialize("Art Assets/WNP/Symptom.png", resolution);
+                }
+            }
+        }
+    }
+
+    // If operation scene is active
+    if (operationScene)
+    {
+
     }
 }
 
@@ -142,9 +174,17 @@ void GameScene::Render(RenderWindow& window)
 
     if (surgeryRoomActive)
     {
-        // Draw surgery room when active
-        surgeryRoom.Draw(window);
-        
+        if (!operationScene)
+        {
+            // Draw surgery room when active
+            surgeryRoom.Draw(window);
+            window.draw(person.LoadSprite());
+        }
+
+        else if (operationScene)
+        {
+            gameBackground.Draw(window);
+        }
     }
     else
     {
@@ -196,6 +236,7 @@ void GameScene::InitializeGame()
     if (hideDialogue != false) hideDialogue = false;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
+    if (operationScene != false) operationScene = false;
 
     // Reset surgery room state
     surgeryRoomActive = false;
@@ -278,6 +319,7 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
         }
+
         break;
 
     case 1:
@@ -285,6 +327,7 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
         }
+
         break;
 
     case 2:
@@ -292,6 +335,7 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
         }
+
         break;
 
     default:

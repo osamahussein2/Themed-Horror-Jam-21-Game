@@ -10,6 +10,8 @@ SpriteTexture::~SpriteTexture()
 
 sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_)
 {
+	filePath = filePath_;
+
 	// Load a graphic into the texture
 	texture.loadFromFile(filePath_);
 
@@ -28,4 +30,16 @@ sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f i
 sf::Sprite SpriteTexture::LoadSprite()
 {
 	return sprite;
+}
+
+const char* SpriteTexture::GetTexture()
+{
+	return filePath;
+}
+
+void SpriteTexture::SetTexture(const char* filePath_)
+{
+	texture.loadFromFile(filePath_);
+
+	sprite.setTexture(texture);
 }

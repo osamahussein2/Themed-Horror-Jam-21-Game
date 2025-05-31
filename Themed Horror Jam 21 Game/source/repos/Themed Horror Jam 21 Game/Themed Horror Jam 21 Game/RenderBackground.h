@@ -34,8 +34,14 @@ public:
     // Check if background is loaded successfully
     bool IsLoaded() const { return isLoaded; }
 
+    const char* GetTexture();
+    void SetTexture(const char* filePath_);
+
+    void Unload();
+
 private:
     SpriteTexture backgroundSpriteTexture;
+    const char* filePath;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     bool isLoaded;
