@@ -126,7 +126,6 @@ private:
     void CreateSettingsText();
     void CreateSettingsButtons();
 
-    void UpdateAboutUIPlacement();
     void UpdateMainMenuColors();
     void UpdateSettingsMenuColors();
 

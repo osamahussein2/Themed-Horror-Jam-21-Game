@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "SceneManager.h"
 
+float DIALOGUE_TEXT_CHARACTER_SIZE;
+
 GameScene::GameScene()
     : initialText(nullptr)
     , currentDialogueIndex(0)
@@ -68,8 +70,8 @@ void GameScene::Update(float deltaTime)
         float panelWidth = resolution.x - 100.0f;
         float panelHeight = 700.0f;
 
-        float panelX = (resolution.x - panelWidth) / 2.0f;
-        float panelY = resolution.y - panelHeight - 50.0f;
+        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
+        float panelY = (resolution.y - panelHeight - 10.0f);
 
         if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
             dialoguePanel->SetPosition(Vector2f(panelX, panelY));
@@ -215,8 +217,8 @@ void GameScene::InitializeGame()
         float panelWidth = resolution.x - 100.0f;
         float panelHeight = 700.0f;
 
-        float panelX = (resolution.x - panelWidth) / 2.0f;
-        float panelY = resolution.y - panelHeight - 50.0f;
+        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
+        float panelY = (resolution.y - panelHeight - 10.0f) * (resolution.y / 1080.0f);
 
         dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
             "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
@@ -242,14 +244,16 @@ void GameScene::InitializeGame()
         dialogueSystemInitialized = true;
     }
 
-    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White,
-        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
-    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White,
-        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 
-    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", 50.0f, false, false, sf::Color::White,
-        Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+
+    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 }
 
 void GameScene::InitializeDialogueSystem()
