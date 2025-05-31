@@ -5,8 +5,7 @@
 float DIALOGUE_TEXT_CHARACTER_SIZE;
 
 GameScene::GameScene()
-    : initialText(nullptr)
-    , currentDialogueIndex(0)
+    : currentDialogueIndex(0)
     , hideDialogue(false)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
@@ -14,18 +13,12 @@ GameScene::GameScene()
     , dialogueSystemInitialized(false)
     , surgeryRoomActive(false)
     , typeTextTime(0.0f)
-    , operationScene(false)
+    , operationSceneActive(false)
 {
 }
 
 GameScene::~GameScene()
 {
-    if (initialText)
-    {
-        delete initialText;
-        initialText = nullptr;
-    }
-
     if (!dialogueTexts.empty())
     {
         for (int i = 0; i < dialogueTexts.size(); i++)
@@ -132,7 +125,7 @@ void GameScene::Update(float deltaTime)
                     "Art Assets/SurgeryRoom/Timer/Timer_start.png"
                 );
 
-                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2(resolution.x / 2.238f,
+                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                     resolution.y / 2.5f));
             }
         }
@@ -146,23 +139,35 @@ void GameScene::Update(float deltaTime)
         Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
         Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
+        // Make the sure the mouse position is on the sprite to change its sprite color
         if (person.LoadSprite().getGlobalBounds().contains(mousePos))
         {
+            if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
+
+            // Set up the operation scene after clicking the left mouse button
             if (Mouse::isButtonPressed(Mouse::Button::Left))
             {
-                if (!operationScene)
+                if (!operationSceneActive)
                 {
-                    operationScene = true;
+                    operationSceneActive = true;
 
-                    if (!gameBackground.IsLoaded())
-                        gameBackground.Initialize("Art Assets/WNP/Symptom.png", resolution);
+                    operationScene.Initialize("Art Assets/WNP/Symptom.png", 
+                        Vector2f(resolution.x / 2.8f, 0.0f), 
+                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)), 
+                        true);
                 }
             }
+        }
+
+        // Otherwise, reset the sprite's color back to white once the mouse is longer hovering on the sprite
+        else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
+        {
+            if (person.GetColor() != Color::White) person.SetColor(Color::White);
         }
     }
 
     // If operation scene is active
-    if (operationScene)
+    if (operationSceneActive)
     {
 
     }
@@ -174,16 +179,16 @@ void GameScene::Render(RenderWindow& window)
 
     if (surgeryRoomActive)
     {
-        if (!operationScene)
+        if (!operationSceneActive)
         {
             // Draw surgery room when active
             surgeryRoom.Draw(window);
             window.draw(person.LoadSprite());
         }
 
-        else if (operationScene)
+        else if (operationSceneActive)
         {
-            gameBackground.Draw(window);
+            operationScene.Draw(window);
         }
     }
     else
@@ -236,7 +241,7 @@ void GameScene::InitializeGame()
     if (hideDialogue != false) hideDialogue = false;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
-    if (operationScene != false) operationScene = false;
+    if (operationSceneActive != false) operationSceneActive = false;
 
     // Reset surgery room state
     surgeryRoomActive = false;
@@ -244,13 +249,6 @@ void GameScene::InitializeGame()
     if (!gameBackground.IsLoaded())
     {
         gameBackground.Initialize("Art Assets/Background.jpg", resolution);
-    }
-
-    if (!initialText)
-    {
-        initialText = new Game::Text();
-        initialText->InitializeText("Fonts/Roboto-Regular.ttf", "Hello", 50.0f, true, false, sf::Color::White,
-            sf::Vector2f(resolution.x / 2.0f, (resolution.y - resolution.y + 50.0f)));
     }
 
     if (!dialoguePanel)

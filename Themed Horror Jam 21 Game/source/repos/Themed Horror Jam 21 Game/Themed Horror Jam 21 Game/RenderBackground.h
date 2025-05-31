@@ -41,7 +41,6 @@ public:
 
 private:
     SpriteTexture backgroundSpriteTexture;
-    const char* filePath;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     bool isLoaded;

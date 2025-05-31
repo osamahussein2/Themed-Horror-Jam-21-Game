@@ -43,3 +43,13 @@ void SpriteTexture::SetTexture(const char* filePath_)
 
 	sprite.setTexture(texture);
 }
+
+sf::Color SpriteTexture::GetColor()
+{
+	return sprite.getColor();
+}
+
+void SpriteTexture::SetColor(sf::Color newColor)
+{
+	sprite.setColor(newColor);
+}

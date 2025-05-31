@@ -12,8 +12,6 @@ bool RenderBackground::Initialize(const char* filePath_, sf::Vector2u screenReso
 {
     try
     {
-        filePath = filePath_;
-
         // Use the SpriteTexture class to load the background
         backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath_, sf::Vector2f(0.0f, 0.0f));
 
@@ -34,8 +32,6 @@ bool RenderBackground::Initialize(const char* filePath_, sf::Vector2f position, 
 {
     try
     {
-        filePath = filePath_;
-
         // Use the SpriteTexture class to load the background
        backgroundSpriteTexture.InitializeSprite(filePath_, position);
 

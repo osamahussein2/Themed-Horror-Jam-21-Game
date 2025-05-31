@@ -17,6 +17,9 @@ public:
 	const char* GetTexture();
 	void SetTexture(const char* filePath_);
 
+	sf::Color GetColor();
+	void SetColor(sf::Color newColor);
+
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;

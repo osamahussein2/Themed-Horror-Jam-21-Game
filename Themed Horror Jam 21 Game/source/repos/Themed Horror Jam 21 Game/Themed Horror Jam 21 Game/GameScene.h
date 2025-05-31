@@ -7,6 +7,7 @@
 #include "TypewriterEffect.h"
 #include "RenderBackground.h"
 #include "SurgeryRoom.h"
+#include "OperationScene.h"
 
 class GameScene : public Scene
 {
@@ -22,16 +23,19 @@ public:
     void OnExit() override;
     std::string GetSceneName() const override;
 
+    Vector2u GetResolution() { return resolution; }
+    void SetResolution(Vector2u newResolution) { resolution = newResolution; }
+
 private:
     RenderBackground gameBackground;
     SurgeryRoom surgeryRoom;
+    OperationScene operationScene;
     TypewriterEffect typewriterEffect;
     bool dialogueSystemInitialized;
     bool surgeryRoomActive;
     Vector2u resolution;
 
     // Game objects
-    Game::Text* initialText;
     std::vector<Game::Text*> dialogueTexts;
     float typeTextTime;
     DialoguePanel* dialoguePanel;
@@ -46,7 +50,6 @@ private:
     int maxDialogueTexts = 3;
 
     std::vector<std::string> dialoguePanelTextures;
-    std::vector<std::string> sceneTextures;
 
     SpriteTexture person;
 
@@ -55,7 +58,7 @@ private:
 
     void UpdateDialoguePanelTexture();
 
-    bool operationScene;
+    bool operationSceneActive;
 };
 
 #endif
