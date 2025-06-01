@@ -1,13 +1,15 @@
 #include "SurgeryRoom.h"
-
 SurgeryRoom::SurgeryRoom() : isLoaded(false), TimerValue(0),
 backgroundSprite(backgroundTexture),
 BouttomUISprite(BouttomUITexture),
 TopUISprite(TopUITexture),
-LifeSprite(LifeTexture),
 DeathSprite(DeathTexture),
-TimerSprite(TimerTexture)
+TimerSprite(TimerTexture),
+LifeSprite_0( LifeTexture ),
+LifeSprite_1(LifeTexture),
+LifeSprite_2(LifeTexture)
 {
+ 
 }
 
 SurgeryRoom::~SurgeryRoom()
@@ -21,15 +23,19 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         // Use the SpriteTexture class to load the background
         backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0));
 
-
         // Load the bottom UI sprite;
         BouttomUISprite = BouttomUISpriteTexture.InitializeSprite(BouttomUIPath, sf::Vector2f(0, 0));
         // Load the top UI sprite
         TopUISprite = TopUISpriteTexture.InitializeSprite(TopUIPath, sf::Vector2f(0, 0));
-		// Load the death sprite
-		DeathSprite = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0));
-        // Load the life sprite
-        LifeSprite = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
+
+       
+        LifeSprite_0 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
+        LifeSprite_1 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
+        LifeSprite_2 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
+
+        // Load the death sprite
+       // DeathSprite = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0));
+
         // load the timer sprite
         TimerSprite = TimerSpriteTexture.InitializeSprite(Timer, sf::Vector2f(0, 0));
 
@@ -42,12 +48,26 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         float bottomUIY = static_cast<float>(screenResolution.y) - bottomUIBounds.size.y;
         BouttomUISprite.setPosition({ bottomUIX, bottomUIY });
 
-        // Optionally position other UI elements as well
         // Position top UI at top center
         sf::FloatRect topUIBounds = TopUISprite.getLocalBounds();
         float topUIX = (static_cast<float>(screenResolution.x) - topUIBounds.size.x) / 2.0f;
         float topUIY = 0.0f;
         TopUISprite.setPosition({ topUIX, topUIY });
+
+        // Position timer sprite at the bottom left corner
+        sf::FloatRect timeBounds = TimerSprite.getLocalBounds();
+        float TimerX = 30.0f; // Adjust as needed
+        float TimerY = static_cast<float>(screenResolution.y) - timeBounds.size.y - 10.0f; // 10 pixels from bottom
+        TimerSprite.setPosition({ TimerX, TimerY });
+
+      
+        sf::FloatRect LifeBounds = LifeSprite_0.getLocalBounds();
+        float LifeX = TimerX + 130.0f; // Adjust as needed
+        float LifeY = static_cast<float>(screenResolution.y) - LifeBounds.size.y - 155.0f ; // Spacing between life sprites
+        LifeSprite_0.setPosition({ LifeX, LifeY });
+		LifeSprite_1.setPosition({ LifeX + 80.0f, LifeY });
+        LifeSprite_2.setPosition({ LifeX + (80.0f *2), LifeY });
+
 
         isLoaded = true;
         return true;
@@ -66,9 +86,14 @@ void SurgeryRoom::Draw(RenderWindow& window)
         window.draw(backgroundSprite);
         window.draw(BouttomUISprite);
         window.draw(TopUISprite);
-        window.draw(LifeSprite);
-        window.draw(DeathSprite);
-		window.draw(TimerSprite);
+
+      
+        window.draw(LifeSprite_0);
+        window.draw(LifeSprite_1);
+        window.draw(LifeSprite_2);
+
+        //window.draw(DeathSprite);
+        window.draw(TimerSprite);
     }
 }
 
@@ -95,6 +120,7 @@ void SurgeryRoom::SetScale(Sprite  sprite, Vector2f scale)
         backgroundSprite.setScale(scale);
     }
 }
+
 void SurgeryRoom::ScaleToFitScreen(sf::Vector2u screenResolution)
 {
     if (isLoaded)

@@ -151,7 +151,7 @@ void GameScene::Update(float deltaTime)
                 {
                     operationSceneActive = true;
 
-                    operationScene.Initialize("Art Assets/WNP/Symptom.png", 
+                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png", 
                         Vector2f(resolution.x / 2.8f, 0.0f), 
                         Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)), 
                         true);

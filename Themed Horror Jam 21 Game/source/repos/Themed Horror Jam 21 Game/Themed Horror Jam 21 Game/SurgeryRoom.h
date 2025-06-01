@@ -32,7 +32,9 @@ public:
 
 	Sprite BouttomUISprite;
 	Sprite TopUISprite;
-	Sprite LifeSprite;
+	Sprite LifeSprite_0;
+	Sprite LifeSprite_1;
+	Sprite LifeSprite_2;
 	Sprite DeathSprite;
 	Sprite TimerSprite;
 private:
