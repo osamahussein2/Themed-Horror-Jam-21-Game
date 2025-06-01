@@ -31,8 +31,11 @@ public:
 private:
 	SpriteTexture operationSpriteTexture;
 	Texture operationTexture;
-
 	Sprite operationSprite;
+
+	SpriteTexture GroundSpriteTexture;
+	Texture GroundTexture;
+	Sprite GroundSprite;
 };
 
 #endif

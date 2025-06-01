@@ -1,6 +1,6 @@
 #include "OperationScene.h"
 
-OperationScene::OperationScene() : operationSprite(operationTexture)
+OperationScene::OperationScene() : operationSprite(operationTexture), GroundSprite(GroundTexture)
 {
 }
 
@@ -29,11 +29,21 @@ void OperationScene::Initialize(const char* filePath_, Vector2f position_, Vecto
     operationSprite.setTexture(operationTexture);
     operationSprite.setScale(scale_);
     operationSprite.setPosition(position_);
+
+	GroundTexture.loadFromFile("Art Assets/SurgeryRoom/ground.png");
+	GroundSprite = sf::Sprite(GroundTexture);
+	GroundSprite.setTexture(GroundTexture);
+	GroundSprite.setScale(scale_);
+	float GroundX = 0;
+	float GroundY = 0;
+    GroundSprite.setPosition({ GroundX,GroundY });
 }
 
 void OperationScene::Draw(RenderWindow& window)
 {
+    window.draw(GroundSprite);
     window.draw(operationSprite);
+
 }
 
 void OperationScene::SetPosition(Vector2f position)
