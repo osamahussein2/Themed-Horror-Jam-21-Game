@@ -190,42 +190,7 @@ void Menu::CreateSettingsText()
     difficulty = { "Easy", "Normal", "Hard" };
     fullscreenStatus = { "Off", "On" };
 
-    if (Engine::Instance()->GetResolution() == Vector2u(1920, 1080))
-    {
-        resolutionSize.resize(3);
-        resolutionSize = { Vector2u(1360, 768), Vector2u(1600, 900), Vector2u(Engine::Instance()->GetResolution().x,
-            Engine::Instance()->GetResolution().y) };
-
-        currentResolutionSize = 2;
-    }
-
-    else if (Engine::Instance()->GetResolution() == Vector2u(1600, 900))
-    {
-        resolutionSize.resize(3);
-        resolutionSize = { Vector2u(1360, 768), 
-            Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y), Vector2u(1920, 1080) };
-
-        currentResolutionSize = 1;
-    }
-
-    else if (Engine::Instance()->GetResolution() == Vector2u(1360, 768))
-    {
-        resolutionSize.resize(3);
-        resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y),
-            Vector2u(1600, 900), Vector2u(1920, 1080) };
-
-        currentResolutionSize = 0;
-    }
-
-    else if (Engine::Instance()->GetResolution() != Vector2u(1920, 1080) && 
-        Engine::Instance()->GetResolution() != Vector2u(1600, 900) && 
-        Engine::Instance()->GetResolution() != Vector2u(1360, 768))
-    {
-        resolutionSize.resize(1);
-        resolutionSize = { Vector2u(Engine::Instance()->GetResolution().x, Engine::Instance()->GetResolution().y)};
-
-        currentResolutionSize = 0;
-    }
+    InitializeScreenResolution(); // Found in Resolution.cpp
 
     if (resolution != Engine::Instance()->GetResolution()) resolution = Engine::Instance()->GetResolution();
 
@@ -592,18 +557,28 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
     else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && 
         settingsAction == SettingsMenuAction::ModifyFullscreen)
     {
-        currentFullscreenStatus--;
-        if (currentFullscreenStatus <= 0) currentFullscreenStatus = 0;
-        ToggleFullscreen();
+        if (currentFullscreenStatus > 0) 
+        { 
+            currentFullscreenStatus--;
+            ToggleFullscreen();
+        }
+
+        else if (currentFullscreenStatus <= 0) currentFullscreenStatus = 0;
+
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
     else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && 
         settingsAction == SettingsMenuAction::ModifyFullscreen)
     {
-        currentFullscreenStatus++;
-        if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
-        ToggleFullscreen();
+        if (currentFullscreenStatus < fullscreenStatus.size() - 1)
+        {
+            currentFullscreenStatus++;
+            ToggleFullscreen();
+        }
+
+        else if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
+
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
@@ -612,18 +587,28 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
     else if (isLeftPressed && !wasLeftPressed && inputCooldown <= 0.0f && 
         settingsAction == SettingsMenuAction::ModifyResolution)
     {
-        currentResolutionSize--;
-        if (currentResolutionSize <= 0) currentResolutionSize = 0;
-        ChangeResolution();
+        if (currentResolutionSize > 0)
+        {
+            currentResolutionSize--;
+            ChangeResolution();
+        }
+
+        else if (currentResolutionSize <= 0) currentResolutionSize = 0;
+
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
     else if (isRightPressed && !wasRightPressed && inputCooldown <= 0.0f && 
         settingsAction == SettingsMenuAction::ModifyResolution)
     {
-        currentResolutionSize++;
-        if (currentResolutionSize >= resolutionSize.size() - 1) currentResolutionSize = resolutionSize.size() - 1;
-        ChangeResolution();
+        if (currentResolutionSize < resolutionSize.size() - 1)
+        {
+            currentResolutionSize++;
+            ChangeResolution();
+        }
+
+        else if (currentResolutionSize >= resolutionSize.size() - 1) currentResolutionSize = resolutionSize.size() - 1;
+
         UpdateSettingsMenuColors();
         inputCooldown = INPUT_DELAY;
     }
@@ -781,89 +766,5 @@ void Menu::ToggleFullscreen()
     {
         Engine::Instance()->GetWindow()->close();
         Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", sf::State::Fullscreen);
-    }
-}
-
-void Menu::ChangeResolution()
-{
-    if (resolutionSize[currentResolutionSize] == Vector2u(1360, 768))
-    {
-        resolution = Vector2u(1360, 768);
-
-        Engine::Instance()->SetResolution(resolution);
-        Engine::Instance()->SetMainMenuView(Vector2f(0.0f, 0.0f), Vector2f(resolution));
-
-        UpdateMainMenuColors();
-        UpdateSettingsMenuColors();
-
-        if (fullscreenStatus[currentFullscreenStatus] == "On")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game",
-                sf::State::Fullscreen);
-        }
-
-        else if (fullscreenStatus[currentFullscreenStatus] == "Off")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game",
-                sf::State::Windowed);
-        }
-    }
-
-    else if (resolutionSize[currentResolutionSize] == Vector2u(1600, 900))
-    {
-        resolution = Vector2u(1600, 900);
-
-        Engine::Instance()->SetResolution(resolution);
-        Engine::Instance()->SetMainMenuView(Vector2f(0.0f, 0.0f), Vector2f(resolution));
-
-        UpdateMainMenuColors();
-        UpdateSettingsMenuColors();
-
-        if (fullscreenStatus[currentFullscreenStatus] == "On")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
-                sf::State::Fullscreen);
-        }
-
-        else if (fullscreenStatus[currentFullscreenStatus] == "Off")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
-                sf::State::Windowed);
-        }
-    }
-
-    else if (resolutionSize[currentResolutionSize] == Vector2u(1920, 1080))
-    {
-        resolution = Vector2u(1920, 1080);
-
-        Engine::Instance()->SetResolution(resolution);
-        Engine::Instance()->SetMainMenuView(Vector2f(0.0f, 0.0f), Vector2f(resolution));
-
-        UpdateMainMenuColors();
-        UpdateSettingsMenuColors();
-
-        if (fullscreenStatus[currentFullscreenStatus] == "On")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
-                sf::State::Fullscreen);
-        }
-
-        else if (fullscreenStatus[currentFullscreenStatus] == "Off")
-        {
-            Engine::Instance()->GetWindow()->close();
-
-            Engine::Instance()->GetWindow()->create(sf::VideoMode(resolution), "Themed Horror Jam 21 Game", 
-                sf::State::Windowed);
-        }
     }
 }

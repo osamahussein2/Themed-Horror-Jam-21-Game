@@ -114,16 +114,19 @@ void GameScene::Update(float deltaTime)
                 gameBackground.Unload();
 
                 surgeryRoomActive = true;
-                // Initialize surgery room with your asset paths
-                surgeryRoom.Initialize(
-                    "Art Assets/SurgeryRoom/Background.png",
-                    resolution,
-                    "Art Assets/SurgeryRoom/BottomUI.png",
-                    "Art Assets/SurgeryRoom/TopUI.png",
-                    "Art Assets/SurgeryRoom/Life.png",
-                    "Art Assets/SurgeryRoom/Death.png",
-                    "Art Assets/SurgeryRoom/Timer/Timer_start.png"
-                );
+
+                if (!surgeryRoom.IsLoaded())
+                {
+                    // Initialize surgery room with your asset paths
+                    surgeryRoom.Initialize(
+                        "Art Assets/SurgeryRoom/Background.png",
+                        resolution,
+                        "Art Assets/SurgeryRoom/BottomUI.png",
+                        "Art Assets/SurgeryRoom/TopUI.png",
+                        "Art Assets/SurgeryRoom/Life.png",
+                        "Art Assets/SurgeryRoom/Death.png",
+                        "Art Assets/SurgeryRoom/Timer/Timer_start.png");
+                }
 
                 person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                     resolution.y / 2.5f));

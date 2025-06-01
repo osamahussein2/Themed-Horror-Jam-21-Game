@@ -152,6 +152,7 @@
     <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="OperationScene.cpp" />
     <ClCompile Include="RenderBackground.cpp" />
+    <ClCompile Include="Resolution.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SpriteTexture.cpp" />
     <ClCompile Include="SurgeryRoom.cpp" />
