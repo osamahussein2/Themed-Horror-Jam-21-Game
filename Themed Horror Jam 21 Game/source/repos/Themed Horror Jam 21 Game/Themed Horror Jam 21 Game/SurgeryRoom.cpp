@@ -5,11 +5,11 @@ BouttomUISprite(BouttomUITexture),
 TopUISprite(TopUITexture),
 DeathSprite(DeathTexture),
 TimerSprite(TimerTexture),
-LifeSprite_0( LifeTexture ),
+LifeSprite_0(LifeTexture),
 LifeSprite_1(LifeTexture),
 LifeSprite_2(LifeTexture)
 {
- 
+
 }
 
 SurgeryRoom::~SurgeryRoom()
@@ -28,7 +28,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         // Load the top UI sprite
         TopUISprite = TopUISpriteTexture.InitializeSprite(TopUIPath, sf::Vector2f(0, 0));
 
-       
+
         LifeSprite_0 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
         LifeSprite_1 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
         LifeSprite_2 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0));
@@ -60,13 +60,13 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         float TimerY = static_cast<float>(screenResolution.y) - timeBounds.size.y - 10.0f; // 10 pixels from bottom
         TimerSprite.setPosition({ TimerX, TimerY });
 
-      
+
         sf::FloatRect LifeBounds = LifeSprite_0.getLocalBounds();
         float LifeX = TimerX + 130.0f; // Adjust as needed
-        float LifeY = static_cast<float>(screenResolution.y) - LifeBounds.size.y - 155.0f ; // Spacing between life sprites
+        float LifeY = static_cast<float>(screenResolution.y) - LifeBounds.size.y - 155.0f; // Spacing between life sprites
         LifeSprite_0.setPosition({ LifeX, LifeY });
-		LifeSprite_1.setPosition({ LifeX + 80.0f, LifeY });
-        LifeSprite_2.setPosition({ LifeX + (80.0f *2), LifeY });
+        LifeSprite_1.setPosition({ LifeX + 80.0f, LifeY });
+        LifeSprite_2.setPosition({ LifeX + (80.0f * 2), LifeY });
 
 
         isLoaded = true;
@@ -84,14 +84,20 @@ void SurgeryRoom::Draw(RenderWindow& window)
     if (isLoaded)
     {
         window.draw(backgroundSprite);
-        window.draw(BouttomUISprite);
         window.draw(TopUISprite);
+        DrawUI(window); // Use the new DrawUI method
+    }
+}
 
-      
+void SurgeryRoom::DrawUI(RenderWindow& window)
+{
+    if (isLoaded)
+    {
+        window.draw(BouttomUISprite);
+  
         window.draw(LifeSprite_0);
         window.draw(LifeSprite_1);
         window.draw(LifeSprite_2);
-
         //window.draw(DeathSprite);
         window.draw(TimerSprite);
     }

@@ -6,8 +6,6 @@
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
 
-
-
 using namespace sf;
 class SurgeryRoom
 {
@@ -20,6 +18,10 @@ public:
 
 	// Draw the surgery room to the render window
 	void Draw(RenderWindow& window);
+
+	// Draw only UI elements (without background)
+	void DrawUI(RenderWindow& window);
+
 	// Update surgery room position (useful for scrolling backgrounds)
 	void SetPosition(Sprite  sprite, Vector2f position);
 	void Move(Sprite  sprite, Vector2f offset);
@@ -39,35 +41,24 @@ public:
 	Sprite TimerSprite;
 private:
 
-	
-
 	SpriteTexture BouttomUISpriteTexture;
 	Texture BouttomUITexture;
-
-
 
 	SpriteTexture TopUISpriteTexture;
 	Texture TopUITexture;
 
-
-
 	SpriteTexture LifeSpriteTexture;
 	Texture LifeTexture;
-
 
 	SpriteTexture backgroundSpriteTexture;
 	Texture backgroundTexture;
 	Sprite backgroundSprite;
 
-
 	SpriteTexture DeathSpriteTexture;
 	Texture DeathTexture;
-	
-
 
 	SpriteTexture TimerSpriteTexture;
 	Texture TimerTexture;
-
 
 	bool isLoaded;
 	// Helper function to scale background to fit screen

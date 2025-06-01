@@ -188,7 +188,9 @@ void GameScene::Render(RenderWindow& window)
 
         else if (operationSceneActive)
         {
+            // Draw operation scene and overlay the UI from surgery room
             operationScene.Draw(window);
+            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
         }
     }
     else
