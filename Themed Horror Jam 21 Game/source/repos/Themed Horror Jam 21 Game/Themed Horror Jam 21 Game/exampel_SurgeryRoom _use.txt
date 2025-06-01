@@ -1,0 +1,110 @@
+// Example of how to use the enhanced SurgeryRoom in your main game loop
+
+#include "SurgeryRoom.h"
+#include <SFML/Graphics.hpp>
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Surgery Game");
+    SurgeryRoom surgeryRoom;
+    
+    // Initialize the surgery room
+    bool initialized = surgeryRoom.Initialize(
+        "Art Assets/SurgeryRoom/background.png",
+        window.getSize(),
+        "Art Assets/SurgeryRoom/bottom_ui.png",
+        "Art Assets/SurgeryRoom/top_ui.png"
+    );
+    
+    if (!initialized) {
+        std::cout << "Failed to initialize surgery room!" << std::endl;
+        return -1;
+    }
+    
+    // Start a 60-second timer
+    surgeryRoom.StartTimer(60.0f);
+    
+    sf::Clock deltaClock;
+    
+    while (window.isOpen())
+    {
+        float deltaTime = deltaClock.restart().asSeconds();
+        
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+                
+            // Example: Lose a life when pressing number keys
+            if (event.type == sf::Event::KeyPressed) {
+                switch(event.key.code) {
+                    case sf::Keyboard::Num1:
+                        surgeryRoom.LoseLife(0); // Lose first life
+                        break;
+                    case sf::Keyboard::Num2:
+                        surgeryRoom.LoseLife(1); // Lose second life
+                        break;
+                    case sf::Keyboard::Num3:
+                        surgeryRoom.LoseLife(2); // Lose third life
+                        break;
+                    case sf::Keyboard::R:
+                        surgeryRoom.ResetAllLives(); // Reset all lives
+                        break;
+                    case sf::Keyboard::T:
+                        if (surgeryRoom.IsTimerRunning()) {
+                            surgeryRoom.StopTimer();
+                        } else {
+                            surgeryRoom.StartTimer(30.0f); // Start 30-second timer
+                        }
+                        break;
+                }
+            }
+        }
+        
+        // Update timer every frame
+        surgeryRoom.UpdateTimer(deltaTime);
+        
+        // Check timer status
+        if (!surgeryRoom.IsTimerRunning() && surgeryRoom.GetTimeRemaining() <= 0) {
+            // Timer finished - handle game over logic here
+        }
+        
+        // Check lives remaining
+        int livesLeft = surgeryRoom.GetLivesRemaining();
+        if (livesLeft == 0) {
+            // No lives left - handle game over logic here
+        }
+        
+        // Render
+        window.clear();
+        surgeryRoom.Draw(window);
+        window.display();
+    }
+    
+    return 0;
+}
+
+// Additional helper functions you might want to add:
+
+class GameManager {
+public:
+    void HandlePlayerDamage(SurgeryRoom& room) {
+        static int currentLife = 0;
+        if (currentLife < 3) {
+            room.LoseLife(currentLife);
+            currentLife++;
+        }
+    }
+    
+    void StartGameSession(SurgeryRoom& room, float duration = 120.0f) {
+        room.ResetAllLives();
+        room.StartTimer(duration);
+        std::cout << "Game session started! Duration: " << duration << " seconds" << std::endl;
+    }
+    
+    bool IsGameOver(SurgeryRoom& room) {
+        return (room.GetLivesRemaining() == 0) || 
+               (!room.IsTimerRunning() && room.GetTimeRemaining() <= 0);
+    }
+};
