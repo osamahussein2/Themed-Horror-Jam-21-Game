@@ -113,20 +113,32 @@ void GameScene::Update(float deltaTime)
             {
                 gameBackground.Unload();
 
-                surgeryRoomActive = true;
-
                 if (!surgeryRoom.IsLoaded())
                 {
                     // Initialize surgery room with your asset paths
                     surgeryRoom.Initialize(
                         "Art Assets/SurgeryRoom/Background.png",
                         resolution,
-                        "Art Assets/SurgeryRoom/BottomUI.png",
-                        "Art Assets/SurgeryRoom/TopUI.png");
+                        "Art Assets/SurgeryRoom/BottomUI.png", sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
+                        "Art Assets/SurgeryRoom/TopUI.png", sf::Vector2f(resolution.x / 4.0f, 0.0f), // top UI
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f), 
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),  // life sprite scale
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),   // death sprite scale
+                        sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));  // timer sprite scale
                 }
 
                 person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                     resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+
+                surgeryRoomActive = true;
             }
         }
 
@@ -159,7 +171,7 @@ void GameScene::Update(float deltaTime)
                         true);
 
                     // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(60.0f); // Start with 60 seconds, adjust as needed
+                    surgeryRoom.StartTimer(23.0f); // Start with 60 seconds, adjust as needed
                 }
             }
         }

@@ -15,8 +15,11 @@ public:
     ~SurgeryRoom();
 
     // Initialize the surgery room with an image file and screen resolution
-    bool Initialize(const char* Backgroundpath, Vector2u screenResolution,
-        const char* BouttomUIPath, const char* TopUIPath);
+    bool Initialize(const char* Backgroundpath, Vector2u screenResolution, const char* BouttomUIPath, 
+        Vector2f bottomUIposition, Vector2f bottomUIscale, const char* TopUIPath, Vector2f topUIposition,
+        Vector2f topUIscale, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position,
+        Vector2f lifeSpriteScale, Vector2f deathSprite0position, Vector2f deathSprite1position, 
+        Vector2f deathSprite2position, Vector2f deathSpriteScale, Vector2f timerSpritePosition, Vector2f timerSpriteScale);
 
     // Draw the surgery room to the render window
     void Draw(RenderWindow& window);
