@@ -13,7 +13,8 @@ bool RenderBackground::Initialize(const char* filePath_, sf::Vector2u screenReso
     try
     {
         // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath_, sf::Vector2f(0.0f, 0.0f));
+        backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath_, sf::Vector2f(0.0f, 0.0f),
+            sf::Vector2f(screenResolution.x / 1920.0f, screenResolution.y / 1080.0f));
 
         // Scale the background to fit the screen
         ScaleToFitScreen(screenResolution);

@@ -8,7 +8,7 @@ SpriteTexture::~SpriteTexture()
 {
 }
 
-sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_)
+sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_)
 {
 	filePath = filePath_;
 
@@ -21,8 +21,8 @@ sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f i
 	// Attach the texture to the sprite
 	sprite.setTexture(texture);
 
-	// Set the spriteBackground to cover the screen
 	sprite.setPosition(initialSpritePos_);
+	sprite.setScale(initialScale_);
 
 	return sprite;
 }
@@ -52,4 +52,14 @@ sf::Color SpriteTexture::GetColor()
 void SpriteTexture::SetColor(sf::Color newColor)
 {
 	sprite.setColor(newColor);
+}
+
+sf::Vector2f SpriteTexture::GetScale()
+{
+	return sprite.getScale();
+}
+
+void SpriteTexture::SetScale(sf::Vector2f newScale)
+{
+	sprite.setScale(sprite.getScale());
 }

@@ -126,7 +126,7 @@ void GameScene::Update(float deltaTime)
                 }
 
                 person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
-                    resolution.y / 2.5f));
+                    resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
             }
         }
 

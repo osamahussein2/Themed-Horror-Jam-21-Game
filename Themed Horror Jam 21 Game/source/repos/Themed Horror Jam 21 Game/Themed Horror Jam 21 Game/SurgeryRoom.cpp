@@ -32,7 +32,8 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
     try
     {
         // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0));
+        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0),
+            sf::Vector2f(screenResolution.x / 1920.0f, screenResolution.y / 1080.0f));
 
         // Load the bottom UI sprite
         BouttomUISprite = BouttomUISpriteTexture.InitializeSprite(BouttomUIPath, sf::Vector2f(0, 0));

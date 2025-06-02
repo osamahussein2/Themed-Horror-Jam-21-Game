@@ -11,7 +11,9 @@ public:
 	SpriteTexture();
 	~SpriteTexture();
 
-	sf::Sprite InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_);
+	sf::Sprite InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_ = 
+		sf::Vector2f(1, 1));
+
 	sf::Sprite LoadSprite();
 
 	const char* GetTexture();
@@ -19,6 +21,9 @@ public:
 
 	sf::Color GetColor();
 	void SetColor(sf::Color newColor);
+
+	sf::Vector2f GetScale();
+	void SetScale(sf::Vector2f newScale);
 
 private:
 	sf::Sprite sprite;
