@@ -5,7 +5,7 @@ SurgeryRoom::SurgeryRoom() : isLoaded(false), TimerValue(0),
 backgroundSprite(backgroundTexture),
 BouttomUISprite(BouttomUITexture),
 TopUISprite(TopUITexture),
-TimerSprite(TimerTexture),
+TimerSprite(TimerTexture_Start),
 LifeSprite_0(LifeTexture),
 LifeSprite_1(LifeTexture),
 LifeSprite_2(LifeTexture),
@@ -25,15 +25,13 @@ totalTime(0.0f)
 SurgeryRoom::~SurgeryRoom()
 {
 }
-
 bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResolution,
     const char* BouttomUIPath, const char* TopUIPath)
 {
     try
     {
         // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0),
-            sf::Vector2f(screenResolution.x / 1920.0f, screenResolution.y / 1080.0f));
+        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0));
 
         // Load the bottom UI sprite
         BouttomUISprite = BouttomUISpriteTexture.InitializeSprite(BouttomUIPath, sf::Vector2f(0, 0));
@@ -51,8 +49,23 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         DeathSprite_1 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0));
         DeathSprite_2 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0));
 
-        // Load the timer sprite
-        TimerSprite = TimerSpriteTexture.InitializeSprite(Timer, sf::Vector2f(0, 0));
+        // Load all timer sprites
+        // Load timer textures first
+        if (!TimerTexture_Start.loadFromFile(Timer_Start)) {
+            std::cout << "Failed to load Timer_Start texture!" << std::endl;
+            throw std::runtime_error("Timer texture loading failed");
+        }
+        if (!TimerTexture_Mid.loadFromFile(Timer_Mid)) {
+            std::cout << "Failed to load Timer_Mid texture!" << std::endl;
+            throw std::runtime_error("Timer texture loading failed");
+        }
+        if (!TimerTexture_End.loadFromFile(Timer_End)) {
+            std::cout << "Failed to load Timer_End texture!" << std::endl;
+            throw std::runtime_error("Timer texture loading failed");
+        }
+
+        // Initialize timer sprite with the starting texture
+        TimerSprite.setTexture(TimerTexture_Start);
 
         // Scale the background to fit the screen
         ScaleToFitScreen(screenResolution);
@@ -100,6 +113,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
     }
 }
 
+
 void SurgeryRoom::StartTimer(float duration)
 {
     if (isLoaded) {
@@ -108,8 +122,14 @@ void SurgeryRoom::StartTimer(float duration)
         timerRunning = true;
         animationClock.restart();
 
-        // You can add timer start animation here
+        TimerSprite.setColor(sf::Color::White);
+
         std::cout << "Timer started with " << duration << " seconds!" << std::endl;
+        std::cout << "Timer sprite position: " << TimerSprite.getPosition().x << ", " << TimerSprite.getPosition().y << std::endl;
+        std::cout << "Timer sprite bounds: " << TimerSprite.getLocalBounds().size.x << "x" << TimerSprite.getLocalBounds().size.y << std::endl;
+    }
+    else {
+        std::cout << "ERROR: Cannot start timer - SurgeryRoom not loaded!" << std::endl;
     }
 }
 
@@ -141,27 +161,44 @@ void SurgeryRoom::StopTimer()
 
 void SurgeryRoom::UpdateTimerSprite()
 {
-    // You can implement timer animation here
-    // For example, change timer sprite based on remaining time percentage
+    if (!isLoaded) return;
+
+    // Calculate time percentage remaining
     float timePercentage = timeRemaining / totalTime;
 
-    // Example: Make timer blink when time is low
-    if (timePercentage < 0.2f) {
-        // Get elapsed time for blinking effect
-        float elapsed = animationClock.getElapsedTime().asSeconds();
+    // Store current position to maintain it when changing texture
+    sf::Vector2f currentPosition = TimerSprite.getPosition();
 
-        // Blink every 0.5 seconds
-        if (static_cast<int>(elapsed * 2) % 2 == 0) {
-            // Timer visible
-            TimerSprite.setColor(sf::Color::Red);
-        }
-        else {
-            // Timer semi-transparent for blink effect
-            TimerSprite.setColor(sf::Color(255, 100, 100, 128));
-        }
+    // Change sprite based on time remaining percentage
+    if (timePercentage > 0.95f) {
+        // Timer just started - use start sprite
+        TimerSprite.setTexture(TimerTexture_Start);
+    }
+    else if (timePercentage > 0.1f) {
+        float frameNumber = 1.0f - (timePercentage / 0.75f);
+        std::string filename = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(frameNumber) + ".png";
+		TimerTexture_Mid.loadFromFile(filename);
+        TimerSprite.setTexture(TimerTexture_Mid);
     }
     else {
-        // Normal timer color
+        // Very low or no time - use end sprite
+        TimerSprite.setTexture(TimerTexture_End);
+
+        // Optional: Add blinking effect for critical time
+        float elapsed = animationClock.getElapsedTime().asSeconds();
+        if (static_cast<int>(elapsed * 4) % 2 == 0) {
+            TimerSprite.setColor(sf::Color::White);
+        }
+        else {
+            TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
+        }
+    }
+
+    // Restore position after texture change (texture change might reset position)
+    TimerSprite.setPosition(currentPosition);
+
+    // Ensure normal color for non-critical times
+    if (timePercentage > 0.1f) {
         TimerSprite.setColor(sf::Color::White);
     }
 }

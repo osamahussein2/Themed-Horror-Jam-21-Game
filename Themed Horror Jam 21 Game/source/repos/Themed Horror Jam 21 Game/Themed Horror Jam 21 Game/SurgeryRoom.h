@@ -77,8 +77,16 @@ private:
     SpriteTexture DeathSpriteTexture;
     Texture DeathTexture;
 
-    SpriteTexture TimerSpriteTexture;
-    Texture TimerTexture;
+    // Multiple timer textures and sprite textures
+    SpriteTexture TimerSpriteTexture_Start;
+    SpriteTexture TimerSpriteTexture_Mid;
+    SpriteTexture TimerSpriteTexture_Low;
+    SpriteTexture TimerSpriteTexture_End;
+
+    Texture TimerTexture_Start;
+    Texture TimerTexture_Mid;
+    Texture TimerTexture_Low;
+    Texture TimerTexture_End;
 
     // Timer system
     bool timerRunning;
@@ -95,10 +103,12 @@ private:
     void ScaleToFitScreen(sf::Vector2u screenResolution);
     void UpdateTimerSprite(); // Update timer visual based on remaining time
 
-    // Asset paths
+    // Asset paths for different timer states
     const char* LifePath = "Art Assets/SurgeryRoom/life.png";
-    const char* DeathPath = "Art Assets/SurgeryRoom/death.png"; // Add this asset
-    const char* Timer = "Art Assets/SurgeryRoom/Timer/Timer_End.png";
+    const char* DeathPath = "Art Assets/SurgeryRoom/death.png";
+    const char* Timer_Start = "Art Assets/SurgeryRoom/Timer/Timer_start.png";
+    const char* Timer_Mid = "Art Assets/SurgeryRoom/Timer/Timer_0.png";
+    const char* Timer_End = "Art Assets/SurgeryRoom/Timer/Timer_End.png";
 };
 
 #endif

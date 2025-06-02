@@ -133,9 +133,11 @@ void GameScene::Update(float deltaTime)
         inputCooldown = INPUT_DELAY;
     }
 
-    // If surgery room is active
     if (surgeryRoomActive)
     {
+        // Update the timer
+        surgeryRoom.UpdateTimer(deltaTime);
+
         Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
         Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
@@ -151,10 +153,13 @@ void GameScene::Update(float deltaTime)
                 {
                     operationSceneActive = true;
 
-                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png", 
-                        Vector2f(resolution.x / 2.8f, 0.0f), 
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)), 
+                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                        Vector2f(resolution.x / 2.8f, 0.0f),
+                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                         true);
+
+                    // Start the timer when operation scene becomes active
+                    surgeryRoom.StartTimer(60.0f); // Start with 60 seconds, adjust as needed
                 }
             }
         }
@@ -238,6 +243,14 @@ std::string GameScene::GetSceneName() const
 
 void GameScene::InitializeGame()
 {
+    // Reset surgery room state
+    surgeryRoomActive = false;
+
+    // Stop any running timer when reinitializing
+    if (surgeryRoom.IsLoaded())
+    {
+        surgeryRoom.StopTimer();
+    }
     if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
     if (hideDialogue != false) hideDialogue = false;
