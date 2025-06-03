@@ -199,7 +199,6 @@ void SurgeryRoom::UpdateTimerSprite()
     }
     else if (timePercentage > 0.1f && timePercentage <= 0.95f) {
         float frameNumber = 1.0f - (timePercentage / 0.75f);
-        //std::string filename = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(frameNumber) + ".png";
         std::string filename = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
 		TimerTexture_Mid.loadFromFile(filename);
         TimerSprite.setTexture(TimerTexture_Mid);

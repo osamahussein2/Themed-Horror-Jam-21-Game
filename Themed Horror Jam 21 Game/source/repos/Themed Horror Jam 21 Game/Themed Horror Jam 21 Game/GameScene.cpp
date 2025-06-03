@@ -171,7 +171,7 @@ void GameScene::Update(float deltaTime)
                         true);
 
                     // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(23.0f); // Start with 60 seconds, adjust as needed
+                    surgeryRoom.StartTimer(57.0f); // Start with 60 seconds, adjust as needed
                 }
             }
         }
