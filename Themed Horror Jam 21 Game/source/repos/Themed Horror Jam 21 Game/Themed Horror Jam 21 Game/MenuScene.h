@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 #include "Menu.h"
+#include "Audio.h"
 
 class MenuScene : public Scene
 {
@@ -22,6 +23,8 @@ private:
     Menu gameMenu;
     Vector2u resolution;
     View mainMenuView;
+
+    //std::unique_ptr<Audio> mainMenuAudio;
 };
 
 #endif
