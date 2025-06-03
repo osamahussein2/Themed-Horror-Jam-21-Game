@@ -58,28 +58,7 @@ void GameScene::Update(float deltaTime)
         return;
     }
 
-    // Move the dialogue texts on the left and bottom sides of the screen
-    if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
-    {
-        float panelWidth = resolution.x - 100.0f;
-        float panelHeight = 700.0f;
-
-        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
-        float panelY = (resolution.y - panelHeight - 10.0f);
-
-        if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
-            dialoguePanel->SetPosition(Vector2f(panelX, panelY));
-
-        if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
-            dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
-
-        float textX = panelX + 25;
-        float textY = panelY + 400.0f;
-
-        if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
-            dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
-    }
-
+    // If dialogue isn't hidden, update the typewriter effect and update dialogue panel textures as well
     if (!hideDialogue)
     {
         typewriterEffect.Update(deltaTime);
@@ -282,11 +261,11 @@ void GameScene::InitializeGame()
     {
         dialoguePanel = new DialoguePanel();
 
-        float panelWidth = resolution.x - 100.0f;
-        float panelHeight = 700.0f;
+        float panelWidth = 1820.0f * (resolution.x / 1920.0f);
+        float panelHeight = 700.0f * (resolution.y / 1080.0f);
 
-        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
-        float panelY = (resolution.y - panelHeight - 10.0f) * (resolution.y / 1080.0f);
+        float panelX = resolution.x / 35.0f;
+        float panelY = resolution.y / 3.0f;
 
         dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
             "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
@@ -312,16 +291,19 @@ void GameScene::InitializeGame()
         dialogueSystemInitialized = true;
     }
 
+    float textPanelX = resolution.x / 25.0f; // Move text panels slightly to the right from the dialogue panel
+    float textPanelY = resolution.y / 1.4f; // Move text panels slightly below from the dialogue panel
+
     DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
     dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 
     dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 
     dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 }
 
 void GameScene::InitializeDialogueSystem()
