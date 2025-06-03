@@ -262,13 +262,16 @@ int SurgeryRoom::GetLivesRemaining() const
     return count;
 }
 
-void SurgeryRoom::Draw(RenderWindow& window)
+void SurgeryRoom::Draw(RenderWindow& window, Sprite body)
 {
     if (isLoaded)
     {
+        // Draw background first
+        window.draw(backgroundSprite);
+		window.draw(body);
+        // Then draw UI elements on top
         window.draw(TopUISprite);
         DrawUI(window);
-        window.draw(backgroundSprite);
     }
 }
 

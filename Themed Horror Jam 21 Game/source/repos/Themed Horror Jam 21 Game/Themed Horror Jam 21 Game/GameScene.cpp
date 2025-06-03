@@ -6,14 +6,12 @@ float DIALOGUE_TEXT_CHARACTER_SIZE;
 
 GameScene::GameScene()
     : currentDialogueIndex(0)
-    , hideDialogue(false)
+    , currentGameState(GameState::INITIALIZING)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
     , dialoguePanel(nullptr)
     , dialogueSystemInitialized(false)
-    , surgeryRoomActive(false)
     , typeTextTime(0.0f)
-    , operationSceneActive(false)
 {
 }
 
@@ -58,9 +56,12 @@ void GameScene::Update(float deltaTime)
         return;
     }
 
-    // If dialogue isn't hidden, update the typewriter effect and update dialogue panel textures as well
-    if (!hideDialogue)
+    // Update based on current game state
+    switch (currentGameState)
     {
+    case GameState::DIALOGUE_ACTIVE:
+    {
+        // Update the typewriter effect and dialogue panel textures
         typewriterEffect.Update(deltaTime);
         UpdateDialoguePanelTexture();
 
@@ -70,26 +71,23 @@ void GameScene::Update(float deltaTime)
             std::string currentText = typewriterEffect.GetCurrentText();
             dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
         }
-    }
 
-    // Handle input for dialogue
-    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && !hideDialogue)
-    {
-        if (!typewriterEffect.IsCurrentDialogueComplete())
+        // Handle input for dialogue
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
         {
-            typewriterEffect.Skip();
-        }
-        else if (typewriterEffect.HasNextDialogue())
-        {
-            typewriterEffect.NextDialogue();
-            currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
-        }
-        else
-        {
-            hideDialogue = true;
-            // Activate surgery room when dialogue ends
-            if (!surgeryRoomActive)
+            if (!typewriterEffect.IsCurrentDialogueComplete())
             {
+                typewriterEffect.Skip();
+            }
+            else if (typewriterEffect.HasNextDialogue())
+            {
+                typewriterEffect.NextDialogue();
+                currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
+            }
+            else
+            {
+                currentGameState = GameState::DIALOGUE_HIDDEN;
+                // Activate surgery room when dialogue ends
                 gameBackground.Unload();
 
                 if (!surgeryRoom.IsLoaded())
@@ -101,7 +99,7 @@ void GameScene::Update(float deltaTime)
                         "Art Assets/SurgeryRoom/BottomUI.png", sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
                         sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
                         "Art Assets/SurgeryRoom/TopUI.png", sf::Vector2f(resolution.x / 4.0f, 0.0f), // top UI
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f), 
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
                         sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
                         sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
                         sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
@@ -117,14 +115,15 @@ void GameScene::Update(float deltaTime)
                 person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                     resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
 
-                surgeryRoomActive = true;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             }
-        }
 
-        inputCooldown = INPUT_DELAY;
+            inputCooldown = INPUT_DELAY;
+        }
+        break;
     }
 
-    if (surgeryRoomActive)
+    case GameState::SURGERY_ROOM_ACTIVE:
     {
         // Update the timer
         surgeryRoom.UpdateTimer(deltaTime);
@@ -132,7 +131,7 @@ void GameScene::Update(float deltaTime)
         Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
         Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
-        // Make the sure the mouse position is on the sprite to change its sprite color
+        // Make sure the mouse position is on the sprite to change its sprite color
         if (person.LoadSprite().getGlobalBounds().contains(mousePos))
         {
             if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
@@ -140,32 +139,42 @@ void GameScene::Update(float deltaTime)
             // Set up the operation scene after clicking the left mouse button
             if (Mouse::isButtonPressed(Mouse::Button::Left))
             {
-                if (!operationSceneActive)
-                {
-                    operationSceneActive = true;
+                currentGameState = GameState::OPERATION_ACTIVE;
 
-                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
-                        Vector2f(resolution.x / 2.8f, 0.0f),
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
-                        true);
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
 
-                    // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(57.0f); // Start with 60 seconds, adjust as needed
-                }
+                // Start the timer when operation scene becomes active
+                surgeryRoom.StartTimer(57.0f); // Start with 60 seconds, adjust as needed
             }
         }
-
-        // Otherwise, reset the sprite's color back to white once the mouse is longer hovering on the sprite
+        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
         {
             if (person.GetColor() != Color::White) person.SetColor(Color::White);
         }
+        break;
     }
 
-    // If operation scene is active
-    if (operationSceneActive)
+    case GameState::OPERATION_ACTIVE:
     {
+        // Operation scene specific updates can go here
+        break;
+    }
 
+    case GameState::DIALOGUE_HIDDEN:
+    {
+        // Handle any logic for when dialogue is hidden but surgery room isn't active yet
+        break;
+    }
+
+    case GameState::INITIALIZING:
+    {
+        // Handle initialization state if needed
+        break;
+    }
     }
 }
 
@@ -173,28 +182,15 @@ void GameScene::Render(RenderWindow& window)
 {
     window.clear();
 
-    if (surgeryRoomActive)
+    switch (currentGameState)
     {
-        if (!operationSceneActive)
-        {
-            // Draw surgery room when active
-            surgeryRoom.Draw(window);
-            window.draw(person.LoadSprite());
-        }
-
-        else if (operationSceneActive)
-        {
-            // Draw operation scene and overlay the UI from surgery room
-            operationScene.Draw(window);
-            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
-        }
-    }
-    else
+    case GameState::DIALOGUE_ACTIVE:
     {
         // Draw normal game background
+
         gameBackground.Draw(window);
 
-        if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
+        if (dialogueTexts[currentDialogueIndex])
         {
             if (dialoguePanel)
             {
@@ -203,14 +199,41 @@ void GameScene::Render(RenderWindow& window)
 
             window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
         }
-        else if (hideDialogue)
+        break;
+    }
+
+    case GameState::SURGERY_ROOM_ACTIVE:
+    {
+        // Draw surgery room when active
+  
+        surgeryRoom.Draw(window, person.LoadSprite());
+        break;
+    }
+
+    case GameState::OPERATION_ACTIVE:
+    {
+        // Draw operation scene and overlay the UI from surgery room
+        operationScene.Draw(window);
+        surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+        break;
+    }
+
+    case GameState::DIALOGUE_HIDDEN:
+    {
+        // Clean up dialogue texts when hidden
+        for (int i = 0; i < dialogueTexts.size(); i++)
         {
-            for (int i = 0; i < dialogueTexts.size(); i++)
-            {
-                delete dialogueTexts[i];
-                dialogueTexts[i] = nullptr;
-            }
+            delete dialogueTexts[i];
+            dialogueTexts[i] = nullptr;
         }
+        break;
+    }
+
+    case GameState::INITIALIZING:
+    {
+        // Handle initialization rendering if needed
+        break;
+    }
     }
 }
 
@@ -234,23 +257,19 @@ std::string GameScene::GetSceneName() const
 
 void GameScene::InitializeGame()
 {
-    // Reset surgery room state
-    surgeryRoomActive = false;
+    // Reset to initial state
+    currentGameState = GameState::DIALOGUE_ACTIVE;
 
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
         surgeryRoom.StopTimer();
     }
+
     if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
-    if (hideDialogue != false) hideDialogue = false;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
-    if (operationSceneActive != false) operationSceneActive = false;
-
-    // Reset surgery room state
-    surgeryRoomActive = false;
 
     if (!gameBackground.IsLoaded())
     {
@@ -296,13 +315,13 @@ void GameScene::InitializeGame()
 
     DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
-    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
         sf::Color::White, Vector2f(textPanelX, textPanelY));
 
-    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
         sf::Color::White, Vector2f(textPanelX, textPanelY));
 
-    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
+    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
         sf::Color::White, Vector2f(textPanelX, textPanelY));
 }
 
@@ -326,7 +345,6 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
         }
-
         break;
 
     case 1:
@@ -334,7 +352,6 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
         }
-
         break;
 
     case 2:
@@ -342,7 +359,6 @@ void GameScene::UpdateDialoguePanelTexture()
         {
             dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
         }
-
         break;
 
     default:

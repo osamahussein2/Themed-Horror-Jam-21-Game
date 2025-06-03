@@ -22,7 +22,7 @@ public:
         Vector2f deathSprite2position, Vector2f deathSpriteScale, Vector2f timerSpritePosition, Vector2f timerSpriteScale);
 
     // Draw the surgery room to the render window
-    void Draw(RenderWindow& window);
+    void Draw(RenderWindow& window, Sprite body);
 
     // Draw only UI elements (without background)
     void DrawUI(RenderWindow& window);
