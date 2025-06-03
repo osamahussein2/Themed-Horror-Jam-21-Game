@@ -50,9 +50,12 @@ public:
     // Check if surgery room is loaded successfully
     bool IsLoaded() const { return isLoaded; }
 
+    void DrawBackground(RenderWindow& window);
     // Public members
     int TimerValue = 0;
+    Sprite backgroundSprite;
     Sprite BouttomUISprite;
+    SpriteTexture BouttomUISpriteTexture;
     Sprite TopUISprite;
     Sprite LifeSprite_0;
     Sprite LifeSprite_1;
@@ -64,7 +67,7 @@ public:
 
 private:
     // Texture and sprite management
-    SpriteTexture BouttomUISpriteTexture;
+ 
     Texture BouttomUITexture;
 
     SpriteTexture TopUISpriteTexture;
@@ -75,7 +78,7 @@ private:
 
     SpriteTexture backgroundSpriteTexture;
     Texture backgroundTexture;
-    Sprite backgroundSprite;
+
 
     SpriteTexture DeathSpriteTexture;
     Texture DeathTexture;

@@ -266,9 +266,9 @@ void SurgeryRoom::Draw(RenderWindow& window)
 {
     if (isLoaded)
     {
-        window.draw(backgroundSprite);
         window.draw(TopUISprite);
         DrawUI(window);
+        window.draw(backgroundSprite);
     }
 }
 
