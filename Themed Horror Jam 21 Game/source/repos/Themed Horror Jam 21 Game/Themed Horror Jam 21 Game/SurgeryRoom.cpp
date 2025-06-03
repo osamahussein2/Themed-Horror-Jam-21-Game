@@ -182,16 +182,12 @@ void SurgeryRoom::StopTimer()
 void SurgeryRoom::UpdateTimerSprite()
 {
     if (!isLoaded) return;
-
     // Calculate time percentage remaining
     float timePercentage = timeRemaining / totalTime;
-
     // Apparently, the timer texture files had 0-23 so start duration was set to 23 in GameScene.cpp
     int timeInInt = static_cast<int>(timeRemaining);
-
     // Store current position to maintain it when changing texture
     sf::Vector2f currentPosition = TimerSprite.getPosition();
-
     // Change sprite based on time remaining percentage
     if (timePercentage > 0.95f) {
         // Timer just started - use start sprite
@@ -200,26 +196,23 @@ void SurgeryRoom::UpdateTimerSprite()
     else if (timePercentage > 0.1f && timePercentage <= 0.95f) {
         float frameNumber = 1.0f - (timePercentage / 0.75f);
         std::string filename = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
-		TimerTexture_Mid.loadFromFile(filename);
+        TimerTexture_Mid.loadFromFile(filename);
         TimerSprite.setTexture(TimerTexture_Mid);
     }
     else {
         // Very low or no time - use end sprite
         TimerSprite.setTexture(TimerTexture_End);
-
         // Optional: Add blinking effect for critical time
         float elapsed = animationClock.getElapsedTime().asSeconds();
-        if (static_cast<int>(elapsed * 4) % 2 == 0) {
+        if (static_cast<int>(elapsed * 0.1f) % 2 == 0) {  // Changed from * 4 to * 0.1
             TimerSprite.setColor(sf::Color::White);
         }
         else {
             TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
         }
     }
-
     // Restore position after texture change (texture change might reset position)
     TimerSprite.setPosition(currentPosition);
-
     // Ensure normal color for non-critical times
     if (timePercentage > 0.1f) {
         TimerSprite.setColor(sf::Color::White);
