@@ -28,6 +28,15 @@ enum class GameState {
     INITIALIZING
 };
 
+enum class Day
+{
+    DAY_1,
+    DAY_2,
+    DAY_3,
+    DAY_4,
+    DAY_5
+};
+
 class GameScene : public Scene
 {
 public:
@@ -54,6 +63,8 @@ private:
     OperationScene operationScene;
     ItemTable itemTable;
     TypewriterEffect typewriterEffect;
+
+    Day currentDay;
 
     Vector2u resolution;
 
