@@ -11,10 +11,10 @@ public:
 	SpriteTexture();
 	~SpriteTexture();
 
-	sf::Sprite InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_ = 
+	sf::Sprite& InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_ = 
 		sf::Vector2f(1, 1));
 
-	sf::Sprite LoadSprite();
+	sf::Sprite& LoadSprite();
 
 	const char* GetTexture();
 	void SetTexture(const char* filePath_);
