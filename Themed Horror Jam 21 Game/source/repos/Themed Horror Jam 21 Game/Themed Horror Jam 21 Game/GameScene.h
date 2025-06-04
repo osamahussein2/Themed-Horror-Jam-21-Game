@@ -25,17 +25,11 @@ enum class GameState {
     DIALOGUE_HIDDEN,
     SURGERY_ROOM_ACTIVE,
     OPERATION_ACTIVE,
+    ITEM_TABLE_ACTIVE,  // Add this new state
     INITIALIZING
 };
 
-enum class Day
-{
-    DAY_1,
-    DAY_2,
-    DAY_3,
-    DAY_4,
-    DAY_5
-};
+
 
 class GameScene : public Scene
 {
@@ -50,7 +44,7 @@ public:
     void OnEnter() override;
     void OnExit() override;
     std::string GetSceneName() const override;
-
+    int DayPassed;
     Vector2u GetResolution() { return resolution; }
     void SetResolution(Vector2u newResolution) { resolution = newResolution; }
 
@@ -63,8 +57,6 @@ private:
     OperationScene operationScene;
     ItemTable itemTable;
     TypewriterEffect typewriterEffect;
-
-    Day currentDay;
 
     Vector2u resolution;
 

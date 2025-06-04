@@ -15,6 +15,7 @@ DeathSprite_2(DeathTexture),
 NotesSprite(NotesTexture),
 BagSprite(BagSprite),
 TableUISprite(TableUISprite),
+OperationTableSprite(OperationTableTexture),
 timerRunning(false),
 timeRemaining(0.0f),
 totalTime(0.0f)
@@ -29,7 +30,7 @@ SurgeryRoom::~SurgeryRoom()
 {
 }
 
-bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPath, const char* TopUIPath, Vector2u screenResolution, Vector2f Size, Vector2f bottomUIposition, Vector2f topUIposition, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position, Vector2f deathSprite0position, Vector2f deathSprite1position, Vector2f deathSprite2position, Vector2f timerSpritePosition, Vector2f NotesSpritePos, Vector2f BagSpritePos, Vector2f TableUISpritePos)
+bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPath, const char* TopUIPath, Vector2u screenResolution, Vector2f Size, Vector2f bottomUIposition, Vector2f topUIposition, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position, Vector2f deathSprite0position, Vector2f deathSprite1position, Vector2f deathSprite2position, Vector2f timerSpritePosition, Vector2f NotesSpritePos, Vector2f BagSpritePos, Vector2f TableUISpritePos, Vector2f OperationTableSpritePos)
 {
     try
     {
@@ -60,6 +61,9 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 		BagSprite = BagSpriteTexture.InitializeSprite(BagPath, BagSpritePos, Size);
 		// Load table UI sprite
 		TableUISprite = TableUISpriteTexture.InitializeSprite(TableUIPath, TableUISpritePos, Size);
+
+		// Load operation table sprite
+		OperationTableSprite = OperationTableSpriteTexture.InitializeSprite(OperationTablePath, OperationTableSpritePos, Size);
 
         // Load all timer sprites
         // Load timer textures first
@@ -110,7 +114,8 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 		NotesSprite.setPosition(NotesSpritePos);
 		BagSprite.setPosition(BagSpritePos);
         TableUISprite.setPosition(TableUISpritePos);
-
+        OperationTableSprite.setPosition(OperationTableSpritePos);
+        OperationTableSprite.setScale({ 0.4f, 0.4f });
         isLoaded = true;
         return true;
     }
@@ -283,6 +288,7 @@ void SurgeryRoom::DrawUI(RenderWindow& window)
     window.draw(NotesSprite);
     window.draw(BagSprite);
     window.draw(TableUISprite);
+    window.draw(OperationTableSprite);
 }
 
 void SurgeryRoom::SetPosition(Sprite sprite, Vector2f position)

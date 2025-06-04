@@ -30,7 +30,8 @@ public:
         , Vector2f timerSpritePosition, 
         Vector2f NotesSpritePos
         , Vector2f BagSpritePos,
-        Vector2f TableUISpritePos);
+        Vector2f TableUISpritePos, 
+        Vector2f OperationTableSpritePos);
 
     // Draw the surgery room to the render window
     void Draw(RenderWindow& window, Sprite body);
@@ -66,6 +67,7 @@ public:
     Sprite backgroundSprite;
     Sprite BouttomUISprite;
     SpriteTexture BouttomUISpriteTexture;
+    SpriteTexture TopUISpriteTexture;
     Sprite TopUISprite;
     Sprite LifeSprite_0;
     Sprite LifeSprite_1;
@@ -80,7 +82,7 @@ private:
  
     Texture BouttomUITexture;
 
-    SpriteTexture TopUISpriteTexture;
+   
     Texture TopUITexture;
 
     SpriteTexture LifeSpriteTexture;
@@ -117,6 +119,10 @@ private:
 	Texture TableUITexture;
 	Sprite TableUISprite;
 
+    SpriteTexture OperationTableSpriteTexture;
+	Texture OperationTableTexture;
+	Sprite OperationTableSprite;
+
     // Timer system
     bool timerRunning;
     float timeRemaining;
@@ -141,6 +147,7 @@ private:
 	const char* NotePath = "Art Assets/SurgeryRoom/notes.png";
 	const char* BagPath = "Art Assets/SurgeryRoom/bag.png";
 	const char* TableUIPath = "Art Assets/SurgeryRoom/table.png";
+	const char* OperationTablePath = "Art Assets/SurgeryRoom/OperationTable.png";
 };
 
 #endif
