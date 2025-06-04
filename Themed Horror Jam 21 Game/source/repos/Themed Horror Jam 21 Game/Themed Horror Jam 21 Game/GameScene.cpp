@@ -134,10 +134,10 @@ void GameScene::Update(float deltaTime)
         Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
         Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
-        if (surgeryRoom.TopUISpriteTexture.LoadSprite().getGlobalBounds().contains(mousePos))
+        if (surgeryRoom.TopUISprite.getGlobalBounds().contains(mousePos))
         {
-            if (surgeryRoom.TopUISpriteTexture.GetColor() != Color::Red)
-                surgeryRoom.TopUISpriteTexture.SetColor(Color::Red);
+            if (surgeryRoom.TopUISprite.getColor() != Color::Red)
+                surgeryRoom.TopUISprite.setColor(Color::Red);
 
             if (Mouse::isButtonPressed(Mouse::Button::Left))
             {
@@ -155,8 +155,8 @@ void GameScene::Update(float deltaTime)
         else
         {
             // Reset color when not hovering
-            if (surgeryRoom.TopUISpriteTexture.GetColor() != Color::White)
-                surgeryRoom.TopUISpriteTexture.SetColor(Color::White);
+            if (surgeryRoom.TopUISprite.getColor() != Color::White)
+                surgeryRoom.TopUISprite.setColor(Color::White);
         }
 
         // Make sure the mouse position is on the sprite to change its sprite color
