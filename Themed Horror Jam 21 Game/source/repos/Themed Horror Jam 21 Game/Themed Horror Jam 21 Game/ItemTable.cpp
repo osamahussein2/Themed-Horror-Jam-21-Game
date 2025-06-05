@@ -41,10 +41,11 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 
 
 void ItemTable::Draw(RenderWindow& window)
-{// Draw the item table sprite
+{
+    window.draw(GroundSprite);
 	window.draw(ItemtableSprite);
-	// Draw the ground sprite
-	window.draw(GroundSprite);
+
+
 }
 
 void ItemTable::SetPosition(Vector2f position)
