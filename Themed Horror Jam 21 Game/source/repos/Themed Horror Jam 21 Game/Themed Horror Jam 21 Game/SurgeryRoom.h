@@ -61,7 +61,6 @@ public:
 
     // Check if surgery room is loaded successfully
     bool IsLoaded() const { return isLoaded; }
-
     // Public members
     int TimerValue = 0;
     Sprite backgroundSprite;
