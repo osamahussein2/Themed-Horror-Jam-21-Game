@@ -147,7 +147,7 @@ void GameScene::Update(float deltaTime)
                 std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
    
                 itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
-                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f((resolution.x/2.0f)-600.0f, (resolution.y / 2.0f)-400.0f),
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
 
@@ -199,19 +199,61 @@ void GameScene::Update(float deltaTime)
 
     case GameState::OPERATION_ACTIVE:
     {
-        // Operation scene specific updates can go here
+
+        // Handle input for item table
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        {
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
         break;
     }
 
     case GameState::DIALOGUE_HIDDEN:
     {
-        // Handle any logic for when dialogue is hidden but surgery room isn't active yet
+
+        // Handle input for item table
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        {
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
         break;
     }
 
     case GameState::INITIALIZING:
     {
-        // Handle initialization state if needed
+
+        // Handle input for item table
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        {
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
         break;
     }
 

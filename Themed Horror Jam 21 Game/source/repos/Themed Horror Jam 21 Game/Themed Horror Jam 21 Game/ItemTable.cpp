@@ -27,7 +27,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
     }
 
     ItemtableSprite.setTexture(ItemtableTexture);
-    ItemtableSprite.setScale(scale_);
     ItemtableSprite.setPosition(position_);
 
     GroundTexture.loadFromFile("Art Assets/SurgeryRoom/ground.png");
