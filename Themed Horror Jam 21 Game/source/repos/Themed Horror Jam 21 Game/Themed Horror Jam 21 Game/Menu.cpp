@@ -160,7 +160,8 @@ void Menu::CreateAboutText()
         "• ESC to pause/return to menu\n\n"
         "Programmer by Osama Hussein\n"
         "Programmer/Graphics by ScriptFox\n"
-        "Game Design/Writing by fauxdude97\n";
+        "Game Design/Writing by fauxdude97\n"
+        "Music/SFX by Seangle75\n";
 
     aboutContentText.InitializeText("Fonts/Roboto-Regular.ttf", aboutContent, ABOUT_CONTENT_CHARACTER_SIZE, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
