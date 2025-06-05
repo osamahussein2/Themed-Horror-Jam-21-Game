@@ -80,6 +80,9 @@ private:
     void InitializeGame();
     void InitializeDialogueSystem();
     void UpdateDialoguePanelTexture();
+
+    float alpha = 255.0f;
+    bool alphaIncrease = false;
 };
 
 #endif

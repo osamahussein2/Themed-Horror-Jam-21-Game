@@ -119,6 +119,8 @@ void GameScene::Update(float deltaTime)
                     resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
 
                 currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+
+                alpha = 255.0f;
             }
 
             inputCooldown = INPUT_DELAY;
@@ -162,6 +164,7 @@ void GameScene::Update(float deltaTime)
         // Make sure the mouse position is on the sprite to change its sprite color
         if (person.LoadSprite().getGlobalBounds().contains(mousePos))
         {
+            if (alpha != 255.0f) alpha = 255.0f;
             if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
 
             // Set up the operation scene after clicking the left mouse button
@@ -181,7 +184,13 @@ void GameScene::Update(float deltaTime)
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
         {
-            if (person.GetColor() != Color::White) person.SetColor(Color::White);
+            if (alpha >= 255.0f) alphaIncrease = false; // Decrease alpha value
+            if (alpha <= 125.0f) alphaIncrease = true; // Increase alpha value
+
+            if (alphaIncrease) alpha += 50.0f * deltaTime;
+            else if (!alphaIncrease) alpha -= 50.0f * deltaTime;
+
+            if (person.GetColor() != Color(255, 255, 255, alpha)) person.SetColor(Color(255, 255, 255, alpha));
         }
         break;
     }
