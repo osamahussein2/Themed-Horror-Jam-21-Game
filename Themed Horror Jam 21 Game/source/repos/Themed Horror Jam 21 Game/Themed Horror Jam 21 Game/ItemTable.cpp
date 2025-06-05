@@ -1,131 +1,65 @@
 #include "ItemTable.h"
 
-ItemTable::ItemTable(): isLoaded(false), backgroundSprite(backgroundTexture)
+ItemTable::ItemTable() : ItemtableSprite(ItemtableTexture), GroundSprite(GroundTexture)
 {
 }
+
 ItemTable::~ItemTable()
 {
 }
 
-bool ItemTable::Initialize(const char* filePath, Vector2u screenResolution)
+void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f scale_, bool centerTexture_)
 {
-    try
+    ItemtableTexture.loadFromFile(filePath_);
+
+    // Create a sprite from the texture
+    ItemtableSprite = sf::Sprite(ItemtableTexture);
+
+    if (centerTexture_)
     {
-        // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(filePath, sf::Vector2f(0.0f, 0.0f),
-            sf::Vector2f(screenResolution.x / 1920.0f, screenResolution.y / 1080.0f));
-
-        // Scale the background to fit the screen
-        ScaleToFitScreen(screenResolution);
-
-        isLoaded = true;
-        return true;
+        ItemtableSprite.setOrigin(Vector2f(ItemtableSprite.getPosition().x + ItemtableSprite.getScale().x / 2.0f,
+            ItemtableSprite.getPosition().y + ItemtableSprite.getScale().y / 2.0f));
     }
-    catch (...)
+
+    else
     {
-        isLoaded = false;
-        return false;
+        ItemtableSprite.setOrigin(Vector2f(0.0f, 0.0f));
     }
+
+    ItemtableSprite.setTexture(ItemtableTexture);
+    ItemtableSprite.setScale(scale_);
+    ItemtableSprite.setPosition(position_);
+
+    GroundTexture.loadFromFile("Art Assets/SurgeryRoom/ground.png");
+    GroundSprite = sf::Sprite(GroundTexture);
+    GroundSprite.setTexture(GroundTexture);
+    GroundSprite.setScale(scale_);
+    float GroundX = 0;
+    float GroundY = 0;
+    GroundSprite.setPosition({ GroundX,GroundY });
 }
 
-bool ItemTable::Initialize(const char* filePath, Vector2f position, Vector2f scale)
+
+void ItemTable::Draw(RenderWindow& window)
+{// Draw the item table sprite
+	window.draw(ItemtableSprite);
+	// Draw the ground sprite
+	window.draw(GroundSprite);
+}
+
+void ItemTable::SetPosition(Vector2f position)
 {
-    try
-    {
-        // Use the SpriteTexture class to load the background
-        backgroundSpriteTexture.InitializeSprite(filePath, position);
-
-        // Set custom scale
-        backgroundSprite.setScale(scale);
-
-        isLoaded = true;
-        return true;
-    }
-    catch (...)
-    {
-        isLoaded = false;
-        return false;
-    }
+    ItemtableSprite.setPosition(position);
 }
 
-void ItemTable::Draw(sf::RenderWindow& window)
+void ItemTable::Move(Vector2f offset)
 {
-    if (isLoaded)
-    {
-        window.draw(backgroundSprite);
-    }
+	ItemtableSprite.move(offset);
+	GroundSprite.move(offset);
 }
 
-void ItemTable::SetPosition(sf::Vector2f position)
+void ItemTable::SetScale(Vector2f scale)
 {
-    if (isLoaded)
-    {
-        backgroundSprite.setPosition(position);
-    }
+	ItemtableSprite.setScale(scale);
+	GroundSprite.setScale(scale);
 }
-
-void ItemTable::Move(sf::Vector2f offset)
-{
-    if (isLoaded)
-    {
-        backgroundSprite.move(offset);
-    }
-}
-
-void ItemTable::SetScale(sf::Vector2f scale)
-{
-    if (isLoaded)
-    {
-        backgroundSprite.setScale(scale);
-    }
-}
-
-Sprite& ItemTable::GetSprite()
-{
-    return backgroundSprite;
-}
-
-const char* ItemTable::GetTexture()
-{
-    return backgroundSpriteTexture.GetTexture();
-}
-
-void ItemTable::SetTexture(const char* filePath_)
-{
-    backgroundSpriteTexture.SetTexture(filePath_);
-}
-
-void ItemTable::Unload()
-{
-    isLoaded = false;
-}
-
-void ItemTable::ScaleToFitScreen(sf::Vector2u screenResolution)
-{
-    if (isLoaded)
-    {
-        // Get the texture size
-        sf::Vector2u textureSize = backgroundTexture.getSize();
-
-        // Calculate scale factors
-        float scaleX = static_cast<float>(screenResolution.x) / static_cast<float>(textureSize.x);
-        float scaleY = static_cast<float>(screenResolution.y) / static_cast<float>(textureSize.y);
-
-        // Use the larger scale factor to ensure the background covers the entire screen
-        // This maintains aspect ratio but may crop parts of the image
-        float scale = std::max(scaleX, scaleY);
-
-        // Apply uniform scaling
-        backgroundSprite.setScale({ scale, scale });
-
-        // Center the background on screen
-        sf::Vector2f scaledSize = sf::Vector2f(textureSize.x * scale, textureSize.y * scale);
-        sf::Vector2f centerPosition = sf::Vector2f(
-            (static_cast<float>(screenResolution.x) - scaledSize.x) / 2.0f,
-            (static_cast<float>(screenResolution.y) - scaledSize.y) / 2.0f
-        );
-
-        backgroundSprite.setPosition(centerPosition);
-    }
-}
-

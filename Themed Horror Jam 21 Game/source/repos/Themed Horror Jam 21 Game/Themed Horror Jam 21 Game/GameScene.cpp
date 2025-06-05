@@ -141,17 +141,19 @@ void GameScene::Update(float deltaTime)
             if (surgeryRoom.TopUISprite.getColor() != Color::Red)
                 surgeryRoom.TopUISprite.setColor(Color::Red);
 
+            // Add input cooldown check here
             if (Mouse::isButtonPressed(Mouse::Button::Left))
             {
-                if (!itemTable.IsLoaded())
-                {
-                    itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
-                        Vector2f(resolution.x / 2.8f, 0.0f),
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)));
-                }
+                std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
+   
+                itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
 
-                // Change to ITEM_TABLE_ACTIVE instead of DIALOGUE_ACTIVE
+                // Change to ITEM_TABLE_ACTIVE
                 currentGameState = GameState::ITEM_TABLE_ACTIVE;
+                std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
         }
         else
@@ -277,12 +279,9 @@ void GameScene::Render(RenderWindow& window)
         // Add this new case:
         case GameState::ITEM_TABLE_ACTIVE:
         {
-            // Draw surgery room as background
-            // Draw surgery room as background
-            surgeryRoom.Draw(window, person.LoadSprite());
-
-            // Draw item table on top
             itemTable.Draw(window);
+            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+     
             break;
         }
 
