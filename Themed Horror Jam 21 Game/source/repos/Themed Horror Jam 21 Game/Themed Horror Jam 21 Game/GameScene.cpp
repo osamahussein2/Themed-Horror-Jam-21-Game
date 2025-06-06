@@ -149,7 +149,7 @@ void GameScene::Update(float deltaTime)
                     std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
 
                     itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
-                        Vector2f((resolution.x / 2.0f) - 600.0f, (resolution.y / 2.0f) - 400.0f),
+                        Vector2f((resolution.x / 2.0f) - 990.0f, (resolution.y / 2.0f) - 500.0f),
                         Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                         true);
 
