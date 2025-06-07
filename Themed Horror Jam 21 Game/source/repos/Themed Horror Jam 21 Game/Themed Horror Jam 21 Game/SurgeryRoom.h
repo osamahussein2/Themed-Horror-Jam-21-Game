@@ -15,14 +15,26 @@ public:
     ~SurgeryRoom();
 
     // Initialize the surgery room with an image file and screen resolution
-    bool Initialize(const char* Backgroundpath, Vector2u screenResolution, const char* BouttomUIPath, 
-        Vector2f bottomUIposition, Vector2f bottomUIscale, const char* TopUIPath, Vector2f topUIposition,
-        Vector2f topUIscale, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position,
-        Vector2f lifeSpriteScale, Vector2f deathSprite0position, Vector2f deathSprite1position, 
-        Vector2f deathSprite2position, Vector2f deathSpriteScale, Vector2f timerSpritePosition, Vector2f timerSpriteScale);
+    bool Initialize(
+        const char* Backgroundpath, 
+        const char* BouttomUIPath,
+        const char* TopUIPath,
+        Vector2u screenResolution,
+
+		Vector2f Size,
+        Vector2f bottomUIposition, 
+
+        Vector2f topUIposition,
+        Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position,
+        Vector2f deathSprite0position, Vector2f deathSprite1position,Vector2f deathSprite2position
+        , Vector2f timerSpritePosition, 
+        Vector2f NotesSpritePos
+        , Vector2f BagSpritePos,
+        Vector2f TableUISpritePos, 
+        Vector2f OperationTableSpritePos);
 
     // Draw the surgery room to the render window
-    void Draw(RenderWindow& window);
+    void Draw(RenderWindow& window, Sprite body);
 
     // Draw only UI elements (without background)
     void DrawUI(RenderWindow& window);
@@ -49,10 +61,12 @@ public:
 
     // Check if surgery room is loaded successfully
     bool IsLoaded() const { return isLoaded; }
-
     // Public members
     int TimerValue = 0;
+    Sprite backgroundSprite;
     Sprite BouttomUISprite;
+    SpriteTexture BouttomUISpriteTexture;
+    SpriteTexture TopUISpriteTexture;
     Sprite TopUISprite;
     Sprite LifeSprite_0;
     Sprite LifeSprite_1;
@@ -64,10 +78,10 @@ public:
 
 private:
     // Texture and sprite management
-    SpriteTexture BouttomUISpriteTexture;
+ 
     Texture BouttomUITexture;
 
-    SpriteTexture TopUISpriteTexture;
+   
     Texture TopUITexture;
 
     SpriteTexture LifeSpriteTexture;
@@ -75,7 +89,7 @@ private:
 
     SpriteTexture backgroundSpriteTexture;
     Texture backgroundTexture;
-    Sprite backgroundSprite;
+
 
     SpriteTexture DeathSpriteTexture;
     Texture DeathTexture;
@@ -90,6 +104,23 @@ private:
     Texture TimerTexture_Mid;
     Texture TimerTexture_Low;
     Texture TimerTexture_End;
+
+
+	SpriteTexture NotesSpriteTexture;
+	Texture NotesTexture;
+	Sprite NotesSprite;
+
+	SpriteTexture BagSpriteTexture;
+	Texture BagTexture;
+	Sprite BagSprite;
+
+	SpriteTexture TableUISpriteTexture;
+	Texture TableUITexture;
+	Sprite TableUISprite;
+
+    SpriteTexture OperationTableSpriteTexture;
+	Texture OperationTableTexture;
+	Sprite OperationTableSprite;
 
     // Timer system
     bool timerRunning;
@@ -112,6 +143,10 @@ private:
     const char* Timer_Start = "Art Assets/SurgeryRoom/Timer/Timer_start.png";
     const char* Timer_Mid = "Art Assets/SurgeryRoom/Timer/Timer_0.png";
     const char* Timer_End = "Art Assets/SurgeryRoom/Timer/Timer_End.png";
+	const char* NotePath = "Art Assets/SurgeryRoom/notes.png";
+	const char* BagPath = "Art Assets/SurgeryRoom/bag.png";
+	const char* TableUIPath = "Art Assets/SurgeryRoom/table.png";
+	const char* OperationTablePath = "Art Assets/SurgeryRoom/OperationTable.png";
 };
 
 #endif

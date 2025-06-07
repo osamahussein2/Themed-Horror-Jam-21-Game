@@ -8,7 +8,7 @@ SpriteTexture::~SpriteTexture()
 {
 }
 
-sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_)
+sf::Sprite& SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f initialSpritePos_, sf::Vector2f initialScale_)
 {
 	filePath = filePath_;
 
@@ -27,7 +27,7 @@ sf::Sprite SpriteTexture::InitializeSprite(const char* filePath_, sf::Vector2f i
 	return sprite;
 }
 
-sf::Sprite SpriteTexture::LoadSprite()
+sf::Sprite& SpriteTexture::LoadSprite()
 {
 	return sprite;
 }

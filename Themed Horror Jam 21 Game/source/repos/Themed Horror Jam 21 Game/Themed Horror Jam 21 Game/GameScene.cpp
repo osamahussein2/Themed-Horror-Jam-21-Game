@@ -6,14 +6,12 @@ float DIALOGUE_TEXT_CHARACTER_SIZE;
 
 GameScene::GameScene()
     : currentDialogueIndex(0)
-    , hideDialogue(false)
+    , currentGameState(GameState::INITIALIZING)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
     , dialoguePanel(nullptr)
     , dialogueSystemInitialized(false)
-    , surgeryRoomActive(false)
     , typeTextTime(0.0f)
-    , operationSceneActive(false)
 {
 }
 
@@ -58,179 +56,292 @@ void GameScene::Update(float deltaTime)
         return;
     }
 
-    // Move the dialogue texts on the left and bottom sides of the screen
-    if (currentDialogueIndex < dialogueTexts.size() && dialogueTexts[currentDialogueIndex] && !hideDialogue)
+    // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
+    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning())
     {
-        float panelWidth = resolution.x - 100.0f;
-        float panelHeight = 700.0f;
-
-        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
-        float panelY = (resolution.y - panelHeight - 10.0f);
-
-        if (dialoguePanel->GetPosition() != Vector2f(panelX, panelY))
-            dialoguePanel->SetPosition(Vector2f(panelX, panelY));
-
-        if (dialoguePanel->GetSize() != Vector2f(panelWidth, panelHeight))
-            dialoguePanel->SetSize(Vector2f(panelWidth, panelHeight));
-
-        float textX = panelX + 25;
-        float textY = panelY + 400.0f;
-
-        if (dialogueTexts[currentDialogueIndex]->GetTextPosition() != Vector2f(textX, textY))
-            dialogueTexts[currentDialogueIndex]->SetTextPosition(Vector2f(textX, textY));
+        surgeryRoom.UpdateTimer(deltaTime);
     }
 
-    if (!hideDialogue)
+    // Update based on current game state
+    switch (currentGameState)
     {
-        typewriterEffect.Update(deltaTime);
-        UpdateDialoguePanelTexture();
+        case GameState::DIALOGUE_ACTIVE:
+        {
+            // Update the typewriter effect and dialogue panel textures
+            typewriterEffect.Update(deltaTime);
+            UpdateDialoguePanelTexture();
 
-        if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
-            && dialogueTexts[currentDialogueIndex])
-        {
-            std::string currentText = typewriterEffect.GetCurrentText();
-            dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
-        }
-    }
-
-    // Handle input for dialogue
-    if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && !hideDialogue)
-    {
-        if (!typewriterEffect.IsCurrentDialogueComplete())
-        {
-            typewriterEffect.Skip();
-        }
-        else if (typewriterEffect.HasNextDialogue())
-        {
-            typewriterEffect.NextDialogue();
-            currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
-        }
-        else
-        {
-            hideDialogue = true;
-            // Activate surgery room when dialogue ends
-            if (!surgeryRoomActive)
+            if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
+                && dialogueTexts[currentDialogueIndex])
             {
-                gameBackground.Unload();
+                std::string currentText = typewriterEffect.GetCurrentText();
+                dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
+            }
 
-                if (!surgeryRoom.IsLoaded())
+            // Handle input for dialogue
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            {
+                if (!typewriterEffect.IsCurrentDialogueComplete())
                 {
-                    // Initialize surgery room with your asset paths
-                    surgeryRoom.Initialize(
-                        "Art Assets/SurgeryRoom/Background.png",
-                        resolution,
-                        "Art Assets/SurgeryRoom/BottomUI.png", sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
-                        "Art Assets/SurgeryRoom/TopUI.png", sf::Vector2f(resolution.x / 4.0f, 0.0f), // top UI
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f), 
-                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
-                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
-                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),  // life sprite scale
-                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
-                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
-                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),   // death sprite scale
-                        sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
-                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));  // timer sprite scale
+                    typewriterEffect.Skip();
+                }
+                else if (typewriterEffect.HasNextDialogue())
+                {
+                    typewriterEffect.NextDialogue();
+                    currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
+                }
+                else
+                {
+                    currentGameState = GameState::DIALOGUE_HIDDEN;
+                    // Activate surgery room when dialogue ends
+                    gameBackground.Unload();
+
+                    if (!surgeryRoom.IsLoaded())
+                    {
+                        // Initialize surgery room with your asset paths
+                        surgeryRoom.Initialize(
+                            "Art Assets/SurgeryRoom/Background.png",
+                            "Art Assets/SurgeryRoom/BottomUI.png",
+                            "Art Assets/SurgeryRoom/TopUI.png",
+                            resolution,
+                            sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
+                            sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
+                            sf::Vector2f(resolution.x / 4.0f, 0.0f), // top UI
+                            sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
+                            sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
+                            sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
+                            sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
+                            sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
+                            sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
+                            sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
+                            sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
+                            sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
+                            sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
+                            sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
+                    }
+
+                    person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
+                        resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+
+                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+
+                    alpha = 255.0f;
                 }
 
-                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
-                    resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
-
-                surgeryRoomActive = true;
+                inputCooldown = INPUT_DELAY;
             }
+            break;
         }
 
-        inputCooldown = INPUT_DELAY;
-    }
-
-    if (surgeryRoomActive)
-    {
-        // Update the timer
-        surgeryRoom.UpdateTimer(deltaTime);
-
-        Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
-        Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
-
-        // Make the sure the mouse position is on the sprite to change its sprite color
-        if (person.LoadSprite().getGlobalBounds().contains(mousePos))
+        case GameState::SURGERY_ROOM_ACTIVE:
         {
-            if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
+            Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
+            Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
-            // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left))
+            if (surgeryRoom.TopUISprite.getGlobalBounds().contains(mousePos))
             {
-                if (!operationSceneActive)
+                if (surgeryRoom.TopUISprite.getColor() != Color::Red)
+                    surgeryRoom.TopUISprite.setColor(Color::Red);
+
+                // Add input cooldown check here
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
                 {
-                    operationSceneActive = true;
+                    std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
+
+                    itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
+                        Vector2f((resolution.x / 2.0f) - 990.0f, (resolution.y / 2.0f) - 500.0f),
+                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                        true);
+
+                    // Change to ITEM_TABLE_ACTIVE
+                    currentGameState = GameState::ITEM_TABLE_ACTIVE;
+                    std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
+                }
+            }
+            else
+            {
+                // Reset color when not hovering
+                if (surgeryRoom.TopUISprite.getColor() != Color::White)
+                    surgeryRoom.TopUISprite.setColor(Color::White);
+            }
+
+            // Make sure the mouse position is on the sprite to change its sprite color
+            if (person.LoadSprite().getGlobalBounds().contains(mousePos))
+            {
+                if (alpha != 255.0f) alpha = 255.0f;
+                if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
+
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                {
+                    currentGameState = GameState::OPERATION_ACTIVE;
 
                     operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
                         Vector2f(resolution.x / 2.8f, 0.0f),
                         Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                         true);
-
-                    // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(57.0f); // Start with 60 seconds, adjust as needed
+                    if (!surgeryRoom.IsTimerRunning()) 
+                    {
+                        // Start the timer when operation scene becomes active
+                        surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    }
                 }
             }
+            // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+            else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
+            {
+                if (alpha >= 255.0f) alphaIncrease = false; // Decrease alpha value
+                if (alpha <= 125.0f) alphaIncrease = true; // Increase alpha value
+
+                if (alphaIncrease) alpha += 50.0f * deltaTime;
+                else if (!alphaIncrease) alpha -= 50.0f * deltaTime;
+
+                if (person.GetColor() != Color(255, 255, 255, alpha)) person.SetColor(Color(255, 255, 255, alpha));
+            }
+            break;
         }
 
-        // Otherwise, reset the sprite's color back to white once the mouse is longer hovering on the sprite
-        else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
+        case GameState::OPERATION_ACTIVE:
         {
-            if (person.GetColor() != Color::White) person.SetColor(Color::White);
+            // Handle input for operation scene
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            {
+                // Return to surgery room when Enter is pressed
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+
+            // Also allow clicking outside to close (optional)
+            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+            {
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
         }
-    }
 
-    // If operation scene is active
-    if (operationSceneActive)
-    {
+        case GameState::DIALOGUE_HIDDEN:
+        {
+            // Handle input for dialogue hidden state
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            {
+                // Return to surgery room when Enter is pressed
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
 
+            // Also allow clicking outside to close (optional)
+            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+            {
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+        }
+
+        case GameState::INITIALIZING:
+        {
+            // Handle input for initializing state
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            {
+                // Return to surgery room when Enter is pressed
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+
+            // Also allow clicking outside to close (optional)
+            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+            {
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+        }
+
+        case GameState::ITEM_TABLE_ACTIVE:
+        {
+            // Handle input for item table
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            {
+                // Return to surgery room when Enter is pressed
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+
+            // Also allow clicking outside to close (optional)
+            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+            {
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+        }
+
+        default:
+            break;
     }
 }
-
+// Update your Render method to include the new case:
 void GameScene::Render(RenderWindow& window)
 {
     window.clear();
-
-    if (surgeryRoomActive)
+    switch (currentGameState)
     {
-        if (!operationSceneActive)
+        case GameState::DIALOGUE_ACTIVE:
         {
-            // Draw surgery room when active
-            surgeryRoom.Draw(window);
-            window.draw(person.LoadSprite());
+            // Draw normal game background
+            gameBackground.Draw(window);
+
+            if (dialogueTexts[currentDialogueIndex])
+            {
+                if (dialoguePanel)
+                {
+                    dialoguePanel->DrawDialoguePanel(window);
+                }
+                window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
+            }
+            break;
         }
 
-        else if (operationSceneActive)
+        case GameState::SURGERY_ROOM_ACTIVE:
+        {
+            // Draw surgery room when active
+            surgeryRoom.Draw(window, person.LoadSprite());
+            break;
+        }
+
+        case GameState::OPERATION_ACTIVE:
         {
             // Draw operation scene and overlay the UI from surgery room
             operationScene.Draw(window);
             surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+            break;
         }
-    }
-    else
-    {
-        // Draw normal game background
-        gameBackground.Draw(window);
 
-        if (dialogueTexts[currentDialogueIndex] && !hideDialogue)
+        // Add this new case:
+        case GameState::ITEM_TABLE_ACTIVE:
         {
-            if (dialoguePanel)
-            {
-                dialoguePanel->DrawDialoguePanel(window);
-            }
-
-            window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
+            itemTable.Draw(window);
+            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+     
+            break;
         }
-        else if (hideDialogue)
+
+        case GameState::DIALOGUE_HIDDEN:
         {
+            // Clean up dialogue texts when hidden
             for (int i = 0; i < dialogueTexts.size(); i++)
             {
                 delete dialogueTexts[i];
                 dialogueTexts[i] = nullptr;
             }
+            break;
+        }
+
+        case GameState::INITIALIZING:
+        {
+            // Handle initialization rendering if needed
+            break;
         }
     }
 }
@@ -255,23 +366,27 @@ std::string GameScene::GetSceneName() const
 
 void GameScene::InitializeGame()
 {
-    // Reset surgery room state
-    surgeryRoomActive = false;
+    // Reset to initial state
+    currentGameState = GameState::DIALOGUE_ACTIVE;
+
+	// Clear previous dialogue texts
+	for (int i = 0; i < dialogueTexts.size(); i++)
+	{
+		delete dialogueTexts[i];
+		dialogueTexts[i] = nullptr;
+	}
+	dialogueTexts.clear();
 
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
         surgeryRoom.StopTimer();
     }
+
     if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
-    if (hideDialogue != false) hideDialogue = false;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
-    if (operationSceneActive != false) operationSceneActive = false;
-
-    // Reset surgery room state
-    surgeryRoomActive = false;
 
     if (!gameBackground.IsLoaded())
     {
@@ -282,11 +397,11 @@ void GameScene::InitializeGame()
     {
         dialoguePanel = new DialoguePanel();
 
-        float panelWidth = resolution.x - 100.0f;
-        float panelHeight = 700.0f;
+        float panelWidth = 1820.0f * (resolution.x / 1920.0f);
+        float panelHeight = 700.0f * (resolution.y / 1080.0f);
 
-        float panelX = ((resolution.x - panelWidth) / 2.0f) * (resolution.x / 1920.0f);
-        float panelY = (resolution.y - panelHeight - 10.0f) * (resolution.y / 1080.0f);
+        float panelX = resolution.x / 35.0f;
+        float panelY = resolution.y / 3.0f;
 
         dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
             "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
@@ -312,16 +427,19 @@ void GameScene::InitializeGame()
         dialogueSystemInitialized = true;
     }
 
+    float textPanelX = resolution.x / 25.0f; // Move text panels slightly to the right from the dialogue panel
+    float textPanelY = resolution.y / 1.4f; // Move text panels slightly below from the dialogue panel
+
     DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
-    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 
-    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 
-    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false, 
-        sf::Color::White, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
+        sf::Color::White, Vector2f(textPanelX, textPanelY));
 }
 
 void GameScene::InitializeDialogueSystem()
@@ -339,31 +457,28 @@ void GameScene::UpdateDialoguePanelTexture()
 {
     switch (currentDialogueIndex)
     {
-    case 0:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
-        {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
-        }
+        case 0:
+            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
 
-        break;
+        case 1:
+            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
 
-    case 1:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
-        {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
-        }
+        case 2:
+            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
 
-        break;
-
-    case 2:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
-        {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
-        }
-
-        break;
-
-    default:
-        break;
+        default:
+            break;
     }
 }

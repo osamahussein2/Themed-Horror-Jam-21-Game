@@ -12,6 +12,10 @@ LifeSprite_2(LifeTexture),
 DeathSprite_0(DeathTexture),
 DeathSprite_1(DeathTexture),
 DeathSprite_2(DeathTexture),
+NotesSprite(NotesTexture),
+BagSprite(BagSprite),
+TableUISprite(TableUISprite),
+OperationTableSprite(OperationTableTexture),
 timerRunning(false),
 timeRemaining(0.0f),
 totalTime(0.0f)
@@ -26,11 +30,7 @@ SurgeryRoom::~SurgeryRoom()
 {
 }
 
-bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResolution, const char* BouttomUIPath, 
-    Vector2f bottomUIposition, Vector2f bottomUIscale, const char* TopUIPath, Vector2f topUIposition, 
-    Vector2f topUIscale, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position,
-    Vector2f lifeSpriteScale, Vector2f deathSprite0position, Vector2f deathSprite1position,
-    Vector2f deathSprite2position, Vector2f deathSpriteScale, Vector2f timerSpritePosition, Vector2f timerSpriteScale)
+bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPath, const char* TopUIPath, Vector2u screenResolution, Vector2f Size, Vector2f bottomUIposition, Vector2f topUIposition, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position, Vector2f deathSprite0position, Vector2f deathSprite1position, Vector2f deathSprite2position, Vector2f timerSpritePosition, Vector2f NotesSpritePos, Vector2f BagSpritePos, Vector2f TableUISpritePos, Vector2f OperationTableSpritePos)
 {
     try
     {
@@ -40,20 +40,30 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
 
         // Load the bottom UI sprite
         BouttomUISprite = BouttomUISpriteTexture.InitializeSprite(BouttomUIPath, sf::Vector2f(0, 0),
-            bottomUIscale);
+            Size);
 
         // Load the top UI sprite
-        TopUISprite = TopUISpriteTexture.InitializeSprite(TopUIPath, sf::Vector2f(0, 0), topUIscale);
+        TopUISprite = TopUISpriteTexture.InitializeSprite(TopUIPath, sf::Vector2f(0, 0), Size);
 
         // Load life sprites
-        LifeSprite_0 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), lifeSpriteScale);
-        LifeSprite_1 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), lifeSpriteScale);
-        LifeSprite_2 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), lifeSpriteScale);
+        LifeSprite_0 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), Size);
+        LifeSprite_1 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), Size);
+        LifeSprite_2 = LifeSpriteTexture.InitializeSprite(LifePath, sf::Vector2f(0, 0), Size);
 
         // Load death sprites
-        DeathSprite_0 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), deathSpriteScale);
-        DeathSprite_1 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), deathSpriteScale);
-        DeathSprite_2 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), deathSpriteScale);
+        DeathSprite_0 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), Size);
+        DeathSprite_1 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), Size);
+        DeathSprite_2 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), Size);
+
+		// Load notes sprite
+		NotesSprite = NotesSpriteTexture.InitializeSprite(NotePath, NotesSpritePos, Size);
+		// Load bag sprite
+		BagSprite = BagSpriteTexture.InitializeSprite(BagPath, BagSpritePos, Size);
+		// Load table UI sprite
+		TableUISprite = TableUISpriteTexture.InitializeSprite(TableUIPath, TableUISpritePos, Size);
+
+		// Load operation table sprite
+		OperationTableSprite = OperationTableSpriteTexture.InitializeSprite(OperationTablePath, OperationTableSpritePos, Size);
 
         // Load all timer sprites
         // Load timer textures first
@@ -75,44 +85,21 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         // Initialize timer sprite with the starting texture
         TimerSprite.setTexture(TimerTexture_Start);
 
-        TimerSprite.setScale(timerSpriteScale);
+        TimerSprite.setScale(Size);
 
         // Scale the background to fit the screen
         ScaleToFitScreen(screenResolution);
 
         // Position the bottom UI sprite at the bottom center of the screen
-        //sf::FloatRect bottomUIBounds = BouttomUISprite.getLocalBounds();
-        //float bottomUIX = (static_cast<float>(screenResolution.x) - bottomUIBounds.size.x) / 2.0f;
-        //float bottomUIY = static_cast<float>(screenResolution.y) - bottomUIBounds.size.y;
         BouttomUISprite.setPosition({ bottomUIposition });
 
         // Position top UI at top center
-        //sf::FloatRect topUIBounds = TopUISprite.getLocalBounds();
-        //float topUIX = (static_cast<float>(screenResolution.x) - topUIBounds.size.x) / 2.0f;
-        //float topUIY = 0.0f;
         TopUISprite.setPosition({ topUIposition });
 
         // Position timer sprite at the bottom left corner
-        //sf::FloatRect timeBounds = TimerSprite.getLocalBounds();
-        //float TimerX = 30.0f;
-        //float TimerY = static_cast<float>(screenResolution.y) - timeBounds.size.y - 10.0f;
         TimerSprite.setPosition({ timerSpritePosition });
 
-        // Position life and death sprites
-        //sf::FloatRect LifeBounds = LifeSprite_0.getLocalBounds();
-        //float LifeX = TimerX + 130.0f;
-        //float LifeY = static_cast<float>(screenResolution.y) - LifeBounds.size.y - 155.0f;
-
-        // Set positions for life sprites
-        /*LifeSprite_0.setPosition({LifeX, LifeY});
-        LifeSprite_1.setPosition({ LifeX + 80.0f, LifeY });
-        LifeSprite_2.setPosition({ LifeX + (80.0f * 2), LifeY });
-
-        // Set same positions for death sprites
-        DeathSprite_0.setPosition({ LifeX, LifeY });
-        DeathSprite_1.setPosition({ LifeX + 80.0f, LifeY });
-        DeathSprite_2.setPosition({ LifeX + (80.0f * 2), LifeY });*/
-
+      
         // Set positions for life sprites
         LifeSprite_0.setPosition({ lifeSprite0position });
         LifeSprite_1.setPosition({ lifeSprite1position });
@@ -123,6 +110,13 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, Vector2u screenResoluti
         DeathSprite_1.setPosition({ deathSprite1position });
         DeathSprite_2.setPosition({ deathSprite2position });
 
+		//set Positions for Notes, Bag and Table UI sprites
+		NotesSprite.setPosition(NotesSpritePos);
+		BagSprite.setPosition(BagSpritePos);
+        TableUISprite.setPosition(TableUISpritePos);
+        TableUISprite.setScale({ 0.2f , 0.2f });
+        OperationTableSprite.setPosition(OperationTableSpritePos);
+        OperationTableSprite.setScale({ 0.4f * Size.x, 0.4f * Size.y });
         isLoaded = true;
         return true;
     }
@@ -255,11 +249,14 @@ int SurgeryRoom::GetLivesRemaining() const
     return count;
 }
 
-void SurgeryRoom::Draw(RenderWindow& window)
+void SurgeryRoom::Draw(RenderWindow& window, Sprite body)
 {
     if (isLoaded)
     {
+        // Draw background first
         window.draw(backgroundSprite);
+		window.draw(body);
+        // Then draw UI elements on top
         window.draw(TopUISprite);
         DrawUI(window);
     }
@@ -267,34 +264,25 @@ void SurgeryRoom::Draw(RenderWindow& window)
 
 void SurgeryRoom::DrawUI(RenderWindow& window)
 {
-    if (isLoaded)
-    {
-        window.draw(BouttomUISprite);
+    if (!isLoaded) return;
 
-        // Draw life or death sprites based on current state
-        if (lifeStates[0]) {
-            window.draw(LifeSprite_0);
-        }
-        else {
-            window.draw(DeathSprite_0);
-        }
+    // Draw base UI elements
+    window.draw(BouttomUISprite);
 
-        if (lifeStates[1]) {
-            window.draw(LifeSprite_1);
-        }
-        else {
-            window.draw(DeathSprite_1);
-        }
+    // Draw life/death sprites efficiently
+    Sprite* lifeSprites[] = { &LifeSprite_0, &LifeSprite_1, &LifeSprite_2 };
+    Sprite* deathSprites[] = { &DeathSprite_0, &DeathSprite_1, &DeathSprite_2 };
 
-        if (lifeStates[2]) {
-            window.draw(LifeSprite_2);
-        }
-        else {
-            window.draw(DeathSprite_2);
-        }
-
-        window.draw(TimerSprite);
+    for (int i = 0; i < 3; i++) {
+        window.draw(lifeStates[i] ? *lifeSprites[i] : *deathSprites[i]);
     }
+
+    // Draw remaining UI elements
+    window.draw(TimerSprite);
+    window.draw(NotesSprite);
+    window.draw(BagSprite);
+    window.draw(TableUISprite);
+    window.draw(OperationTableSprite);
 }
 
 void SurgeryRoom::SetPosition(Sprite sprite, Vector2f position)

@@ -160,7 +160,8 @@ void Menu::CreateAboutText()
         "• ESC to pause/return to menu\n\n"
         "Programmer by Osama Hussein\n"
         "Programmer/Graphics by ScriptFox\n"
-        "Game Design/Writing by fauxdude97\n";
+        "Game Design/Writing by fauxdude97\n"
+        "Music/SFX by Seangle75\n";
 
     aboutContentText.InitializeText("Fonts/Roboto-Regular.ttf", aboutContent, ABOUT_CONTENT_CHARACTER_SIZE, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
@@ -339,7 +340,35 @@ MenuAction Menu::HandleMainMenuInput(Vector2f mousePos)
     // Check for button clicks first
     for (int i = 0; i < maxMainOptions; i++)
     {
-        if (mainMenuButtons[i].isPressed())
+        if (mainMenuButtons[i].isHovered())
+        {
+            switch (i)
+            {
+            case 0:
+                if (selectedMainOption != 0) selectedMainOption = 0;
+                UpdateMainMenuColors();
+                break;
+
+            case 1:
+                if (selectedMainOption != 1) selectedMainOption = 1;
+                UpdateMainMenuColors();
+                break;
+
+            case 2:
+                if (selectedMainOption != 2) selectedMainOption = 2;
+                UpdateMainMenuColors();
+                break;
+
+            case 3:
+                if (selectedMainOption != 3) selectedMainOption = 3;
+                UpdateMainMenuColors();
+                break;
+
+            default:
+                break;
+            }
+        }
+        else if (mainMenuButtons[i].isPressed())
         {
             switch (i)
             {

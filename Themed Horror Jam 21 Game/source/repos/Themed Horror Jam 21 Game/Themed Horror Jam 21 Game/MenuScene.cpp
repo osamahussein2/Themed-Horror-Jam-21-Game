@@ -4,6 +4,7 @@
 
 MenuScene::MenuScene()
 {
+    //mainMenuAudio = std::make_unique<Audio>();
 }
 
 MenuScene::~MenuScene()
@@ -15,6 +16,15 @@ void MenuScene::Initialize()
     resolution = Engine::Instance()->GetResolution();
     mainMenuView = View(sf::FloatRect(Vector2f(0, 0), Vector2f(resolution.x, resolution.y)));
     gameMenu.Initialize(resolution);
+
+    //mainMenuAudio->InitializeAudio("", true);
+    //mainMenuAudio->PlayAudio();
+
+    // Make sure the main menu audio is equal to the volume variable set in the options menu
+    /*if (mainMenuAudio->GetVolume() != Menu::GetVolume())
+    {
+        mainMenuAudio->SetVolume(Menu::GetVolume());
+    }*/
 }
 
 void MenuScene::Update(float deltaTime)
@@ -24,9 +34,16 @@ void MenuScene::Update(float deltaTime)
 
     MenuAction action = gameMenu.Update(deltaTime, mousePos);
 
+    // Make sure the main menu audio is equal to the volume variable set in the options menu
+    /*if (mainMenuAudio->GetVolume() != Menu::GetVolume())
+    {
+        mainMenuAudio->SetVolume(Menu::GetVolume());
+    }*/
+
     switch (action)
     {
     case MenuAction::StartGame:
+        //mainMenuAudio->StopAudio();
         sceneManager->ChangeScene("Game");
         break;
 
