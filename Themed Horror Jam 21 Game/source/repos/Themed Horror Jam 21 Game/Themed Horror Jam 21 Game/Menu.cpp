@@ -340,7 +340,35 @@ MenuAction Menu::HandleMainMenuInput(Vector2f mousePos)
     // Check for button clicks first
     for (int i = 0; i < maxMainOptions; i++)
     {
-        if (mainMenuButtons[i].isPressed())
+        if (mainMenuButtons[i].isHovered())
+        {
+            switch (i)
+            {
+            case 0:
+                if (selectedMainOption != 0) selectedMainOption = 0;
+                UpdateMainMenuColors();
+                break;
+
+            case 1:
+                if (selectedMainOption != 1) selectedMainOption = 1;
+                UpdateMainMenuColors();
+                break;
+
+            case 2:
+                if (selectedMainOption != 2) selectedMainOption = 2;
+                UpdateMainMenuColors();
+                break;
+
+            case 3:
+                if (selectedMainOption != 3) selectedMainOption = 3;
+                UpdateMainMenuColors();
+                break;
+
+            default:
+                break;
+            }
+        }
+        else if (mainMenuButtons[i].isPressed())
         {
             switch (i)
             {

@@ -115,7 +115,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 		BagSprite.setPosition(BagSpritePos);
         TableUISprite.setPosition(TableUISpritePos);
         OperationTableSprite.setPosition(OperationTableSpritePos);
-        OperationTableSprite.setScale({ 0.4f, 0.4f });
+        OperationTableSprite.setScale({ 0.4f * Size.x, 0.4f * Size.y });
         isLoaded = true;
         return true;
     }
