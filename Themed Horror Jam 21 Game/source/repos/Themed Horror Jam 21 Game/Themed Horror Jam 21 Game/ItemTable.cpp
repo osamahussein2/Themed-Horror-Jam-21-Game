@@ -4,7 +4,8 @@ ItemTable::ItemTable() : ItemtableSprite(ItemtableTexture), GroundSprite(GroundT
 bookSprite(bookTexture), ChickenSprite(ChickenTexture), cobwebSprite(cobwebTexture),
 Cramp_coineSprite(Cramp_coineTexture), CrucifixSprite(CrucifixTexture),
 CupOfAntimonySprite(CupOfAntimonyTexture), MaggotsSprite(MaggotsTexture), OintmentSprite(OintmentTexture),
-ringSprite(ringTexture), ScalpelpngSprite(ScalpelpngTexture), MortarPestleSprite(MortarPestleTexture)
+ringSprite(ringTexture), ScalpelpngSprite(ScalpelpngTexture), MortarPestleSprite(MortarPestleTexture),
+haySprite(hayTexture), potSprite(potTexture)
 {
 }
 
@@ -100,8 +101,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	CupOfAntimonyTexture.loadFromFile(CupOfAntimony);
 	CupOfAntimonySprite = sf::Sprite(CupOfAntimonyTexture);
 	CupOfAntimonySprite.setTexture(CupOfAntimonyTexture);
-	CupOfAntimonySprite.setPosition({ 600, 100 }); // Set position as needed`
-
+	CupOfAntimonySprite.setPosition({ tablePosition.x + 600, tablePosition.y + 300 }); // Set position as needed`
+	CupOfAntimonySprite.setScale({ 1.5,1.5 });
 
 	if (!MaggotsTexture.loadFromFile(Maggots)) {
 		std::cout << "Failed to load: " << Maggots << std::endl;
@@ -109,7 +110,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	MaggotsTexture.loadFromFile(Maggots);
 	MaggotsSprite = sf::Sprite(MaggotsTexture);
 	MaggotsSprite.setTexture(MaggotsTexture);
-	MaggotsSprite.setPosition({ 700, 100 }); // Set position as needed
+	MaggotsSprite.setPosition({ CupOfAntimonySprite.getPosition().x+100 ,CupOfAntimonySprite.getPosition().y- 200 }); // Set position as needed
+
+
 	
 
 	if (!OintmentTexture.loadFromFile(Ointment)) {
@@ -118,7 +121,7 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	OintmentTexture.loadFromFile(Ointment);
 	OintmentSprite = sf::Sprite(OintmentTexture);
 	OintmentSprite.setTexture(OintmentTexture);
-	OintmentSprite.setPosition({ 800, 100 }); // Set position as needed
+	OintmentSprite.setPosition({ MaggotsSprite.getPosition().x-100,MaggotsSprite.getPosition().y }); // Set position as needed
 
 	if (!ringTexture.loadFromFile(ring)) {
 		std::cout << "Failed to load: " << ring << std::endl;
@@ -126,7 +129,7 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	ringTexture.loadFromFile(ring);
 	ringSprite = sf::Sprite(ringTexture);
 	ringSprite.setTexture(ringTexture);
-	ringSprite.setPosition({ 900, 100 }); // Set position as needed
+	ringSprite.setPosition({ ChickenSprite.getPosition().x-150, ChickenSprite.getPosition().y }); // Set position as needed
 	ringSprite.scale({ 0.5f, 0.5f }); // Scale the ring sprite as needed
 
 
@@ -136,7 +139,7 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	ScalpelpngTexture.loadFromFile(Scalpelpng);
 	ScalpelpngSprite = sf::Sprite(ScalpelpngTexture);
 	ScalpelpngSprite.setTexture(ScalpelpngTexture);
-	ScalpelpngSprite.setPosition({ 1000, 100 }); // Set position as needed
+	ScalpelpngSprite.setPosition({ CrucifixSprite.getPosition().x+ 200,  CrucifixSprite.getPosition().y+150 }); // Set position as needed
 
 
 	if (!MortarPestleTexture.loadFromFile(MortarPestle)) {
@@ -146,15 +149,31 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	MortarPestleTexture.loadFromFile(MortarPestle);
 	MortarPestleSprite = sf::Sprite(MortarPestleTexture);
 	MortarPestleSprite.setTexture(MortarPestleTexture);
-	MortarPestleSprite.setPosition({ 1100, 100 }); // Set position as needed
+	MortarPestleSprite.setPosition({ bookSprite.getPosition().x +350, bookSprite.getPosition().y  }); // Set position as needed
 
+
+	hayTexture.loadFromFile(hay);
+	haySprite = sf::Sprite(hayTexture);
+	haySprite.setTexture(hayTexture);
+	haySprite.setPosition({ tablePosition.x + 50, tablePosition.y +350 }); // Set position as needed
+	haySprite.scale({1.5f, 1.5f }); // Scale the ring sprite as needed
+
+	potTexture.loadFromFile(pot);
+	potSprite = sf::Sprite(potTexture);
+	potSprite.setTexture(potTexture);
+	potSprite.setPosition({ ChickenSprite.getPosition().x+100 ,  ChickenSprite.getPosition().y+200}); // Set position as needed
 }
 
 
 void ItemTable::Draw(RenderWindow& window)
 {
     window.draw(GroundSprite);
+	window.draw(haySprite);
+
+	window.draw(potSprite);
 	window.draw(ItemtableSprite);
+
+	
 
 	window.draw(bookSprite);
 	window.draw(ChickenSprite);
@@ -167,6 +186,8 @@ void ItemTable::Draw(RenderWindow& window)
 	window.draw(ringSprite);
 	window.draw(ScalpelpngSprite);
 	window.draw(MortarPestleSprite);
+
+
 
 }
 
@@ -191,6 +212,8 @@ void ItemTable::Move(Vector2f offset)
 	ringSprite.move(offset);
 	ScalpelpngSprite.move(offset);
 	MortarPestleSprite.move(offset);
+	haySprite.move(offset);
+	potSprite.move(offset);
 }
 
 void ItemTable::SetScale(Vector2f scale)
@@ -209,4 +232,6 @@ void ItemTable::SetScale(Vector2f scale)
 	ringSprite.setScale(scale);
 	ScalpelpngSprite.setScale(scale);
 	MortarPestleSprite.setScale(scale);
+	haySprite.setScale(scale);
+	potSprite.setScale(scale);
 }

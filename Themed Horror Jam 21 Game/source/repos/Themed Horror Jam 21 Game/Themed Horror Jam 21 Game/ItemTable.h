@@ -26,73 +26,71 @@ public:
 	void SetScale(Vector2f scale);
 
 private:
-    SpriteTexture ItemtableSpriteTexture;
+
     Texture ItemtableTexture;
     Sprite ItemtableSprite;
 
-	SpriteTexture GroundSpriteTexture;
 	Texture GroundTexture;
 	Sprite GroundSprite;
 
 	const char* book = "Art Assets/SurgeryRoom/items_table/book.png";
 
-	SpriteTexture bookSpriteTexture;
 	Texture bookTexture;
 	Sprite bookSprite;
 
 	const char* Chicken = "Art Assets/SurgeryRoom/items_table/Chicken.png";
-	SpriteTexture ChickenSpriteTexture;
 	Texture ChickenTexture;
 	Sprite ChickenSprite;
 
 
 	const char* cobweb = "Art Assets/SurgeryRoom/items_table/cobweb.png";
-	SpriteTexture cobwebSpriteTexture;
 	Texture cobwebTexture;
 	Sprite cobwebSprite;
 
 
 	const char* Cramp_coine = "Art Assets/SurgeryRoom/items_table/Cramp_coine.png";
-	SpriteTexture Cramp_coineSpriteTexture;
 	Texture Cramp_coineTexture;
 	Sprite Cramp_coineSprite;
 
 	const char* Crucifix = "Art Assets/SurgeryRoom/items_table/Crucifix.png";
-	SpriteTexture CrucifixSpriteTexture;
 	Texture CrucifixTexture;
 	Sprite CrucifixSprite;
 
 	const char* CupOfAntimony = "Art Assets/SurgeryRoom/items_table/Cup of Antimony.png";
-	SpriteTexture CupOfAntimonySpriteTexture;
 	Texture CupOfAntimonyTexture;
 	Sprite CupOfAntimonySprite;
 
 	const char* Maggots = "Art Assets/SurgeryRoom/items_table/Maggots.png";
-	SpriteTexture MaggotsSpriteTexture;
 	Texture MaggotsTexture;
 	Sprite MaggotsSprite;
 
 
 	const char* Ointment = "Art Assets/SurgeryRoom/items_table/Ointment.png";
-	SpriteTexture OintmentSpriteTexture;
 	Texture OintmentTexture;
 	Sprite OintmentSprite;
 
 	const char* ring = "Art Assets/SurgeryRoom/items_table/ring.png";
-	SpriteTexture ringSpriteTexture;
 	Texture ringTexture;
 	Sprite ringSprite;
 
 	const char* Scalpelpng = "Art Assets/SurgeryRoom/items_table/Scalpelpng.png";
-	SpriteTexture ScalpelpngSpriteTexture;
 	Texture ScalpelpngTexture;
 	Sprite ScalpelpngSprite;
 
 	const char* MortarPestle = "Art Assets/SurgeryRoom/items_table/MortarPestle.png";
-	SpriteTexture MortarPestleSpriteTexture;
 	Texture MortarPestleTexture;
 	Sprite MortarPestleSprite;
 
+
+
+
+	const char* hay = "Art Assets/SurgeryRoom/items_table/hay.png";
+	Texture hayTexture;
+	Sprite haySprite;
+
+	const char* pot = "Art Assets/SurgeryRoom/items_table/pot.png";
+	Texture potTexture;
+	Sprite potSprite;
 };
 
 #endif
