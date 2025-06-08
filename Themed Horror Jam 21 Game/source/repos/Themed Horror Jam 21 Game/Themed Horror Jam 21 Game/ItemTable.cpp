@@ -54,8 +54,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	bookTexture.loadFromFile(book);
 	bookSprite = sf::Sprite(bookTexture);
 	bookSprite.setTexture(bookTexture);
-	bookSprite.setPosition({ tablePosition.x+ 800, tablePosition.y + 100 });
+	bookSprite.setPosition({ tablePosition.x+ 1000, tablePosition.y + 200 });
 	bookSprite.setScale({ 0.8,0.8});
+	bookSprite.setOrigin({ bookSprite.getGlobalBounds().size.x / 2, bookSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	if (!ChickenTexture.loadFromFile(Chicken)) {
@@ -64,8 +65,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	ChickenTexture.loadFromFile(Chicken);
 	ChickenSprite = sf::Sprite(ChickenTexture);
 	ChickenSprite.setTexture(ChickenTexture);
-	ChickenSprite.setPosition({ bookSprite.getPosition().x + 800, bookSprite.getPosition().y + 100 });
+	ChickenSprite.setPosition({ tablePosition.x + 1600,tablePosition.y + 300 });
 	ChickenSprite.setScale({0.5,0.5});
+	ChickenSprite.setOrigin({ ChickenSprite.getGlobalBounds().size.x / 2, ChickenSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 	if (!cobwebTexture.loadFromFile(cobweb)) {
 		std::cout << "Failed to load: " << cobweb << std::endl;
@@ -74,8 +76,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	cobwebTexture.loadFromFile(cobweb);
 	cobwebSprite = sf::Sprite(cobwebTexture);
 	cobwebSprite.setTexture(cobwebTexture);
-	cobwebSprite.setPosition({ bookSprite.getPosition().x - 300, bookSprite.getPosition().y+500 });
+	cobwebSprite.setPosition({ tablePosition.x+550 ,tablePosition.y +600 });
 	cobwebSprite.setScale({ 0.99,0.99 });
+	cobwebSprite.setOrigin({ cobwebSprite.getGlobalBounds().size.x / 2, cobwebSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 	if (!Cramp_coineTexture.loadFromFile(Cramp_coine)) {
 		std::cout << "Failed to load: " << Cramp_coine << std::endl;
@@ -83,7 +86,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	Cramp_coineTexture.loadFromFile(Cramp_coine);
 	Cramp_coineSprite = sf::Sprite(Cramp_coineTexture);
 	Cramp_coineSprite.setTexture(Cramp_coineTexture);
-	Cramp_coineSprite.setPosition({ cobwebSprite.getPosition().x + 800, cobwebSprite.getPosition().y }); // Set position as needed
+	Cramp_coineSprite.setPosition({ tablePosition.x + 1000, tablePosition.y+600 }); // Set position as needed
+	Cramp_coineSprite.setOrigin({ Cramp_coineSprite.getGlobalBounds().size.x / 2, Cramp_coineSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	if (!CrucifixTexture.loadFromFile(Crucifix)) {
@@ -92,7 +96,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	CrucifixTexture.loadFromFile(Crucifix);
 	CrucifixSprite = sf::Sprite(CrucifixTexture);
 	CrucifixSprite.setTexture(CrucifixTexture);
-	CrucifixSprite.setPosition({ tablePosition.x + 925, tablePosition.y + 300 }); // Set position as needed
+	CrucifixSprite.setPosition({ tablePosition.x +1000, tablePosition.y + 400 }); // Set position as needed
+	CrucifixSprite.setOrigin({ CrucifixSprite.getGlobalBounds().size.x / 2, CrucifixSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	if (!CupOfAntimonyTexture.loadFromFile(CupOfAntimony)) {
@@ -101,8 +106,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	CupOfAntimonyTexture.loadFromFile(CupOfAntimony);
 	CupOfAntimonySprite = sf::Sprite(CupOfAntimonyTexture);
 	CupOfAntimonySprite.setTexture(CupOfAntimonyTexture);
-	CupOfAntimonySprite.setPosition({ tablePosition.x + 600, tablePosition.y + 300 }); // Set position as needed`
+	CupOfAntimonySprite.setPosition({ tablePosition.x + 750,tablePosition.y + 200 }); // Set position as needed`
 	CupOfAntimonySprite.setScale({ 1.5,1.5 });
+	CupOfAntimonySprite.setOrigin({ CupOfAntimonySprite.getGlobalBounds().size.x / 2, CupOfAntimonySprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 	if (!MaggotsTexture.loadFromFile(Maggots)) {
 		std::cout << "Failed to load: " << Maggots << std::endl;
@@ -110,7 +116,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	MaggotsTexture.loadFromFile(Maggots);
 	MaggotsSprite = sf::Sprite(MaggotsTexture);
 	MaggotsSprite.setTexture(MaggotsTexture);
-	MaggotsSprite.setPosition({ CupOfAntimonySprite.getPosition().x+100 ,CupOfAntimonySprite.getPosition().y- 200 }); // Set position as needed
+	MaggotsSprite.setPosition({ tablePosition.x +400 , tablePosition.y +150 }); // Set position as needed
+	MaggotsSprite.setOrigin({ MaggotsSprite.getGlobalBounds().size.x / 2, MaggotsSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	
@@ -121,7 +128,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	OintmentTexture.loadFromFile(Ointment);
 	OintmentSprite = sf::Sprite(OintmentTexture);
 	OintmentSprite.setTexture(OintmentTexture);
-	OintmentSprite.setPosition({ MaggotsSprite.getPosition().x-100,MaggotsSprite.getPosition().y }); // Set position as needed
+	OintmentSprite.setPosition({ tablePosition.x+400,tablePosition.y+300 }); // Set position as needed
+	OintmentSprite.setOrigin({ OintmentSprite.getGlobalBounds().size.x / 2, OintmentSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
+
 
 	if (!ringTexture.loadFromFile(ring)) {
 		std::cout << "Failed to load: " << ring << std::endl;
@@ -129,8 +138,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	ringTexture.loadFromFile(ring);
 	ringSprite = sf::Sprite(ringTexture);
 	ringSprite.setTexture(ringTexture);
-	ringSprite.setPosition({ ChickenSprite.getPosition().x-150, ChickenSprite.getPosition().y }); // Set position as needed
+	ringSprite.setPosition({ tablePosition.x+1300 , tablePosition.y+200 }); // Set position as needed
 	ringSprite.scale({ 0.5f, 0.5f }); // Scale the ring sprite as needed
+	ringSprite.setOrigin({ ringSprite.getGlobalBounds().size.x / 2, ringSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	if (!ScalpelpngTexture.loadFromFile(Scalpelpng)) {
@@ -139,7 +149,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	ScalpelpngTexture.loadFromFile(Scalpelpng);
 	ScalpelpngSprite = sf::Sprite(ScalpelpngTexture);
 	ScalpelpngSprite.setTexture(ScalpelpngTexture);
-	ScalpelpngSprite.setPosition({ CrucifixSprite.getPosition().x+ 200,  CrucifixSprite.getPosition().y+150 }); // Set position as needed
+	ScalpelpngSprite.setPosition({ tablePosition.x + 850 ,tablePosition.y + 600 }); // Set position as needed
+	ScalpelpngSprite.setOrigin({ ScalpelpngSprite.getGlobalBounds().size.x / 2, ScalpelpngSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	if (!MortarPestleTexture.loadFromFile(MortarPestle)) {
@@ -149,19 +160,24 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	MortarPestleTexture.loadFromFile(MortarPestle);
 	MortarPestleSprite = sf::Sprite(MortarPestleTexture);
 	MortarPestleSprite.setTexture(MortarPestleTexture);
-	MortarPestleSprite.setPosition({ bookSprite.getPosition().x +350, bookSprite.getPosition().y  }); // Set position as needed
+	MortarPestleSprite.setPosition({ tablePosition.x +550,tablePosition.y+200 }); // Set position as needed
+	MortarPestleSprite.setOrigin({ MortarPestleSprite.getGlobalBounds().size.x / 2, MortarPestleSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
 
 
 	hayTexture.loadFromFile(hay);
 	haySprite = sf::Sprite(hayTexture);
 	haySprite.setTexture(hayTexture);
-	haySprite.setPosition({ tablePosition.x + 50, tablePosition.y +350 }); // Set position as needed
+	haySprite.setPosition({ tablePosition.x + 350, tablePosition.y +850 }); // Set position as needed
 	haySprite.scale({1.5f, 1.5f }); // Scale the ring sprite as needed
+	haySprite.setOrigin({ haySprite.getGlobalBounds().size.x / 2, haySprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
+
 
 	potTexture.loadFromFile(pot);
 	potSprite = sf::Sprite(potTexture);
 	potSprite.setTexture(potTexture);
-	potSprite.setPosition({ ChickenSprite.getPosition().x+100 ,  ChickenSprite.getPosition().y+200}); // Set position as needed
+	potSprite.setPosition({ tablePosition.x +1900 , tablePosition.y +600}); // Set position as needed
+	potSprite.setOrigin({ potSprite.getGlobalBounds().size.x / 2, potSprite.getGlobalBounds().size.y / 2 }); // Center the book sprite
+
 }
 
 
