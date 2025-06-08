@@ -98,6 +98,12 @@ private:
 
     float alpha = 255.0f;
     bool alphaIncrease = false;
+
+    float successfulOperationTime{};
+
+    unsigned int successfulOperations{};
+
+    Game::Text successfulText{};
 };
 
 #endif

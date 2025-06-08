@@ -138,7 +138,7 @@ void GameScene::Update(float deltaTime)
                         resolution,
                         sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
                         sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
-                        sf::Vector2f(resolution.x / 4.0f, 0.0f), // top UI
+                        sf::Vector2f(resolution.x / 2.0f, resolution.y / 10.0f), // top UI
                         sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
                         sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
                         sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
@@ -150,7 +150,26 @@ void GameScene::Update(float deltaTime)
                         sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
                         sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
                         sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
+
+                    if (!surgeryRoom.IsTimerRunning()) 
+                    {
+                        // Start the timer when operation scene becomes active
+                        surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    }
                 }
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                operationScene.maxDots = 4;
+
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                    10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red, 
+                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), 
+                    50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), 
+                    0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
                 person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                     resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
@@ -189,6 +208,8 @@ void GameScene::Update(float deltaTime)
                 inputCooldown = INPUT_DELAY;
                 std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
+
+            break;
         }
         else
         {
@@ -197,34 +218,40 @@ void GameScene::Update(float deltaTime)
                 surgeryRoom.TopUISprite.setColor(Color::White);
         }
 
-        // Make sure the mouse position is on the sprite to change its sprite color
-        if (person.LoadSprite().getGlobalBounds().contains(mousePos) || surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        for (int i = 0; i < operationScene.maxDots; i++)
         {
-            if (alpha != 255.0f) alpha = 255.0f;
-            if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
-
-            // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+            // Make sure the mouse position is on the sprite to change its sprite color
+            if (person.LoadSprite().getGlobalBounds().contains(mousePos) &&
+                operationScene.dotCircleShape[i].getFillColor() != Color::Green ||
+                surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) &&
+                operationScene.dotCircleShape[i].getFillColor() != Color::Green)
             {
-                currentGameState = GameState::OPERATION_ACTIVE;
+                if (alpha != 255.0f) alpha = 255.0f;
+                if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
 
-                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
-                    Vector2f(resolution.x / 2.8f, 0.0f),
-                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
-                    true);
-                if (!surgeryRoom.IsTimerRunning())
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
-                    // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    currentGameState = GameState::OPERATION_ACTIVE;
+
+                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                        Vector2f(resolution.x / 2.8f, 0.0f),
+                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                        true);
+                    if (!surgeryRoom.IsTimerRunning())
+                    {
+                        // Start the timer when operation scene becomes active
+                        surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    }
+                    inputCooldown = INPUT_DELAY;
                 }
-                inputCooldown = INPUT_DELAY;
             }
-        }
-        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
-        else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
-        {
-            if (person.GetColor() != Color(Color::White))
-                person.SetColor(Color::White);
+            // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+            else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
+            {
+                if (person.GetColor() != Color(Color::White))
+                    person.SetColor(Color::White);
+            }
         }
         break;
     }
@@ -254,6 +281,42 @@ void GameScene::Update(float deltaTime)
         {
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
+        }
+
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+                }
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                successfulOperationTime = 0.0f;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
         }
         break;
     }
@@ -432,6 +495,12 @@ void GameScene::Render(RenderWindow& window)
         operationScene.Draw(window);
         surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
 
+        if (successfulOperationTime > 0.0f)
+        {
+            window.draw(operationScene.successPanel);
+            window.draw(successfulText.LoadText());
+        }
+
         // Draw inventory if visible
         if (inventoryVisible)
         {
@@ -463,7 +532,8 @@ void GameScene::Render(RenderWindow& window)
             break;
         case GameState::OPERATION_ACTIVE:
             operationScene.Draw(window);
-            surgeryRoom.DrawUI(window);
+            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+
             break;
         case GameState::ITEM_TABLE_ACTIVE:
             itemTable.Draw(window);

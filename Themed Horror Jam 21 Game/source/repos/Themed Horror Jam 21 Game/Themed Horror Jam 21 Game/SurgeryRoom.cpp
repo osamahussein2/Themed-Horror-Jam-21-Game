@@ -94,8 +94,8 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         BouttomUISprite.setPosition({ bottomUIposition });
 
         // Position top UI at top center
-        TopUISprite.setPosition({ topUIposition.x+500 ,topUIposition.y+125 });
-        TopUISprite.setOrigin({ TopUISprite.getLocalBounds().size.x / 2.0f, TopUISprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
+        TopUISprite.setPosition({ topUIposition.x ,topUIposition.y });
+        TopUISprite.setOrigin({ TopUISprite.getLocalBounds().size.x / 2.0f , TopUISprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
 
         // Position timer sprite at the bottom left corner
         TimerSprite.setPosition({ timerSpritePosition });
@@ -120,7 +120,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         BagSprite.setOrigin({ BagSprite.getLocalBounds().size.x / 2.0f, BagSprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
 
         TableUISprite.setPosition({ TableUISpritePos.x,  TableUISpritePos.y+50});
-        TableUISprite.setScale({ 0.2f , 0.2f });
+        TableUISprite.setScale({ 0.2f * Size.x , 0.2f * Size.y });
         TableUISprite.setOrigin({ TableUISprite.getLocalBounds().size.x / 2.0f, TableUISprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
 
 
