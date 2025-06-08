@@ -138,7 +138,7 @@ void GameScene::Update(float deltaTime)
             Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
             Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
-            if (surgeryRoom.TopUISprite.getGlobalBounds().contains(mousePos))
+            if (surgeryRoom.TopUISprite.getGlobalBounds().contains(mousePos) || surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
             {
                 if (surgeryRoom.TopUISprite.getColor() != Color::Red)
                     surgeryRoom.TopUISprite.setColor(Color::Red);
@@ -166,7 +166,7 @@ void GameScene::Update(float deltaTime)
             }
 
             // Make sure the mouse position is on the sprite to change its sprite color
-            if (person.LoadSprite().getGlobalBounds().contains(mousePos))
+            if (person.LoadSprite().getGlobalBounds().contains(mousePos)|| surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
             {
                 if (alpha != 255.0f) alpha = 255.0f;
                 if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
@@ -190,13 +190,8 @@ void GameScene::Update(float deltaTime)
             // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
             else if (!person.LoadSprite().getGlobalBounds().contains(mousePos))
             {
-                if (alpha >= 255.0f) alphaIncrease = false; // Decrease alpha value
-                if (alpha <= 125.0f) alphaIncrease = true; // Increase alpha value
-
-                if (alphaIncrease) alpha += 50.0f * deltaTime;
-                else if (!alphaIncrease) alpha -= 50.0f * deltaTime;
-
-                if (person.GetColor() != Color(255, 255, 255, alpha)) person.SetColor(Color(255, 255, 255, alpha));
+                if (person.GetColor() != Color(Color::White))
+                    person.SetColor(Color::White);
             }
             break;
         }

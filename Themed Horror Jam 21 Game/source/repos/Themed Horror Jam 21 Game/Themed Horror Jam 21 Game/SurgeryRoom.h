@@ -75,7 +75,10 @@ public:
     Sprite DeathSprite_1;
     Sprite DeathSprite_2;
     Sprite TimerSprite;
-
+    Sprite BagSprite;
+    Sprite NotesSprite;
+    Sprite TableUISprite;
+    Sprite OperationTableSprite;
 private:
     // Texture and sprite management
  
@@ -108,19 +111,19 @@ private:
 
 	SpriteTexture NotesSpriteTexture;
 	Texture NotesTexture;
-	Sprite NotesSprite;
+
 
 	SpriteTexture BagSpriteTexture;
 	Texture BagTexture;
-	Sprite BagSprite;
+
 
 	SpriteTexture TableUISpriteTexture;
 	Texture TableUITexture;
-	Sprite TableUISprite;
+
 
     SpriteTexture OperationTableSpriteTexture;
 	Texture OperationTableTexture;
-	Sprite OperationTableSprite;
+
 
     // Timer system
     bool timerRunning;
