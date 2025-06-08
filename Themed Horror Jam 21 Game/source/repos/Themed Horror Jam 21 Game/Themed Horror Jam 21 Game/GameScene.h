@@ -1,3 +1,4 @@
+
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
@@ -9,6 +10,7 @@
 #include "SurgeryRoom.h"
 #include "OperationScene.h"
 #include "ItemTable.h"
+#include "Inventory.h"
 
 enum class SceneType {
     MENU_SCENE,
@@ -25,11 +27,10 @@ enum class GameState {
     DIALOGUE_HIDDEN,
     SURGERY_ROOM_ACTIVE,
     OPERATION_ACTIVE,
-    ITEM_TABLE_ACTIVE,  // Add this new state
-    INITIALIZING
+    ITEM_TABLE_ACTIVE,
+    INVENTORY_VISIBLE,    // New state for when inventory is visible
+	Death // Game over state
 };
-
-
 
 class GameScene : public Scene
 {
@@ -47,16 +48,17 @@ public:
     int DayPassed;
     Vector2u GetResolution() { return resolution; }
     void SetResolution(Vector2u newResolution) { resolution = newResolution; }
-
 private:
     SceneType currentSceneType;
     GameState currentGameState;
+    GameState previousGameState; // To remember what state we were in before opening inventory
 
     RenderBackground gameBackground;
     SurgeryRoom surgeryRoom;
     OperationScene operationScene;
     ItemTable itemTable;
     TypewriterEffect typewriterEffect;
+    Inventory playerInventory;
 
     Vector2u resolution;
 
@@ -64,6 +66,12 @@ private:
     std::vector<Game::Text*> dialogueTexts;
     float typeTextTime;
     DialoguePanel* dialoguePanel;
+
+    // Inventory management
+    bool inventoryVisible;
+
+    Sprite inventoryBackground;
+    Texture inventoryBackgroundTexture;
 
     // Input handling
     float inputCooldown;
@@ -80,6 +88,13 @@ private:
     void InitializeGame();
     void InitializeDialogueSystem();
     void UpdateDialoguePanelTexture();
+    void InitializeInventory();
+    // Inventory functions
+    void HandleItemTableClick(Vector2f mousePos);
+    void HandleInventoryClick(Vector2f mousePos);
+    void ToggleInventory();
+    void DrawInventoryUI(RenderWindow& window);
+
 
     float alpha = 255.0f;
     bool alphaIncrease = false;
