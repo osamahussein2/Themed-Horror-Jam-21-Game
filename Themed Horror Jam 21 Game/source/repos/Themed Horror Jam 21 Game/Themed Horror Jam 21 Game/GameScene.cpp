@@ -62,6 +62,35 @@ void GameScene::Update(float deltaTime)
         surgeryRoom.UpdateTimer(deltaTime);
     }
 
+    // Get mouse position for click detection
+    Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
+    Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
+
+    // Check for bag sprite click
+    if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos))
+    {
+        if (surgeryRoom.BagSprite.getColor() != Color::Red)
+            surgeryRoom.BagSprite.setColor(Color::Red);
+
+        if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+        {
+            if (bag.IsVisible())
+            {
+                bag.Hide();
+            }
+            else
+            {
+                bag.Show();
+            }
+            inputCooldown = INPUT_DELAY;
+        }
+    }
+    else
+    {
+        // Reset color when not hovering
+        if (surgeryRoom.BagSprite.getColor() != Color::White)
+            surgeryRoom.TopUISprite.setColor(Color::White);
+    }
     // Update based on current game state
     switch (currentGameState)
     {
@@ -123,8 +152,10 @@ void GameScene::Update(float deltaTime)
                     person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
                         resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
 
-                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                    // Initialize the bag
+                    InitializeBag();
 
+                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
                     alpha = 255.0f;
                 }
 
@@ -135,16 +166,13 @@ void GameScene::Update(float deltaTime)
 
         case GameState::SURGERY_ROOM_ACTIVE:
         {
-            Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
-            Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
-
             if (surgeryRoom.TopUISprite.getGlobalBounds().contains(mousePos) || surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
             {
                 if (surgeryRoom.TopUISprite.getColor() != Color::Red)
                     surgeryRoom.TopUISprite.setColor(Color::Red);
 
                 // Add input cooldown check here
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
                     std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
 
@@ -155,6 +183,7 @@ void GameScene::Update(float deltaTime)
 
                     // Change to ITEM_TABLE_ACTIVE
                     currentGameState = GameState::ITEM_TABLE_ACTIVE;
+                    inputCooldown = INPUT_DELAY;
                     std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
                 }
             }
@@ -165,14 +194,22 @@ void GameScene::Update(float deltaTime)
                     surgeryRoom.TopUISprite.setColor(Color::White);
             }
 
+       
+
+            // Handle bag clicks when visible
+            if (bag.IsVisible())
+            {
+                HandleBagClicks(mousePos);
+            }
+
             // Make sure the mouse position is on the sprite to change its sprite color
-            if (person.LoadSprite().getGlobalBounds().contains(mousePos)|| surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+            if (person.LoadSprite().getGlobalBounds().contains(mousePos) || surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
             {
                 if (alpha != 255.0f) alpha = 255.0f;
                 if (person.GetColor() != Color::Red) person.SetColor(Color::Red);
 
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
                     currentGameState = GameState::OPERATION_ACTIVE;
 
@@ -180,11 +217,12 @@ void GameScene::Update(float deltaTime)
                         Vector2f(resolution.x / 2.8f, 0.0f),
                         Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                         true);
-                    if (!surgeryRoom.IsTimerRunning()) 
+                    if (!surgeryRoom.IsTimerRunning())
                     {
                         // Start the timer when operation scene becomes active
                         surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
                     }
+                    inputCooldown = INPUT_DELAY;
                 }
             }
             // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
@@ -198,6 +236,35 @@ void GameScene::Update(float deltaTime)
 
         case GameState::OPERATION_ACTIVE:
         {
+            // Handle bag clicks when visible
+            if (bag.IsVisible())
+            {
+                if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+                {
+                    // Return to surgery room when Enter is pressed
+                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                    inputCooldown = INPUT_DELAY;
+                }
+                HandleBagClicks(mousePos);
+            }
+
+            // Check for bag sprite click in operation scene
+            if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos))
+            {
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+                {
+                    if (bag.IsVisible())
+                    {
+                        bag.Hide();
+                    }
+                    else
+                    {
+                        bag.Show();
+                    }
+                    inputCooldown = INPUT_DELAY;
+                }
+            }
+
             // Handle input for operation scene
             if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
             {
@@ -255,6 +322,9 @@ void GameScene::Update(float deltaTime)
 
         case GameState::ITEM_TABLE_ACTIVE:
         {
+            // Handle item table clicks
+            HandleItemTableClicks(mousePos);
+
             // Handle input for item table
             if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
             {
@@ -276,7 +346,7 @@ void GameScene::Update(float deltaTime)
             break;
     }
 }
-// Update your Render method to include the new case:
+
 void GameScene::Render(RenderWindow& window)
 {
     window.clear();
@@ -302,6 +372,12 @@ void GameScene::Render(RenderWindow& window)
         {
             // Draw surgery room when active
             surgeryRoom.Draw(window, person.LoadSprite());
+
+            // Draw bag if visible
+            if (bag.IsVisible())
+            {
+                bag.Draw(window);
+            }
             break;
         }
 
@@ -310,15 +386,24 @@ void GameScene::Render(RenderWindow& window)
             // Draw operation scene and overlay the UI from surgery room
             operationScene.Draw(window);
             surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+
+            // Draw bag if visible
+            if (bag.IsVisible())
+            {
+                bag.Draw(window);
+            }
             break;
         }
 
-        // Add this new case:
         case GameState::ITEM_TABLE_ACTIVE:
         {
             itemTable.Draw(window);
             surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
-     
+
+            if (bag.IsVisible())
+            {
+                bag.Draw(window);
+            }
             break;
         }
 
@@ -364,19 +449,26 @@ void GameScene::InitializeGame()
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
-	// Clear previous dialogue texts
-	for (int i = 0; i < dialogueTexts.size(); i++)
-	{
-		delete dialogueTexts[i];
-		dialogueTexts[i] = nullptr;
-	}
-	dialogueTexts.clear();
+    // Clear previous dialogue texts
+    for (int i = 0; i < dialogueTexts.size(); i++)
+    {
+        delete dialogueTexts[i];
+        dialogueTexts[i] = nullptr;
+    }
+    dialogueTexts.clear();
 
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
         surgeryRoom.StopTimer();
     }
+
+    // Reset bag
+    bag.ClearBag();
+    bag.Hide();
+
+    // Reset item table
+    itemTable.ResetCollectedItems();
 
     if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
@@ -448,32 +540,92 @@ void GameScene::InitializeDialogueSystem()
     typewriterEffect.Initialize(allDialogueData);
 }
 
+void GameScene::InitializeBag()
+{
+    // Initialize the bag with your bag sprite
+    Vector2f bagPosition(resolution.x - 400, 100); // Position in top-right corner
+    Vector2f bagScale(1.0f, 1.0f);
+
+    bag.Initialize("Art Assets/SurgeryRoom/bagInvtory.png", bagPosition, bagScale); // Replace with your bag texture path
+    bag.Hide(); // Start hidden
+}
+
+void GameScene::HandleItemTableClicks(Vector2f mousePos)
+{
+    if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+    {
+        ItemType clickedItem = itemTable.GetClickedItem(mousePos);
+
+        if (clickedItem != ItemType::NONE)
+        {
+            // Try to add the item to the bag
+            std::string itemName = itemTable.GetItemName(clickedItem);
+            std::string itemTexturePath = itemTable.GetItemTexturePath(clickedItem);
+
+            if (bag.AddItem(clickedItem, itemName, itemTexturePath))
+            {
+                // Successfully added to bag, collect the item from table
+                itemTable.CollectItem(clickedItem);
+                std::cout << "Added " << itemName << " to bag!" << std::endl;
+            }
+            else
+            {
+                std::cout << "Could not add " << itemName << " to bag (already have it or bag is full)" << std::endl;
+            }
+
+            inputCooldown = INPUT_DELAY;
+        }
+    }
+}
+
+void GameScene::HandleBagClicks(Vector2f mousePos)
+{
+    if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+    {
+        ItemType clickedBagItem = bag.GetClickedItem(mousePos);
+
+        if (clickedBagItem != ItemType::NONE)
+        {
+            // Handle using item from bag (in operation scene)
+            if (currentGameState == GameState::OPERATION_ACTIVE)
+            {
+                std::cout << "Using item: " << bag.GetInventory()[0].name << " in operation!" << std::endl;
+                // Here you can add logic for using the item in the operation
+                // For example, remove the item from bag after use:
+                // bag.RemoveItem(clickedBagItem);
+            }
+
+            inputCooldown = INPUT_DELAY;
+        }
+    }
+}
+
 void GameScene::UpdateDialoguePanelTexture()
 {
     switch (currentDialogueIndex)
     {
-        case 0:
-            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
-            {
-                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
-            }
-            break;
+    case 0:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+        }
+        break;
 
-        case 1:
-            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
-            {
-                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
-            }
-            break;
+    case 1:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+        }
+        break;
 
-        case 2:
-            if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
-            {
-                dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
-            }
-            break;
+    case 2:
+        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+        {
+            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+        }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
