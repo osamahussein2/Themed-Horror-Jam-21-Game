@@ -45,7 +45,9 @@ public:
     void OnEnter() override;
     void OnExit() override;
     std::string GetSceneName() const override;
-    int DayPassed;
+
+    static int currentDay;
+
     Vector2u GetResolution() { return resolution; }
     void SetResolution(Vector2u newResolution) { resolution = newResolution; }
 private:
@@ -68,6 +70,26 @@ private:
     float typeTextTime;
     DialoguePanel* dialoguePanel;
 
+    // Code for different days in game
+    void InitializeDay1();
+    void UpdateDay1(float deltaTime);
+    void RenderDay1(RenderWindow& window);
+
+    void InitializeDay2();
+    void UpdateDay2(float deltaTime);
+    void RenderDay2(RenderWindow& window);
+
+    void InitializeDay3();
+    void UpdateDay3(float deltaTime);
+    void RenderDay3(RenderWindow& window);
+
+    void InitializeDay4();
+    void UpdateDay4(float deltaTime);
+    void RenderDay4(RenderWindow& window);
+
+    void InitializeDay5();
+    void UpdateDay5(float deltaTime);
+    void RenderDay5(RenderWindow& window);
 
 
     // Input handling
