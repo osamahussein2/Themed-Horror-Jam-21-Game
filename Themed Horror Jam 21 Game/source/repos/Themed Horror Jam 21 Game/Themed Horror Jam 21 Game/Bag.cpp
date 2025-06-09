@@ -31,6 +31,7 @@ void Bag::Initialize(const std::string& bagTexturePath, Vector2f position, Vecto
 
     isInitialized = true;
     isVisible = false;
+    std::cout << "Bag initialized successfully!" << std::endl;
 }
 
 bool Bag::AddItem(ItemType itemType, const std::string& itemName, const std::string& texturePath) {

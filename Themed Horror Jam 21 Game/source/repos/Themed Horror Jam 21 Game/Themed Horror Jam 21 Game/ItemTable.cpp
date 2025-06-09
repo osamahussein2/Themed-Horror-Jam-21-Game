@@ -50,7 +50,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!bookTexture.loadFromFile(book)) {
 		std::cout << "Failed to load: " << book << std::endl;
 	}
-	bookTexture.loadFromFile(book);
 	bookSprite = sf::Sprite(bookTexture);
 	bookSprite.setTexture(bookTexture);
 	bookSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 200 });
@@ -60,7 +59,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!ChickenTexture.loadFromFile(Chicken)) {
 		std::cout << "Failed to load: " << Chicken << std::endl;
 	}
-	ChickenTexture.loadFromFile(Chicken);
 	ChickenSprite = sf::Sprite(ChickenTexture);
 	ChickenSprite.setTexture(ChickenTexture);
 	ChickenSprite.setPosition({ tablePosition.x + 1600,tablePosition.y + 300 });
@@ -70,7 +68,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!cobwebTexture.loadFromFile(cobweb)) {
 		std::cout << "Failed to load: " << cobweb << std::endl;
 	}
-	cobwebTexture.loadFromFile(cobweb);
 	cobwebSprite = sf::Sprite(cobwebTexture);
 	cobwebSprite.setTexture(cobwebTexture);
 	cobwebSprite.setPosition({ tablePosition.x + 550 ,tablePosition.y + 600 });
@@ -80,7 +77,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!Cramp_coineTexture.loadFromFile(Cramp_coine)) {
 		std::cout << "Failed to load: " << Cramp_coine << std::endl;
 	}
-	Cramp_coineTexture.loadFromFile(Cramp_coine);
 	Cramp_coineSprite = sf::Sprite(Cramp_coineTexture);
 	Cramp_coineSprite.setTexture(Cramp_coineTexture);
 	Cramp_coineSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 600 });
@@ -89,7 +85,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!CrucifixTexture.loadFromFile(Crucifix)) {
 		std::cout << "Failed to load: " << Crucifix << std::endl;
 	}
-	CrucifixTexture.loadFromFile(Crucifix);
 	CrucifixSprite = sf::Sprite(CrucifixTexture);
 	CrucifixSprite.setTexture(CrucifixTexture);
 	CrucifixSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 400 });
@@ -98,7 +93,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!CupOfAntimonyTexture.loadFromFile(CupOfAntimony)) {
 		std::cout << "Failed to load: " << CupOfAntimony << std::endl;
 	}
-	CupOfAntimonyTexture.loadFromFile(CupOfAntimony);
 	CupOfAntimonySprite = sf::Sprite(CupOfAntimonyTexture);
 	CupOfAntimonySprite.setTexture(CupOfAntimonyTexture);
 	CupOfAntimonySprite.setPosition({ tablePosition.x + 750,tablePosition.y + 200 });
@@ -108,7 +102,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!MaggotsTexture.loadFromFile(Maggots)) {
 		std::cout << "Failed to load: " << Maggots << std::endl;
 	}
-	MaggotsTexture.loadFromFile(Maggots);
 	MaggotsSprite = sf::Sprite(MaggotsTexture);
 	MaggotsSprite.setTexture(MaggotsTexture);
 	MaggotsSprite.setPosition({ tablePosition.x + 400 , tablePosition.y + 150 });
@@ -117,7 +110,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!OintmentTexture.loadFromFile(Ointment)) {
 		std::cout << "Failed to load: " << Ointment << std::endl;
 	}
-	OintmentTexture.loadFromFile(Ointment);
 	OintmentSprite = sf::Sprite(OintmentTexture);
 	OintmentSprite.setTexture(OintmentTexture);
 	OintmentSprite.setPosition({ tablePosition.x + 400,tablePosition.y + 300 });
@@ -126,7 +118,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!ringTexture.loadFromFile(ring)) {
 		std::cout << "Failed to load: " << ring << std::endl;
 	}
-	ringTexture.loadFromFile(ring);
 	ringSprite = sf::Sprite(ringTexture);
 	ringSprite.setTexture(ringTexture);
 	ringSprite.setPosition({ tablePosition.x + 1300 , tablePosition.y + 200 });
@@ -136,7 +127,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!ScalpelpngTexture.loadFromFile(Scalpelpng)) {
 		std::cout << "Failed to load: " << Scalpelpng << std::endl;
 	}
-	ScalpelpngTexture.loadFromFile(Scalpelpng);
 	ScalpelpngSprite = sf::Sprite(ScalpelpngTexture);
 	ScalpelpngSprite.setTexture(ScalpelpngTexture);
 	ScalpelpngSprite.setPosition({ tablePosition.x + 850 ,tablePosition.y + 600 });
@@ -145,20 +135,23 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!MortarPestleTexture.loadFromFile(MortarPestle)) {
 		std::cout << "Failed to load: " << MortarPestle << std::endl;
 	}
-	MortarPestleTexture.loadFromFile(MortarPestle);
 	MortarPestleSprite = sf::Sprite(MortarPestleTexture);
 	MortarPestleSprite.setTexture(MortarPestleTexture);
 	MortarPestleSprite.setPosition({ tablePosition.x + 550,tablePosition.y + 200 });
 	MortarPestleSprite.setOrigin({ MortarPestleSprite.getGlobalBounds().size.x / 2, MortarPestleSprite.getGlobalBounds().size.y / 2 });
 
-	hayTexture.loadFromFile(hay);
+	if (!hayTexture.loadFromFile(hay)) {
+		std::cout << "Failed to load: " << hay << std::endl;
+	}
 	haySprite = sf::Sprite(hayTexture);
 	haySprite.setTexture(hayTexture);
 	haySprite.setPosition({ tablePosition.x + 350, tablePosition.y + 850 });
 	haySprite.scale({ 1.5f, 1.5f });
 	haySprite.setOrigin({ haySprite.getGlobalBounds().size.x / 2, haySprite.getGlobalBounds().size.y / 2 });
 
-	potTexture.loadFromFile(pot);
+	if (!potTexture.loadFromFile(pot)) {
+		std::cout << "Failed to load: " << pot << std::endl;
+	}
 	potSprite = sf::Sprite(potTexture);
 	potSprite.setTexture(potTexture);
 	potSprite.setPosition({ tablePosition.x + 1900 , tablePosition.y + 600 });
@@ -166,6 +159,8 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 
 	// Initialize the table items map after all sprites are set up
 	InitializeTableItems();
+
+	std::cout << "ItemTable initialized with " << tableItems.size() << " items" << std::endl;
 }
 
 void ItemTable::Draw(RenderWindow& window)
@@ -174,8 +169,8 @@ void ItemTable::Draw(RenderWindow& window)
 	window.draw(haySprite);
 	window.draw(potSprite);
 	window.draw(ItemtableSprite);
-	window.draw(bookSprite);
-	// Only draw items that haven't been collected
+
+	// Draw all items using the tableItems map for consistency
 	for (const auto& pair : tableItems) {
 		const TableItem& item = pair.second;
 		if (!item.isCollected && item.sprite) {
@@ -194,7 +189,11 @@ void ItemTable::Move(Vector2f offset)
 	ItemtableSprite.move(offset);
 	GroundSprite.move(offset);
 	// Move all items with the table
-
+	for (auto& pair : tableItems) {
+		if (pair.second.sprite) {
+			pair.second.sprite->move(offset);
+		}
+	}
 }
 
 void ItemTable::SetScale(Vector2f scale)
@@ -202,19 +201,11 @@ void ItemTable::SetScale(Vector2f scale)
 	ItemtableSprite.setScale(scale);
 	GroundSprite.setScale(scale);
 	// Scale all items
-	bookSprite.setScale(scale);
-	ChickenSprite.setScale(scale);
-	cobwebSprite.setScale(scale);
-	Cramp_coineSprite.setScale(scale);
-	CrucifixSprite.setScale(scale);
-	CupOfAntimonySprite.setScale(scale);
-	MaggotsSprite.setScale(scale);
-	OintmentSprite.setScale(scale);
-	ringSprite.setScale(scale);
-	ScalpelpngSprite.setScale(scale);
-	MortarPestleSprite.setScale(scale);
-	haySprite.setScale(scale);
-	potSprite.setScale(scale);
+	for (auto& pair : tableItems) {
+		if (pair.second.sprite) {
+			pair.second.sprite->setScale(scale);
+		}
+	}
 }
 
 ItemType ItemTable::GetClickedItem(Vector2f mousePos) const
@@ -222,6 +213,7 @@ ItemType ItemTable::GetClickedItem(Vector2f mousePos) const
 	for (const auto& pair : tableItems) {
 		const TableItem& item = pair.second;
 		if (!item.isCollected && item.sprite && item.sprite->getGlobalBounds().contains(mousePos)) {
+			std::cout << "Clicked on table item: " << item.name << std::endl;
 			return item.type;
 		}
 	}
@@ -244,6 +236,7 @@ void ItemTable::ResetCollectedItems()
 	for (auto& pair : tableItems) {
 		pair.second.isCollected = false;
 	}
+	std::cout << "All items reset to uncollected state" << std::endl;
 }
 
 std::string ItemTable::GetItemTexturePath(ItemType itemType) const
@@ -267,6 +260,7 @@ std::string ItemTable::GetItemName(ItemType itemType) const
 void ItemTable::InitializeTableItems()
 {
 	// Initialize the map with all table items
+	tableItems[ItemType::BOOK] = TableItem(ItemType::BOOK, "Book", book, &bookSprite);
 	tableItems[ItemType::CHICKEN] = TableItem(ItemType::CHICKEN, "Chicken", Chicken, &ChickenSprite);
 	tableItems[ItemType::COBWEB] = TableItem(ItemType::COBWEB, "Cobweb", cobweb, &cobwebSprite);
 	tableItems[ItemType::CRAMP_COINE] = TableItem(ItemType::CRAMP_COINE, "Cramp Coine", Cramp_coine, &Cramp_coineSprite);
@@ -277,4 +271,6 @@ void ItemTable::InitializeTableItems()
 	tableItems[ItemType::RING] = TableItem(ItemType::RING, "Ring", ring, &ringSprite);
 	tableItems[ItemType::SCALPEL] = TableItem(ItemType::SCALPEL, "Scalpel", Scalpelpng, &ScalpelpngSprite);
 	tableItems[ItemType::MORTAR_PESTLE] = TableItem(ItemType::MORTAR_PESTLE, "Mortar & Pestle", MortarPestle, &MortarPestleSprite);
+	tableItems[ItemType::HAY] = TableItem(ItemType::HAY, "Hay", hay, &haySprite);
+	tableItems[ItemType::POT] = TableItem(ItemType::POT, "Pot", pot, &potSprite);
 }

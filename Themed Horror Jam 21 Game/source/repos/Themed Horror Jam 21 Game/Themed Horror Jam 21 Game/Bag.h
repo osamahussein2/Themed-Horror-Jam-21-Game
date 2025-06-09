@@ -34,9 +34,9 @@ struct InventoryItem {
     Texture texture;
     bool isLoaded;
 
-    InventoryItem() : type(ItemType::NONE), isLoaded(false) , sprite(texture) {}
+    InventoryItem() : type(ItemType::NONE), isLoaded(false) {}
     InventoryItem(ItemType t, const std::string& n, const std::string& path)
-        : type(t), name(n), texturePath(path), isLoaded(false), sprite(texture) {}
+        : type(t), name(n), texturePath(path), isLoaded(false) {}
 };
 
 class Bag {
