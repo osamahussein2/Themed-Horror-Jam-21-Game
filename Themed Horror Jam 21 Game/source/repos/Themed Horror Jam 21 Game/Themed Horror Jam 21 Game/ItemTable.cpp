@@ -25,7 +25,6 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 		ItemtableSprite.setOrigin(Vector2f(ItemtableSprite.getPosition().x + ItemtableSprite.getScale().x / 2.0f,
 			ItemtableSprite.getPosition().y + ItemtableSprite.getScale().y / 2.0f));
 	}
-
 	else
 	{
 		ItemtableSprite.setOrigin(Vector2f(0.0f, 0.0f));
@@ -165,11 +164,9 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	potSprite.setPosition({ tablePosition.x + 1900 , tablePosition.y + 600 });
 	potSprite.setOrigin({ potSprite.getGlobalBounds().size.x / 2, potSprite.getGlobalBounds().size.y / 2 });
 
-
+	// Initialize the table items map after all sprites are set up
+	InitializeTableItems();
 }
-
-
-
 
 void ItemTable::Draw(RenderWindow& window)
 {
@@ -178,6 +175,13 @@ void ItemTable::Draw(RenderWindow& window)
 	window.draw(potSprite);
 	window.draw(ItemtableSprite);
 	window.draw(bookSprite);
+	// Only draw items that haven't been collected
+	for (const auto& pair : tableItems) {
+		const TableItem& item = pair.second;
+		if (!item.isCollected && item.sprite) {
+			window.draw(*item.sprite);
+		}
+	}
 }
 
 void ItemTable::SetPosition(Vector2f position)
@@ -197,5 +201,80 @@ void ItemTable::SetScale(Vector2f scale)
 {
 	ItemtableSprite.setScale(scale);
 	GroundSprite.setScale(scale);
+	// Scale all items
+	bookSprite.setScale(scale);
+	ChickenSprite.setScale(scale);
+	cobwebSprite.setScale(scale);
+	Cramp_coineSprite.setScale(scale);
+	CrucifixSprite.setScale(scale);
+	CupOfAntimonySprite.setScale(scale);
+	MaggotsSprite.setScale(scale);
+	OintmentSprite.setScale(scale);
+	ringSprite.setScale(scale);
+	ScalpelpngSprite.setScale(scale);
+	MortarPestleSprite.setScale(scale);
+	haySprite.setScale(scale);
+	potSprite.setScale(scale);
+}
 
+ItemType ItemTable::GetClickedItem(Vector2f mousePos) const
+{
+	for (const auto& pair : tableItems) {
+		const TableItem& item = pair.second;
+		if (!item.isCollected && item.sprite && item.sprite->getGlobalBounds().contains(mousePos)) {
+			return item.type;
+		}
+	}
+	return ItemType::NONE;
+}
+
+bool ItemTable::CollectItem(ItemType itemType)
+{
+	auto it = tableItems.find(itemType);
+	if (it != tableItems.end() && !it->second.isCollected) {
+		it->second.isCollected = true;
+		std::cout << "Collected item: " << it->second.name << std::endl;
+		return true;
+	}
+	return false;
+}
+
+void ItemTable::ResetCollectedItems()
+{
+	for (auto& pair : tableItems) {
+		pair.second.isCollected = false;
+	}
+}
+
+std::string ItemTable::GetItemTexturePath(ItemType itemType) const
+{
+	auto it = tableItems.find(itemType);
+	if (it != tableItems.end()) {
+		return it->second.texturePath;
+	}
+	return "";
+}
+
+std::string ItemTable::GetItemName(ItemType itemType) const
+{
+	auto it = tableItems.find(itemType);
+	if (it != tableItems.end()) {
+		return it->second.name;
+	}
+	return "";
+}
+
+void ItemTable::InitializeTableItems()
+{
+	// Initialize the map with all table items
+	tableItems[ItemType::CHICKEN] = TableItem(ItemType::CHICKEN, "Chicken", Chicken, &ChickenSprite);
+	tableItems[ItemType::COBWEB] = TableItem(ItemType::COBWEB, "Cobweb", cobweb, &cobwebSprite);
+	tableItems[ItemType::CRAMP_COINE] = TableItem(ItemType::CRAMP_COINE, "Cramp Coine", Cramp_coine, &Cramp_coineSprite);
+	tableItems[ItemType::CRUCIFIX] = TableItem(ItemType::CRUCIFIX, "Crucifix", Crucifix, &CrucifixSprite);
+	tableItems[ItemType::CUP_OF_ANTIMONY] = TableItem(ItemType::CUP_OF_ANTIMONY, "Cup of Antimony", CupOfAntimony, &CupOfAntimonySprite);
+	tableItems[ItemType::MAGGOTS] = TableItem(ItemType::MAGGOTS, "Maggots", Maggots, &MaggotsSprite);
+	tableItems[ItemType::OINTMENT] = TableItem(ItemType::OINTMENT, "Ointment", Ointment, &OintmentSprite);
+	tableItems[ItemType::RING] = TableItem(ItemType::RING, "Ring", ring, &ringSprite);
+	tableItems[ItemType::SCALPEL] = TableItem(ItemType::SCALPEL, "Scalpel", Scalpelpng, &ScalpelpngSprite);
+	tableItems[ItemType::MORTAR_PESTLE] = TableItem(ItemType::MORTAR_PESTLE, "Mortar & Pestle", MortarPestle, &MortarPestleSprite);
 }

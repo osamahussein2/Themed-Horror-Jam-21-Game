@@ -10,6 +10,7 @@
 #include "SurgeryRoom.h"
 #include "OperationScene.h"
 #include "ItemTable.h"
+#include "Bag.h" // Include the Bag header
 
 
 enum class SceneType {
@@ -28,8 +29,7 @@ enum class GameState {
     SURGERY_ROOM_ACTIVE,
     OPERATION_ACTIVE,
     ITEM_TABLE_ACTIVE,
-    INVENTORY_VISIBLE,    // New state for when inventory is visible
-	Death // Game over state
+    INITIALIZING
 };
 
 class GameScene : public Scene
@@ -57,6 +57,7 @@ private:
     SurgeryRoom surgeryRoom;
     OperationScene operationScene;
     ItemTable itemTable;
+    Bag bag; // Add the bag instance
     TypewriterEffect typewriterEffect;
 
 
@@ -85,7 +86,10 @@ private:
     void InitializeDialogueSystem();
     void UpdateDialoguePanelTexture();
 
-
+    // Bag-related methods
+    void HandleItemTableClicks(Vector2f mousePos);
+    void HandleBagClicks(Vector2f mousePos);
+    void InitializeBag();
 
     float alpha = 255.0f;
     bool alphaIncrease = false;

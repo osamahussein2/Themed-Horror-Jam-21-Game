@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Bag.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -161,6 +163,8 @@
     <ClCompile Include="TypewriterEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="Bag.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="DialoguePanel.h" />
     <ClInclude Include="Engine.h" />

@@ -4,11 +4,22 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
+#include "Bag.h" // Include the Bag header
 
 
 using namespace sf;
 
+struct TableItem {
+	ItemType type;
+	std::string name;
+	std::string texturePath;
+	Sprite* sprite;
+	bool isCollected;
 
+	TableItem() : sprite(nullptr), isCollected(false), type(ItemType::NONE) {}
+	TableItem(ItemType t, const std::string& n, const std::string& path, Sprite* s)
+		: type(t), name(n), texturePath(path), sprite(s), isCollected(false) {}
+};
 
 class ItemTable
 {
@@ -29,8 +40,17 @@ public:
 	// Scale the operation scene
 	void SetScale(Vector2f scale);
 
+	// Click detection and item interaction
+	ItemType GetClickedItem(Vector2f mousePos) const;
+	bool CollectItem(ItemType itemType);
+	void ResetCollectedItems(); // Reset all items to uncollected state
+
+	// Get item information
+	std::string GetItemTexturePath(ItemType itemType) const;
+	std::string GetItemName(ItemType itemType) const;
 
 private:
+	void InitializeTableItems(); // Initialize the table items map
 
 	Texture ItemtableTexture;
 	Sprite ItemtableSprite;
@@ -90,8 +110,8 @@ private:
 	Texture potTexture;
 	Sprite potSprite;
 
-
-
+	// Map to store all table items for easy access
+	std::map<ItemType, TableItem> tableItems;
 };
 
 #endif
