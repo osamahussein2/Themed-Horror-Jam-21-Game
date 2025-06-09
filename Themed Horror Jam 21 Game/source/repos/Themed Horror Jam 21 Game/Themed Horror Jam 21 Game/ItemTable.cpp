@@ -165,78 +165,11 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	potSprite.setPosition({ tablePosition.x + 1900 , tablePosition.y + 600 });
 	potSprite.setOrigin({ potSprite.getGlobalBounds().size.x / 2, potSprite.getGlobalBounds().size.y / 2 });
 
-	// Initialize the table items vector
-	InitializeTableItems();
+
 }
 
-void ItemTable::InitializeTableItems()
-{
-	tableItems.clear();
 
-	// Add all items to the vector with their corresponding information
-	tableItems.emplace_back(&ChickenSprite, ItemType::CHICKEN, "Chicken", Chicken);
-	tableItems.emplace_back(&cobwebSprite, ItemType::COBWEB, "Cobweb", cobweb);
-	tableItems.emplace_back(&Cramp_coineSprite, ItemType::CRAMP_COINE, "Cramp Coin", Cramp_coine);
-	tableItems.emplace_back(&CrucifixSprite, ItemType::CRUCIFIX, "Crucifix", Crucifix);
-	tableItems.emplace_back(&CupOfAntimonySprite, ItemType::CUP_OF_ANTIMONY, "Cup of Antimony", CupOfAntimony);
-	tableItems.emplace_back(&MaggotsSprite, ItemType::MAGGOTS, "Maggots", Maggots);
-	tableItems.emplace_back(&OintmentSprite, ItemType::OINTMENT, "Ointment", Ointment);
-	tableItems.emplace_back(&ringSprite, ItemType::RING, "Ring", ring);
-	tableItems.emplace_back(&ScalpelpngSprite, ItemType::SCALPEL, "Scalpel", Scalpelpng);
-	tableItems.emplace_back(&MortarPestleSprite, ItemType::MORTAR_PESTLE, "Mortar & Pestle", MortarPestle);
-}
 
-ItemType ItemTable::HandleItemClick(Vector2f mousePos)
-{
-	for (auto& item : tableItems) {
-		if (item.isAvailable && item.sprite->getGlobalBounds().contains(mousePos)) {
-			std::cout << "Clicked on " << item.name << std::endl;
-			return item.itemType;
-		}
-	}
-	return ItemType::NONE;
-}
-
-void ItemTable::RemoveItem(ItemType itemType)
-{
-	for (auto& item : tableItems) {
-		if (item.itemType == itemType) {
-			item.isAvailable = false;
-			std::cout << "Removed " << item.name << " from table" << std::endl;
-			break;
-		}
-	}
-}
-
-bool ItemTable::IsItemAvailable(ItemType itemType) const
-{
-	for (const auto& item : tableItems) {
-		if (item.itemType == itemType) {
-			return item.isAvailable;
-		}
-	}
-	return false;
-}
-
-std::string ItemTable::GetItemName(ItemType itemType) const
-{
-	for (const auto& item : tableItems) {
-		if (item.itemType == itemType) {
-			return item.name;
-		}
-	}
-	return "";
-}
-
-std::string ItemTable::GetItemTexturePath(ItemType itemType) const
-{
-	for (const auto& item : tableItems) {
-		if (item.itemType == itemType) {
-			return item.texturePath;
-		}
-	}
-	return "";
-}
 
 void ItemTable::Draw(RenderWindow& window)
 {
@@ -245,12 +178,6 @@ void ItemTable::Draw(RenderWindow& window)
 	window.draw(potSprite);
 	window.draw(ItemtableSprite);
 	window.draw(bookSprite);
-	// Only draw items that are still available
-	for (const auto& item : tableItems) {
-		if (item.isAvailable) {
-			window.draw(*item.sprite);
-		}
-	}
 }
 
 void ItemTable::SetPosition(Vector2f position)
@@ -263,17 +190,12 @@ void ItemTable::Move(Vector2f offset)
 	ItemtableSprite.move(offset);
 	GroundSprite.move(offset);
 	// Move all items with the table
-	for (auto& item : tableItems) {
-		item.sprite->move(offset);
-	}
+
 }
 
 void ItemTable::SetScale(Vector2f scale)
 {
 	ItemtableSprite.setScale(scale);
 	GroundSprite.setScale(scale);
-	// Scale all items
-	for (auto& item : tableItems) {
-		item.sprite->setScale(scale);
-	}
+
 }

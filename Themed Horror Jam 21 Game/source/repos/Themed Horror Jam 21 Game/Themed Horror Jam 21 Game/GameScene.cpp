@@ -13,8 +13,6 @@ GameScene::GameScene()
     , dialoguePanel(nullptr)
     , dialogueSystemInitialized(false)
     , typeTextTime(0.0f)
-    , inventoryVisible(false)
-    , inventoryBackground(inventoryBackgroundTexture)
 {
 }
 
@@ -41,29 +39,10 @@ GameScene::~GameScene()
 void GameScene::Initialize()
 {
     resolution = Engine::Instance()->GetResolution();
-    InitializeInventory();
+
 }
 
-void GameScene::InitializeInventory()
-{
-    // Initialize inventory position and size
-    Vector2f inventoryPos(50.0f, 50.0f);
-    Vector2f itemSize(80.0f, 80.0f);
-    playerInventory.Initialize(inventoryPos, itemSize, 6); // 6 items per row
 
-    // Load inventory background texture and set it to the sprite
-    if (inventoryBackgroundTexture.loadFromFile("Art Assets/SurgeryRoom/bagInvtory.png"))
-    {
-        inventoryBackground.setTexture(inventoryBackgroundTexture);
-        // You can set position and scale here if needed
-        inventoryBackground.setPosition({ 0.0f, 0.0f });
-        inventoryBackground.setScale({ 1.0f, 1.0f });
-    }
-    else
-    {
-        std::cout << "Failed to load inventory background texture!" << std::endl;
-    }
-}
 
 void GameScene::Update(float deltaTime)
 {
@@ -84,7 +63,6 @@ void GameScene::Update(float deltaTime)
     // Check for inventory toggle (I key)
     if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f)
     {
-        ToggleInventory();
         inputCooldown = INPUT_DELAY;
     }
 
@@ -261,12 +239,7 @@ void GameScene::Update(float deltaTime)
         Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
         Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
-        // Handle inventory clicks when visible
-        if (inventoryVisible && Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
-        {
-            HandleInventoryClick(mousePos);
-            inputCooldown = INPUT_DELAY;
-        }
+
 
         // Handle input for operation scene
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
@@ -355,7 +328,6 @@ void GameScene::Update(float deltaTime)
         // Handle item clicks
         if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
         {
-            HandleItemTableClick(mousePos);
             inputCooldown = INPUT_DELAY;
         }
 
@@ -384,14 +356,12 @@ void GameScene::Update(float deltaTime)
         // Handle inventory clicks
         if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
         {
-            HandleInventoryClick(mousePos);
             inputCooldown = INPUT_DELAY;
         }
 
         // Close inventory with Enter or Right click
         if ((Keyboard::isKeyPressed(Keyboard::Key::Enter) || Mouse::isButtonPressed(Mouse::Button::Right)) && inputCooldown <= 0.0f)
         {
-            ToggleInventory();
             inputCooldown = INPUT_DELAY;
         }
         break;
@@ -402,57 +372,9 @@ void GameScene::Update(float deltaTime)
     }
 }
 
-void GameScene::HandleItemTableClick(Vector2f mousePos)
-{
-    ItemType clickedItem = itemTable.HandleItemClick(mousePos);
-    if (clickedItem != ItemType::NONE)
-    {
-        // Try to add item to inventory
-        std::string itemName = itemTable.GetItemName(clickedItem);
-        std::string itemPath = itemTable.GetItemTexturePath(clickedItem);
 
-        if (playerInventory.AddItem(clickedItem, itemName, itemPath))
-        {
-            // Successfully added to inventory, remove from table
-            itemTable.RemoveItem(clickedItem);
-        }
-    }
-}
 
-void GameScene::HandleInventoryClick(Vector2f mousePos)
-{
-    ItemType clickedItem = playerInventory.HandleClick(mousePos);
-    if (clickedItem != ItemType::NONE)
-    {
-        // Use the item
-        if (playerInventory.IsItemUsable(clickedItem))
-        {
-            playerInventory.UseItem(clickedItem);
-            std::cout << "Used item in operation!" << std::endl;
-        }
-        else
-        {
-            std::cout << "Item already used!" << std::endl;
-        }
-    }
-}
 
-void GameScene::ToggleInventory()
-{
-    inventoryVisible = !inventoryVisible;
-
-    if (inventoryVisible)
-    {
-        // Remember the previous state
-        previousGameState = currentGameState;
-        currentGameState = GameState::INVENTORY_VISIBLE;
-    }
-    else
-    {
-        // Return to previous state
-        currentGameState = previousGameState;
-    }
-}
 
 // Update your Render method to include the new case:
 void GameScene::Render(RenderWindow& window)
@@ -482,10 +404,7 @@ void GameScene::Render(RenderWindow& window)
         surgeryRoom.Draw(window, person.LoadSprite());
 
         // Draw inventory if visible
-        if (inventoryVisible)
-        {
-            DrawInventoryUI(window);
-        }
+    
         break;
     }
 
@@ -501,11 +420,7 @@ void GameScene::Render(RenderWindow& window)
             window.draw(successfulText.LoadText());
         }
 
-        // Draw inventory if visible
-        if (inventoryVisible)
-        {
-            DrawInventoryUI(window);
-        }
+
         break;
     }
 
@@ -514,11 +429,6 @@ void GameScene::Render(RenderWindow& window)
         itemTable.Draw(window);
         surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
 
-        // Draw inventory if visible
-        if (inventoryVisible)
-        {
-            DrawInventoryUI(window);
-        }
         break;
     }
 
@@ -543,8 +453,6 @@ void GameScene::Render(RenderWindow& window)
             break;
         }
 
-        // Draw inventory on top
-        DrawInventoryUI(window);
         break;
     }
 
@@ -568,14 +476,6 @@ void GameScene::Render(RenderWindow& window)
     }
 }
 
-void GameScene::DrawInventoryUI(RenderWindow& window)
-{
-    // Draw background sprite
-    window.draw(inventoryBackground);
-
-    // Draw inventory items
-    playerInventory.Draw(window);
-}
 
 void GameScene::Cleanup()
 {
@@ -599,8 +499,7 @@ void GameScene::InitializeGame()
 {
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
-    inventoryVisible = false;
-
+  
     // Clear previous dialogue texts
     for (int i = 0; i < dialogueTexts.size(); i++)
     {
@@ -615,8 +514,7 @@ void GameScene::InitializeGame()
         surgeryRoom.StopTimer();
     }
 
-    // Clear inventory
-    playerInventory.Clear();
+
 
     if (inputCooldown != INPUT_DELAY) inputCooldown = INPUT_DELAY;
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;

@@ -148,7 +148,6 @@
     <ClCompile Include="DialoguePanel.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameScene.cpp" />
-    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="ItemTable.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="DialoguePanel.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameScene.h" />
-    <ClInclude Include="Inventory.h" />
     <ClInclude Include="ItemTable.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuScene.h" />

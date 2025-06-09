@@ -10,7 +10,7 @@
 #include "SurgeryRoom.h"
 #include "OperationScene.h"
 #include "ItemTable.h"
-#include "Inventory.h"
+
 
 enum class SceneType {
     MENU_SCENE,
@@ -58,7 +58,7 @@ private:
     OperationScene operationScene;
     ItemTable itemTable;
     TypewriterEffect typewriterEffect;
-    Inventory playerInventory;
+
 
     Vector2u resolution;
 
@@ -67,11 +67,7 @@ private:
     float typeTextTime;
     DialoguePanel* dialoguePanel;
 
-    // Inventory management
-    bool inventoryVisible;
 
-    Sprite inventoryBackground;
-    Texture inventoryBackgroundTexture;
 
     // Input handling
     float inputCooldown;
@@ -88,12 +84,7 @@ private:
     void InitializeGame();
     void InitializeDialogueSystem();
     void UpdateDialoguePanelTexture();
-    void InitializeInventory();
-    // Inventory functions
-    void HandleItemTableClick(Vector2f mousePos);
-    void HandleInventoryClick(Vector2f mousePos);
-    void ToggleInventory();
-    void DrawInventoryUI(RenderWindow& window);
+
 
 
     float alpha = 255.0f;

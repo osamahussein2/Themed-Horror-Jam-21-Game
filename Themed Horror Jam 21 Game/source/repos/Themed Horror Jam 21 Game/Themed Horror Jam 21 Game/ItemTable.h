@@ -4,21 +4,11 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
-#include "Inventory.h"
+
 
 using namespace sf;
 
-struct TableItem {
-	Sprite* sprite;
-	ItemType itemType;
-	std::string name;
-	std::string texturePath;
-	bool isAvailable;
 
-	TableItem(Sprite* s, ItemType type, const std::string& n, const std::string& path)
-		: sprite(s), itemType(type), name(n), texturePath(path), isAvailable(true) {
-	}
-};
 
 class ItemTable
 {
@@ -39,18 +29,6 @@ public:
 	// Scale the operation scene
 	void SetScale(Vector2f scale);
 
-	// Handle click on items - returns the item type that was clicked
-	ItemType HandleItemClick(Vector2f mousePos);
-
-	// Remove item from table (make it unavailable)
-	void RemoveItem(ItemType itemType);
-
-	// Check if item is available on table
-	bool IsItemAvailable(ItemType itemType) const;
-
-	// Get item info for inventory
-	std::string GetItemName(ItemType itemType) const;
-	std::string GetItemTexturePath(ItemType itemType) const;
 
 private:
 
@@ -112,11 +90,8 @@ private:
 	Texture potTexture;
 	Sprite potSprite;
 
-	// Vector to store all table items for easy management
-	std::vector<TableItem> tableItems;
 
-	// Initialize the table items vector
-	void InitializeTableItems();
+
 };
 
 #endif
