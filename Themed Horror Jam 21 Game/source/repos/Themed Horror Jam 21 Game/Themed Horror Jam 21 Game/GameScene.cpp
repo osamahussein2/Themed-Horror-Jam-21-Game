@@ -552,6 +552,10 @@ void GameScene::InitializeBag()
 
 void GameScene::HandleItemTableClicks(Vector2f mousePos)
 {
+    if(bag.IsVisible())
+	{
+		return;
+	}
     if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
     {
         ItemType clickedItem = itemTable.GetClickedItem(mousePos);
