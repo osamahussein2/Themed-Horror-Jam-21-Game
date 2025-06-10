@@ -5,6 +5,8 @@ void GameScene::InitializeDay2()
 {
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
+
+    if (isInputEnabled != true) isInputEnabled = true;
 }
 
 void GameScene::UpdateDay2(float deltaTime)
@@ -20,7 +22,7 @@ void GameScene::UpdateDay2(float deltaTime)
     Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
     // Check for escape key to return to menu
-    if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+    if (Keyboard::isKeyPressed(Keyboard::Key::Escape) && isInputEnabled)
     {
         //typewriterEffect.Reset();
         //itemTable.ResetCollectedItems();

@@ -60,6 +60,8 @@ public:
     static std::string GetFullscreenStatus() { return fullscreenStatus[currentFullscreenStatus]; }
     static Vector2u GetResolutionSize() { return resolutionSize[currentResolutionSize]; }
 
+    static bool nextDayUnlocked;
+
 private:
     // Menu state management
     MenuState currentState;
@@ -96,7 +98,8 @@ private:
     Game::Text settingsContentText;
     Game::Text backInstructionText;
 
- 
+    // Text for next day unlocked
+    Game::Text nextDayUnlockedText;
 
     // Colors
     Color selectedColor;

@@ -44,6 +44,7 @@ void MenuScene::Update(float deltaTime)
     {
     case MenuAction::StartGame:
         //mainMenuAudio->StopAudio();
+        if (Menu::nextDayUnlocked != false) Menu::nextDayUnlocked = false;
         sceneManager->ChangeScene("Game");
         break;
 

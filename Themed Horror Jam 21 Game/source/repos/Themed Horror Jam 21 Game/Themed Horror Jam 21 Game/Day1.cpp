@@ -8,6 +8,8 @@ void GameScene::InitializeDay1()
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
+    if (isInputEnabled != true) isInputEnabled = true;
+
     maxPatients = 3;
     currentPatientIndex = 0;
 
@@ -112,7 +114,7 @@ void GameScene::UpdateDay1(float deltaTime)
     Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
     // Check for escape key to return to menu
-    if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+    if (Keyboard::isKeyPressed(Keyboard::Key::Escape) && isInputEnabled)
     {
         typewriterEffect.Reset();
         itemTable.ResetCollectedItems();
@@ -122,7 +124,8 @@ void GameScene::UpdateDay1(float deltaTime)
     }
 
     // Check for inventory toggle (I key)
-    if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && currentGameState != GameState::FAILURE_ACTIVE)
+    if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && currentGameState != GameState::FAILURE_ACTIVE
+        && isInputEnabled)
     {
         inputCooldown = INPUT_DELAY;
         if (bag.IsVisible())
@@ -150,7 +153,7 @@ void GameScene::UpdateDay1(float deltaTime)
     if (currentGameState == GameState::SURGERY_ROOM_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE ||
         currentGameState == GameState::OPERATION_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE)
     {
-        if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos))
+        if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
             if (surgeryRoom.BagSprite.getColor() != Color::Red)
                 surgeryRoom.BagSprite.setColor(Color::Red);
@@ -168,7 +171,7 @@ void GameScene::UpdateDay1(float deltaTime)
                 inputCooldown = INPUT_DELAY;
             }
         }
-        else
+        else if (!surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos))
         {
             // Reset color when not hovering
             if (surgeryRoom.BagSprite.getColor() != Color::White)
@@ -288,7 +291,7 @@ void GameScene::UpdateDay1(float deltaTime)
         if (alpha >= 255.0f) alphaIncrease = false;
         else if (alpha <= 125.0f) alphaIncrease = true;
 
-        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
+        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
             if (surgeryRoom.TableUISprite.getColor() != Color::Red)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
@@ -309,7 +312,7 @@ void GameScene::UpdateDay1(float deltaTime)
                 std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
         }
-        else
+        else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
             // Reset color when not hovering
             if (surgeryRoom.TableUISprite.getColor() != Color::White)
@@ -317,7 +320,7 @@ void GameScene::UpdateDay1(float deltaTime)
         }
 
         // Handle operation table clicks
-        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
             if (alpha != 255.0f) alpha = 255.0f;
             if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
@@ -362,7 +365,7 @@ void GameScene::UpdateDay1(float deltaTime)
         }
 
         // Handle input for operation scene
-        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
             // Return to surgery room when Enter is pressed
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
@@ -370,7 +373,7 @@ void GameScene::UpdateDay1(float deltaTime)
         }
 
         // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
         {
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
@@ -411,7 +414,7 @@ void GameScene::UpdateDay1(float deltaTime)
         HandleItemTableClicks(mousePos);
 
         // Handle input for item table
-        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
             // Return to surgery room when Enter is pressed
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
@@ -419,7 +422,7 @@ void GameScene::UpdateDay1(float deltaTime)
         }
 
         // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
         {
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
@@ -430,6 +433,7 @@ void GameScene::UpdateDay1(float deltaTime)
     case GameState::FAILURE_ACTIVE:
     {
         float dayFailedCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+        if (isInputEnabled != false) isInputEnabled = false;
 
         // If failed timer is less than 1 second, initialize the failed text and increment the failed timer for text fade
         if (failedTimer < 1.0f)
@@ -466,6 +470,7 @@ void GameScene::UpdateDay1(float deltaTime)
     case GameState::SUCCESSFUL_DAY_ACTIVE:
     {
         float daySuccessfulCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+        if (isInputEnabled != false) isInputEnabled = false;
 
         // Modify day successful text colors
         uint8_t daySuccessfulRedValue{255};
@@ -501,6 +506,7 @@ void GameScene::UpdateDay1(float deltaTime)
             itemTable.ResetCollectedItems();
             bag.ClearBag();
             currentDay = 2;
+            Menu::nextDayUnlocked = true;
             sceneManager->ChangeScene("Menu");
             return;
         }
@@ -679,7 +685,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
     case 0: // 1st patient
         for (int i = 0; i < operationScene.maxDots; i++)
         {
-            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
                 if (Mouse::isButtonPressed(Mouse::Button::Left))
@@ -697,6 +703,8 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
         {
             successfulOperationTime += deltaTime;
 
+            if (isInputEnabled != false) isInputEnabled = false;
+
             if (operationSceneChanged != false) operationSceneChanged = false;
 
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
@@ -710,6 +718,8 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
 
             if (successfulOperationTime >= 1.0f)
             {
+                isInputEnabled = true;
+
                 successfulOperationTime = 0.0f;
                 currentPatientIndex = 1;
                 currentGameState = GameState::SURGERY_ROOM_ACTIVE;
@@ -721,7 +731,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
     case 1: // 2nd patient
         for (int i = 0; i < operationScene.maxDots; i++)
         {
-            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
                 if (Mouse::isButtonPressed(Mouse::Button::Left))
@@ -742,6 +752,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             successfulOperationTime += deltaTime;
 
             if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
 
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
@@ -754,6 +765,8 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
 
             if (successfulOperationTime >= 1.0f)
             {
+                isInputEnabled = true;
+
                 successfulOperationTime = 0.0f;
                 currentPatientIndex = 2;
                 currentGameState = GameState::SURGERY_ROOM_ACTIVE;
@@ -765,7 +778,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
     case 2: // Third and final patient
         for (int i = 0; i < operationScene.maxDots; i++)
         {
-            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
                 if (Mouse::isButtonPressed(Mouse::Button::Left))
@@ -788,6 +801,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             successfulOperationTime += deltaTime;
 
             if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
 
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
@@ -800,6 +814,8 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
 
             if (successfulOperationTime >= 1.0f)
             {
+                isInputEnabled = true;
+                successfulOperationTime = 0.0f;
                 currentGameState = GameState::SUCCESSFUL_DAY_ACTIVE;
             }
         }

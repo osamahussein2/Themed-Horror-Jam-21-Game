@@ -140,6 +140,9 @@ private:
     // Patient index and max size
     int maxPatients{};
     int currentPatientIndex{};
+
+    // Disable/enable input
+    bool isInputEnabled{true};
 };
 
 #endif
