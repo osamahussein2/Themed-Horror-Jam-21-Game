@@ -8,6 +8,9 @@ void GameScene::InitializeDay1()
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
+    maxPatients = 3;
+    currentPatientIndex = 0;
+
     // Clear previous dialogue texts
     for (int i = 0; i < dialogueTexts.size(); i++)
     {
@@ -26,6 +29,13 @@ void GameScene::InitializeDay1()
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
+
+    // Timer related text initialization
+    if (failedTextAlpha != 255.0f) failedTextAlpha = 255.0f;
+    if (failedTimer != 0.0f) failedTimer = 0.0f;
+
+    if (daySuccessfulTextAlpha != 255.0f) daySuccessfulTextAlpha = 255.0f;
+    if (daySuccessfulTimer != 0.0f) daySuccessfulTimer = 0.0f;
 
     if (!gameBackground.IsLoaded())
     {
@@ -126,11 +136,9 @@ void GameScene::UpdateDay1(float deltaTime)
     }
 
     // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
-    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE)
+    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE ||
+        surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::SUCCESSFUL_DAY_ACTIVE)
     {
-        if (failedTextAlpha != 255.0f) failedTextAlpha = 255.0f;
-        if (failedTimer != 0.0f) failedTimer = 0.0f;
-
         surgeryRoom.UpdateTimer(deltaTime);
 
         // Once timer runs out, change the current game state to show the fail state
@@ -245,8 +253,14 @@ void GameScene::UpdateDay1(float deltaTime)
                     50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
                     0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
-                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
-                    resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+                person.resize(maxPatients);
+                
+                for (int i = 0; i < maxPatients; i++)
+                {
+                    person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
+                        Vector2f(resolution.x / 2.238f, resolution.y / 2.5f),
+                        Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+                }
 
                 // Initialize the bag when surgery room becomes active
                 InitializeBag();
@@ -332,6 +346,10 @@ void GameScene::UpdateDay1(float deltaTime)
             if (surgeryRoom.OperationTableSprite.getColor() != Color(255, 255, 255, alpha))
                 surgeryRoom.OperationTableSprite.setColor(Color(255, 255, 255, alpha));
         }
+
+        // Switch between patients
+        UpdateDay1Patients();
+
         break;
     }
 
@@ -358,41 +376,7 @@ void GameScene::UpdateDay1(float deltaTime)
             inputCooldown = INPUT_DELAY;
         }
 
-        for (int i = 0; i < operationScene.maxDots; i++)
-        {
-            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
-            {
-                // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
-                {
-                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
-                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
-                }
-            }
-        }
-
-        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
-        {
-            successfulOperationTime += deltaTime;
-
-            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
-
-            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
-
-            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
-                successfulCharacterSize, true, false,
-                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
-
-            if (successfulOperationTime >= 1.0f)
-            {
-                successfulOperationTime = 0.0f;
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            }
-        }
+        UpdateDay1OperationScene(deltaTime);
         break;
     }
 
@@ -479,6 +463,50 @@ void GameScene::UpdateDay1(float deltaTime)
 
         break;
     }
+    case GameState::SUCCESSFUL_DAY_ACTIVE:
+    {
+        float daySuccessfulCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+        // Modify day successful text colors
+        uint8_t daySuccessfulRedValue{255};
+        uint8_t daySuccessfulGreenValue{255};
+        uint8_t daySuccessfulBlueValue{0};
+
+        /* If day successful timer is less than 1 second, initialize the day successful text and increment the day
+        successful timer for text fade */
+        if (daySuccessfulTimer < 1.0f)
+        {
+            daySuccessfulTimer += deltaTime;
+
+            daySuccessfulText.InitializeText("Fonts/Roboto-Regular.ttf", "You passed Day 1!", daySuccessfulCharacterSize,
+                true, false, Color(daySuccessfulRedValue, daySuccessfulGreenValue, daySuccessfulBlueValue, daySuccessfulTextAlpha), 
+                Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+        }
+
+        // If day successful timer is around 1 second or so, make the text fade away overtime
+        else if (daySuccessfulTimer >= 1.0f)
+        {
+            daySuccessfulTextAlpha -= deltaTime * 100.0f;
+
+            if (daySuccessfulText.GetTextColor() != Color(daySuccessfulRedValue, daySuccessfulGreenValue, daySuccessfulBlueValue, daySuccessfulTextAlpha))
+                daySuccessfulText.SetTextColor(Color(daySuccessfulRedValue, daySuccessfulGreenValue, daySuccessfulBlueValue, daySuccessfulTextAlpha));
+        }
+
+        //printf("day successful timer: %f\n", daySuccessfulTimer);
+
+        // If day successful text's alpha value goes down to 0, go back to main menu and switch to the next day
+        if (daySuccessfulTextAlpha <= 0.0f)
+        {
+            typewriterEffect.Reset();
+            itemTable.ResetCollectedItems();
+            bag.ClearBag();
+            currentDay = 2;
+            sceneManager->ChangeScene("Menu");
+            return;
+        }
+
+        break;
+    }
     default:
         break;
     }
@@ -511,7 +539,7 @@ void GameScene::RenderDay1(RenderWindow& window)
     case GameState::SURGERY_ROOM_ACTIVE:
     {
         // Draw surgery room when active
-        surgeryRoom.Draw(window, person.LoadSprite());
+        surgeryRoom.Draw(window, person[currentPatientIndex].LoadSprite());
 
         // Draw bag if visible
         if (bag.IsVisible())
@@ -570,11 +598,212 @@ void GameScene::RenderDay1(RenderWindow& window)
 
     case GameState::FAILURE_ACTIVE:
     {
-
         window.draw(dayFailedText.LoadText());
-
         break;
     }
+
+    case GameState::SUCCESSFUL_DAY_ACTIVE:
+    {
+        window.draw(daySuccessfulText.LoadText());
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+// Update patient here
+void GameScene::UpdateDay1Patients()
+{
+    switch (currentPatientIndex)
+    {
+    case 0: // 1st patient (nothing happens here because operation scene is already initialized)
+        break;
+
+    case 1: // 2nd patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 6;
+
+            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        
+        break;
+
+    case 2: // 3rd and final patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 8;
+
+            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    default:
+        break;
+    }
+}
+
+// Update Day 1's operation scene logic
+void GameScene::UpdateDay1OperationScene(float deltaTime)
+{
+    // Get mouse position for click detection
+    Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
+    Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
+
+    switch (currentPatientIndex)
+    {
+    case 0: // 1st patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+                }
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 1;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+
+        break;
+
+    case 1: // 2nd patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+                }
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 2;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+
+        break;
+
+    case 2: // Third and final patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+                }
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                currentGameState = GameState::SUCCESSFUL_DAY_ACTIVE;
+            }
+        }
+        break;
 
     default:
         break;

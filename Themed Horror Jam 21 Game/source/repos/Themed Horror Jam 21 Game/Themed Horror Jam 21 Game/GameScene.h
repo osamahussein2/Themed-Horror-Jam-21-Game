@@ -30,7 +30,8 @@ enum class GameState {
     OPERATION_ACTIVE,
     ITEM_TABLE_ACTIVE,
     INITIALIZING,
-    FAILURE_ACTIVE
+    FAILURE_ACTIVE,
+    SUCCESSFUL_DAY_ACTIVE
 };
 
 class GameScene : public Scene
@@ -74,6 +75,8 @@ private:
     // Code for different days in game
     void InitializeDay1();
     void UpdateDay1(float deltaTime);
+    void UpdateDay1Patients();
+    void UpdateDay1OperationScene(float deltaTime);
     void RenderDay1(RenderWindow& window);
 
     void InitializeDay2();
@@ -103,7 +106,7 @@ private:
     int maxDialogueTexts = 3;
 
     std::vector<std::string> dialoguePanelTextures;
-    SpriteTexture person;
+    std::vector<SpriteTexture> person;
 
     void InitializeGame();
     void InitializeDialogueSystem();
@@ -119,15 +122,24 @@ private:
 
     float successfulOperationTime{};
 
-    unsigned int successfulOperations{};
+    bool operationSceneChanged{};
 
+    // Operation successful text
     Game::Text successfulText{};
 
+    // Failure state
     Game::Text dayFailedText{};
-
     float failedTextAlpha{};
-
     float failedTimer{};
+
+    // Success state
+    Game::Text daySuccessfulText{};
+    float daySuccessfulTextAlpha{};
+    float daySuccessfulTimer{};
+
+    // Patient index and max size
+    int maxPatients{};
+    int currentPatientIndex{};
 };
 
 #endif
