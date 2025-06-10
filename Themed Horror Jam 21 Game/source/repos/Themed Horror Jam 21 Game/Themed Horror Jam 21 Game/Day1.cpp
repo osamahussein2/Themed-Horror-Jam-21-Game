@@ -5,8 +5,6 @@ float DIALOGUE_TEXT_CHARACTER_SIZE;
 
 void GameScene::InitializeDay1()
 {
-    if (timeRanOut != false) timeRanOut = false;
-
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
@@ -99,16 +97,22 @@ void GameScene::UpdateDay1(float deltaTime)
         return;
     }*/
 
+    // Get mouse position for click detection
+    Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
+    Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
+
     // Check for escape key to return to menu
     if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
     {
         typewriterEffect.Reset();
+        itemTable.ResetCollectedItems();
+        bag.ClearBag();
         sceneManager->ChangeScene("Menu");
         return;
     }
 
     // Check for inventory toggle (I key)
-    if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && !timeRanOut)
+    if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && currentGameState != GameState::FAILURE_ACTIVE)
     {
         inputCooldown = INPUT_DELAY;
         if (bag.IsVisible())
@@ -122,60 +126,21 @@ void GameScene::UpdateDay1(float deltaTime)
     }
 
     // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
-    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && !timeRanOut)
+    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE)
     {
         if (failedTextAlpha != 255.0f) failedTextAlpha = 255.0f;
         if (failedTimer != 0.0f) failedTimer = 0.0f;
 
         surgeryRoom.UpdateTimer(deltaTime);
 
+        // Once timer runs out, change the current game state to show the fail state
         if (surgeryRoom.GetTimeRemaining() <= 0.0f)
-        {
-            if (timeRanOut != true) timeRanOut = true;
-        }
+            currentGameState = GameState::FAILURE_ACTIVE;
     }
-
-    // Else if time runs out
-    if (timeRanOut == true)
-    {
-        float dayFailedCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
-
-        // If failed timer is less than 1 second, initialize the failed text and increment the failed timer for text fade
-        if (failedTimer < 1.0f) 
-        { 
-            failedTimer += deltaTime; 
-
-            dayFailedText.InitializeText("Fonts/Roboto-Regular.ttf", "You failed!", dayFailedCharacterSize,
-                true, false, Color(255, 0, 0, failedTextAlpha), Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
-        }
-
-        // If failed timer is around 1 second or so, make the text fade away overtime
-        else if (failedTimer >= 1.0f)
-        {
-            failedTextAlpha -= deltaTime * 100.0f;
-
-            if (dayFailedText.GetTextColor() != Color(255, 0, 0, failedTextAlpha))
-                dayFailedText.SetTextColor(Color(255, 0, 0, failedTextAlpha));
-        }
-
-        //printf("failed timer: %f\n", failedTextAlpha);
-
-        // If failed text's alpha value goes down to 0, go back to main menu
-        if (failedTextAlpha <= 0.0f)
-        {
-            typewriterEffect.Reset();
-            sceneManager->ChangeScene("Menu");
-            return;
-        }
-    }
-
-    // Get mouse position for click detection
-    Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
-    Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
 
     // Check for bag sprite click (only when surgery room is active)
-    if (currentGameState == GameState::SURGERY_ROOM_ACTIVE && !timeRanOut || 
-        currentGameState == GameState::OPERATION_ACTIVE && !timeRanOut)
+    if (currentGameState == GameState::SURGERY_ROOM_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE ||
+        currentGameState == GameState::OPERATION_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE)
     {
         if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos))
         {
@@ -202,287 +167,320 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.BagSprite.setColor(Color::White);
         }
     }
-
-    if (!timeRanOut)
+    
+    // Update based on current game state
+    switch (currentGameState)
     {
-        // Update based on current game state
-        switch (currentGameState)
+    case GameState::DIALOGUE_ACTIVE:
+    {
+        // Update the typewriter effect and dialogue panel textures
+        typewriterEffect.Update(deltaTime);
+        UpdateDialoguePanelTexture();
+
+        if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
+            && dialogueTexts[currentDialogueIndex])
         {
-        case GameState::DIALOGUE_ACTIVE:
-        {
-            // Update the typewriter effect and dialogue panel textures
-            typewriterEffect.Update(deltaTime);
-            UpdateDialoguePanelTexture();
-
-            if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
-                && dialogueTexts[currentDialogueIndex])
-            {
-                std::string currentText = typewriterEffect.GetCurrentText();
-                dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
-            }
-
-            // Handle input for dialogue
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
-            {
-                if (!typewriterEffect.IsCurrentDialogueComplete())
-                {
-                    typewriterEffect.Skip();
-                }
-                else if (typewriterEffect.HasNextDialogue())
-                {
-                    typewriterEffect.NextDialogue();
-                    currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
-                }
-                else
-                {
-                    currentGameState = GameState::DIALOGUE_HIDDEN;
-                    // Activate surgery room when dialogue ends
-                    gameBackground.Unload();
-
-                    if (!surgeryRoom.IsLoaded())
-                    {
-                        // Initialize surgery room with your asset paths
-                        surgeryRoom.Initialize(
-                            "Art Assets/SurgeryRoom/Background.png",
-                            "Art Assets/SurgeryRoom/BottomUI.png",
-                            "Art Assets/SurgeryRoom/TopUI.png",
-                            resolution,
-                            sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
-                            sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
-                            sf::Vector2f(resolution.x / 2.0f, resolution.y / 10.0f), // top UI
-                            sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
-                            sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
-                            sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
-                            sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
-                            sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
-                            sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
-                            sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
-                            sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
-                            sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
-                            sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
-                            sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
-
-                        if (!surgeryRoom.IsTimerRunning())
-                        {
-                            // Start the timer when operation scene becomes active
-                            surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
-                        }
-                    }
-
-                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
-                        Vector2f(resolution.x / 2.8f, 0.0f),
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
-                        true);
-
-                    operationScene.maxDots = 4;
-
-                    operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                        10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
-                        5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                        50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                        0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
-
-                    person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
-                        resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
-
-                    // Initialize the bag when surgery room becomes active
-                    InitializeBag();
-
-                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                    alpha = 255.0f;
-                }
-
-                inputCooldown = INPUT_DELAY;
-            }
-            break;
+            std::string currentText = typewriterEffect.GetCurrentText();
+            dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
         }
 
-        case GameState::SURGERY_ROOM_ACTIVE:
+        // Handle input for dialogue
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
         {
-            // Handle bag clicks when visible
-            if (bag.IsVisible())
+            if (!typewriterEffect.IsCurrentDialogueComplete())
             {
-                HandleBagClicks(mousePos);
+                typewriterEffect.Skip();
             }
-
-            if (!alphaIncrease) alpha -= 50.0f * deltaTime;
-            else if (alphaIncrease) alpha += 50.0f * deltaTime;
-
-            if (alpha >= 255.0f) alphaIncrease = false;
-            else if (alpha <= 125.0f) alphaIncrease = true;
-
-            if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
+            else if (typewriterEffect.HasNextDialogue())
             {
-                if (surgeryRoom.TableUISprite.getColor() != Color::Red)
-                    surgeryRoom.TableUISprite.setColor(Color::Red);
-
-                // Add input cooldown check here
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
-                {
-                    std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
-
-                    itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
-                        Vector2f((resolution.x / 2.0f) - 990.0f, (resolution.y / 2.0f) - 500.0f),
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
-                        true);
-
-                    // Change to ITEM_TABLE_ACTIVE
-                    currentGameState = GameState::ITEM_TABLE_ACTIVE;
-                    inputCooldown = INPUT_DELAY;
-                    std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
-                }
+                typewriterEffect.NextDialogue();
+                currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
             }
             else
             {
-                // Reset color when not hovering
-                if (surgeryRoom.TableUISprite.getColor() != Color::White)
-                    surgeryRoom.TableUISprite.setColor(Color::White);
-            }
+                currentGameState = GameState::DIALOGUE_HIDDEN;
+                // Activate surgery room when dialogue ends
+                gameBackground.Unload();
 
-            // Handle operation table clicks
-            if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
-            {
-                if (alpha != 255.0f) alpha = 255.0f;
-                if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
-                    surgeryRoom.OperationTableSprite.setColor(Color::Red);
-
-                // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+                if (!surgeryRoom.IsLoaded())
                 {
-                    currentGameState = GameState::OPERATION_ACTIVE;
+                    // Initialize surgery room with your asset paths
+                    surgeryRoom.Initialize(
+                        "Art Assets/SurgeryRoom/Background.png",
+                        "Art Assets/SurgeryRoom/BottomUI.png",
+                        "Art Assets/SurgeryRoom/TopUI.png",
+                        resolution,
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
+                        sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
+                        sf::Vector2f(resolution.x / 2.0f, resolution.y / 10.0f), // top UI
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
+                        sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
+                        sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
+                        sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
+                        sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
+                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
 
-                    operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
-                        Vector2f(resolution.x / 2.8f, 0.0f),
-                        Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
-                        true);
                     if (!surgeryRoom.IsTimerRunning())
                     {
                         // Start the timer when operation scene becomes active
                         surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
                     }
-                    inputCooldown = INPUT_DELAY;
                 }
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                operationScene.maxDots = 4;
+
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                    10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                    50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                    0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+                person.InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png", Vector2f(resolution.x / 2.238f,
+                    resolution.y / 2.5f), sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+
+                // Initialize the bag when surgery room becomes active
+                InitializeBag();
+
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                alpha = 255.0f;
             }
-            // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
-            else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
-            {
-                if (surgeryRoom.OperationTableSprite.getColor() != Color(255, 255, 255, alpha))
-                    surgeryRoom.OperationTableSprite.setColor(Color(255, 255, 255, alpha));
-            }
-            break;
+
+            inputCooldown = INPUT_DELAY;
+        }
+        break;
+    }
+
+    case GameState::SURGERY_ROOM_ACTIVE:
+    {
+        // Handle bag clicks when visible
+        if (bag.IsVisible())
+        {
+            HandleBagClicks(mousePos);
         }
 
-        case GameState::OPERATION_ACTIVE:
+        if (!alphaIncrease) alpha -= 50.0f * deltaTime;
+        else if (alphaIncrease) alpha += 50.0f * deltaTime;
+
+        if (alpha >= 255.0f) alphaIncrease = false;
+        else if (alpha <= 125.0f) alphaIncrease = true;
+
+        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
-            // Handle bag clicks when visible
-            if (bag.IsVisible())
-            {
-                HandleBagClicks(mousePos);
-            }
+            if (surgeryRoom.TableUISprite.getColor() != Color::Red)
+                surgeryRoom.TableUISprite.setColor(Color::Red);
 
-            // Handle input for operation scene
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+            // Add input cooldown check here
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
             {
-                // Return to surgery room when Enter is pressed
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
+
+                itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
+                    Vector2f((resolution.x / 2.0f) - 990.0f, (resolution.y / 2.0f) - 500.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                // Change to ITEM_TABLE_ACTIVE
+                currentGameState = GameState::ITEM_TABLE_ACTIVE;
                 inputCooldown = INPUT_DELAY;
+                std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
+        }
+        else
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.TableUISprite.getColor() != Color::White)
+                surgeryRoom.TableUISprite.setColor(Color::White);
+        }
 
-            // Also allow clicking outside to close (optional)
-            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
-            {
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                inputCooldown = INPUT_DELAY;
-            }
+        // Handle operation table clicks
+        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        {
+            if (alpha != 255.0f) alpha = 255.0f;
+            if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
+                surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
-            for (int i = 0; i < operationScene.maxDots; i++)
+            // Set up the operation scene after clicking the left mouse button
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
             {
-                if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
+                currentGameState = GameState::OPERATION_ACTIVE;
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+                if (!surgeryRoom.IsTimerRunning())
                 {
-                    // Set up the operation scene after clicking the left mouse button
-                    if (Mouse::isButtonPressed(Mouse::Button::Left))
-                    {
-                        if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
-                            operationScene.dotCircleShape[i].setFillColor(Color::Green);
-                    }
+                    // Start the timer when operation scene becomes active
+                    surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
                 }
+                inputCooldown = INPUT_DELAY;
             }
+        }
+        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+        else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        {
+            if (surgeryRoom.OperationTableSprite.getColor() != Color(255, 255, 255, alpha))
+                surgeryRoom.OperationTableSprite.setColor(Color(255, 255, 255, alpha));
+        }
+        break;
+    }
 
-            if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
-                operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
-                operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
-                operationScene.dotCircleShape[3].getFillColor() == Color::Green)
+    case GameState::OPERATION_ACTIVE:
+    {
+        // Handle bag clicks when visible
+        if (bag.IsVisible())
+        {
+            HandleBagClicks(mousePos);
+        }
+
+        // Handle input for operation scene
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        {
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos))
             {
-                successfulOperationTime += deltaTime;
-
-                float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
-
-                operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                    Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
-
-                successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
-                    successfulCharacterSize, true, false,
-                    Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
-
-                if (successfulOperationTime >= 1.0f)
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left))
                 {
-                    successfulOperationTime = 0.0f;
-                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
                 }
             }
-            break;
         }
 
-        case GameState::DIALOGUE_HIDDEN:
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
         {
-            // Handle input for dialogue hidden state
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
-            {
-                // Return to surgery room when Enter is pressed
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                inputCooldown = INPUT_DELAY;
-            }
+            successfulOperationTime += deltaTime;
 
-            // Also allow clicking outside to close (optional)
-            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
             {
+                successfulOperationTime = 0.0f;
                 currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                inputCooldown = INPUT_DELAY;
             }
-            break;
         }
+        break;
+    }
 
-        case GameState::ITEM_TABLE_ACTIVE:
+    case GameState::DIALOGUE_HIDDEN:
+    {
+        // Handle input for dialogue hidden state
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
         {
-            // Handle bag clicks when visible
-            if (bag.IsVisible())
-            {
-                HandleBagClicks(mousePos);
-            }
-
-            // Handle item table clicks
-            HandleItemTableClicks(mousePos);
-
-            // Handle input for item table
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
-            {
-                // Return to surgery room when Enter is pressed
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                inputCooldown = INPUT_DELAY;
-            }
-
-            // Also allow clicking outside to close (optional)
-            if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
-            {
-                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                inputCooldown = INPUT_DELAY;
-            }
-            break;
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
         }
 
-        default:
-            break;
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
         }
+        break;
+    }
+
+    case GameState::ITEM_TABLE_ACTIVE:
+    {
+        // Handle bag clicks when visible
+        if (bag.IsVisible())
+        {
+            HandleBagClicks(mousePos);
+        }
+
+        // Handle item table clicks
+        HandleItemTableClicks(mousePos);
+
+        // Handle input for item table
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
+        {
+            // Return to surgery room when Enter is pressed
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Also allow clicking outside to close (optional)
+        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
+        {
+            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            inputCooldown = INPUT_DELAY;
+        }
+        break;
+    }
+
+    case GameState::FAILURE_ACTIVE:
+    {
+        float dayFailedCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+        // If failed timer is less than 1 second, initialize the failed text and increment the failed timer for text fade
+        if (failedTimer < 1.0f)
+        {
+            failedTimer += deltaTime;
+
+            dayFailedText.InitializeText("Fonts/Roboto-Regular.ttf", "You failed!", dayFailedCharacterSize,
+                true, false, Color(255, 0, 0, failedTextAlpha), Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
+        }
+
+        // If failed timer is around 1 second or so, make the text fade away overtime
+        else if (failedTimer >= 1.0f)
+        {
+            failedTextAlpha -= deltaTime * 100.0f;
+
+            if (dayFailedText.GetTextColor() != Color(255, 0, 0, failedTextAlpha))
+                dayFailedText.SetTextColor(Color(255, 0, 0, failedTextAlpha));
+        }
+
+        //printf("failed timer: %f\n", failedTextAlpha);
+
+        // If failed text's alpha value goes down to 0, go back to main menu
+        if (failedTextAlpha <= 0.0f)
+        {
+            typewriterEffect.Reset();
+            itemTable.ResetCollectedItems();
+            bag.ClearBag();
+            sceneManager->ChangeScene("Menu");
+            return;
+        }
+
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -512,21 +510,13 @@ void GameScene::RenderDay1(RenderWindow& window)
 
     case GameState::SURGERY_ROOM_ACTIVE:
     {
-        if (!timeRanOut)
-        {
-            // Draw surgery room when active
-            surgeryRoom.Draw(window, person.LoadSprite());
+        // Draw surgery room when active
+        surgeryRoom.Draw(window, person.LoadSprite());
 
-            // Draw bag if visible
-            if (bag.IsVisible())
-            {
-                bag.Draw(window);
-            }
-        }
-
-        if (surgeryRoom.GetTimeRemaining() <= 0.0f)
+        // Draw bag if visible
+        if (bag.IsVisible())
         {
-            window.draw(dayFailedText.LoadText());
+            bag.Draw(window);
         }
 
         break;
@@ -534,28 +524,20 @@ void GameScene::RenderDay1(RenderWindow& window)
 
     case GameState::OPERATION_ACTIVE:
     {
-        if (!timeRanOut)
+        // Draw operation scene and overlay the UI from surgery room
+        operationScene.Draw(window);
+        surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+
+        // Draw bag if visible
+        if (bag.IsVisible())
         {
-            // Draw operation scene and overlay the UI from surgery room
-            operationScene.Draw(window);
-            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
-
-            // Draw bag if visible
-            if (bag.IsVisible())
-            {
-                bag.Draw(window);
-            }
-
-            if (successfulOperationTime > 0.0f)
-            {
-                window.draw(operationScene.successPanel);
-                window.draw(successfulText.LoadText());
-            }
+            bag.Draw(window);
         }
 
-        if (surgeryRoom.GetTimeRemaining() <= 0.0f)
+        if (successfulOperationTime > 0.0f)
         {
-            window.draw(dayFailedText.LoadText());
+            window.draw(operationScene.successPanel);
+            window.draw(successfulText.LoadText());
         }
 
         break;
@@ -563,21 +545,13 @@ void GameScene::RenderDay1(RenderWindow& window)
 
     case GameState::ITEM_TABLE_ACTIVE:
     {
-        if (!timeRanOut)
-        {
-            itemTable.Draw(window);
-            surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
+        itemTable.Draw(window);
+        surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
 
-            // Draw bag if visible
-            if (bag.IsVisible())
-            {
-                bag.Draw(window);
-            }
-        }
-
-        if (surgeryRoom.GetTimeRemaining() <= 0.0f)
+        // Draw bag if visible
+        if (bag.IsVisible())
         {
-            window.draw(dayFailedText.LoadText());
+            bag.Draw(window);
         }
 
         break;
@@ -593,5 +567,16 @@ void GameScene::RenderDay1(RenderWindow& window)
         }
         break;
     }
+
+    case GameState::FAILURE_ACTIVE:
+    {
+
+        window.draw(dayFailedText.LoadText());
+
+        break;
+    }
+
+    default:
+        break;
     }
 }

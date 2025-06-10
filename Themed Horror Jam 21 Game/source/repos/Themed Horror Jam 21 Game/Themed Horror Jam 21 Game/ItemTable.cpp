@@ -260,17 +260,43 @@ std::string ItemTable::GetItemName(ItemType itemType) const
 void ItemTable::InitializeTableItems()
 {
 	// Initialize the map with all table items
-	tableItems[ItemType::BOOK] = TableItem(ItemType::BOOK, "Book", book, &bookSprite);
-	tableItems[ItemType::CHICKEN] = TableItem(ItemType::CHICKEN, "Chicken", Chicken, &ChickenSprite);
-	tableItems[ItemType::COBWEB] = TableItem(ItemType::COBWEB, "Cobweb", cobweb, &cobwebSprite);
-	tableItems[ItemType::CRAMP_COINE] = TableItem(ItemType::CRAMP_COINE, "Cramp Coine", Cramp_coine, &Cramp_coineSprite);
-	tableItems[ItemType::CRUCIFIX] = TableItem(ItemType::CRUCIFIX, "Crucifix", Crucifix, &CrucifixSprite);
-	tableItems[ItemType::CUP_OF_ANTIMONY] = TableItem(ItemType::CUP_OF_ANTIMONY, "Cup of Antimony", CupOfAntimony, &CupOfAntimonySprite);
-	tableItems[ItemType::MAGGOTS] = TableItem(ItemType::MAGGOTS, "Maggots", Maggots, &MaggotsSprite);
-	tableItems[ItemType::OINTMENT] = TableItem(ItemType::OINTMENT, "Ointment", Ointment, &OintmentSprite);
-	tableItems[ItemType::RING] = TableItem(ItemType::RING, "Ring", ring, &ringSprite);
-	tableItems[ItemType::SCALPEL] = TableItem(ItemType::SCALPEL, "Scalpel", Scalpelpng, &ScalpelpngSprite);
-	tableItems[ItemType::MORTAR_PESTLE] = TableItem(ItemType::MORTAR_PESTLE, "Mortar & Pestle", MortarPestle, &MortarPestleSprite);
-	tableItems[ItemType::HAY] = TableItem(ItemType::HAY, "Hay", hay, &haySprite);
-	tableItems[ItemType::POT] = TableItem(ItemType::POT, "Pot", pot, &potSprite);
+	if (!tableItems[ItemType::BOOK].isCollected)
+		tableItems[ItemType::BOOK] = TableItem(ItemType::BOOK, "Book", book, &bookSprite);
+
+	if (!tableItems[ItemType::CHICKEN].isCollected)
+		tableItems[ItemType::CHICKEN] = TableItem(ItemType::CHICKEN, "Chicken", Chicken, &ChickenSprite);
+
+	if (!tableItems[ItemType::COBWEB].isCollected)
+		tableItems[ItemType::COBWEB] = TableItem(ItemType::COBWEB, "Cobweb", cobweb, &cobwebSprite);
+
+	if (!tableItems[ItemType::CRAMP_COINE].isCollected)
+		tableItems[ItemType::CRAMP_COINE] = TableItem(ItemType::CRAMP_COINE, "Cramp Coine", Cramp_coine, &Cramp_coineSprite);
+
+	if (!tableItems[ItemType::CRUCIFIX].isCollected)
+		tableItems[ItemType::CRUCIFIX] = TableItem(ItemType::CRUCIFIX, "Crucifix", Crucifix, &CrucifixSprite);
+
+	if (!tableItems[ItemType::CUP_OF_ANTIMONY].isCollected)
+		tableItems[ItemType::CUP_OF_ANTIMONY] = TableItem(ItemType::CUP_OF_ANTIMONY, "Cup of Antimony", CupOfAntimony, &CupOfAntimonySprite);
+
+	if (!tableItems[ItemType::MAGGOTS].isCollected)
+		tableItems[ItemType::MAGGOTS] = TableItem(ItemType::MAGGOTS, "Maggots", Maggots, &MaggotsSprite);
+
+	if (!tableItems[ItemType::OINTMENT].isCollected)
+		tableItems[ItemType::OINTMENT] = TableItem(ItemType::OINTMENT, "Ointment", Ointment, &OintmentSprite);
+
+	if (!tableItems[ItemType::RING].isCollected)
+		tableItems[ItemType::RING] = TableItem(ItemType::RING, "Ring", ring, &ringSprite);
+
+	if (!tableItems[ItemType::SCALPEL].isCollected)
+		tableItems[ItemType::SCALPEL] = TableItem(ItemType::SCALPEL, "Scalpel", Scalpelpng, &ScalpelpngSprite);
+
+	if (!tableItems[ItemType::MORTAR_PESTLE].isCollected)
+		tableItems[ItemType::MORTAR_PESTLE] = TableItem(ItemType::MORTAR_PESTLE, "Mortar & Pestle", MortarPestle, &MortarPestleSprite);
+
+	if (!tableItems[ItemType::HAY].isCollected)
+		tableItems[ItemType::HAY] = TableItem(ItemType::HAY, "Hay", hay, &haySprite);
+
+	if (!tableItems[ItemType::POT].isCollected)
+		tableItems[ItemType::POT] = TableItem(ItemType::POT, "Pot", pot, &potSprite);
+
 }

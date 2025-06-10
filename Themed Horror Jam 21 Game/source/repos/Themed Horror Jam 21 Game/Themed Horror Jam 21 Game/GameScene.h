@@ -29,7 +29,8 @@ enum class GameState {
     SURGERY_ROOM_ACTIVE,
     OPERATION_ACTIVE,
     ITEM_TABLE_ACTIVE,
-    INITIALIZING
+    INITIALIZING,
+    FAILURE_ACTIVE
 };
 
 class GameScene : public Scene
@@ -127,8 +128,6 @@ private:
     float failedTextAlpha{};
 
     float failedTimer{};
-
-    bool timeRanOut{};
 };
 
 #endif
