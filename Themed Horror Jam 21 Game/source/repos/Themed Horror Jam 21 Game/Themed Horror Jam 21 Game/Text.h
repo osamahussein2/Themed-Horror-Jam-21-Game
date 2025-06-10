@@ -17,7 +17,7 @@ namespace Game
 		sf::Text InitializeText(const char* filePath_, sf::String string_, float characterSize_, bool centerText_,
 			bool alignTextRight_, sf::Color textColor_, sf::Vector2f initialTextPos_);
 
-		sf::Text LoadText();
+		sf::Text& LoadText();
 
 		size_t GetStringSize() { return text.getString().getSize(); }
 		sf::String GetString() { return text.getString(); }

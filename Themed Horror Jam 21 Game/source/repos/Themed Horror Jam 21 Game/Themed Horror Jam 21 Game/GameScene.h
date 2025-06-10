@@ -121,6 +121,14 @@ private:
     unsigned int successfulOperations{};
 
     Game::Text successfulText{};
+
+    Game::Text dayFailedText{};
+
+    float failedTextAlpha{};
+
+    float failedTimer{};
+
+    bool timeRanOut{};
 };
 
 #endif

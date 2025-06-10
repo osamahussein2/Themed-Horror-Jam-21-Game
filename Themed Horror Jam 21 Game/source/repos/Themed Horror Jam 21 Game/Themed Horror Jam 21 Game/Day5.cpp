@@ -3,8 +3,6 @@
 
 void GameScene::InitializeDay5()
 {
-    currentDay = 5;
-
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 }
