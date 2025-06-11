@@ -37,3 +37,8 @@ void Audio::SetVolume(int volume_)
 {
 	sound.setVolume(static_cast<int>(volume_));
 }
+
+sf::Sound& Audio::GetAudio()
+{
+	return sound;
+}

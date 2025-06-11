@@ -4,7 +4,7 @@
 
 MenuScene::MenuScene()
 {
-    //mainMenuAudio = std::make_unique<Audio>();
+
 }
 
 MenuScene::~MenuScene()
@@ -17,14 +17,13 @@ void MenuScene::Initialize()
     mainMenuView = View(sf::FloatRect(Vector2f(0, 0), Vector2f(resolution.x, resolution.y)));
     gameMenu.Initialize(resolution);
 
-    //mainMenuAudio->InitializeAudio("", true);
-    //mainMenuAudio->PlayAudio();
+    mainMenuAudio.InitializeAudio("Audio/Music/videogame2_horror_5_theme principal.mp3", true);
 
     // Make sure the main menu audio is equal to the volume variable set in the options menu
-    /*if (mainMenuAudio->GetVolume() != Menu::GetVolume())
+    if (mainMenuAudio.GetVolume() != Menu::GetVolume())
     {
-        mainMenuAudio->SetVolume(Menu::GetVolume());
-    }*/
+        mainMenuAudio.SetVolume(Menu::GetVolume());
+    }
 }
 
 void MenuScene::Update(float deltaTime)
@@ -35,15 +34,30 @@ void MenuScene::Update(float deltaTime)
     MenuAction action = gameMenu.Update(deltaTime, mousePos);
 
     // Make sure the main menu audio is equal to the volume variable set in the options menu
-    /*if (mainMenuAudio->GetVolume() != Menu::GetVolume())
+    if (mainMenuAudio.GetVolume() != Menu::GetVolume())
     {
-        mainMenuAudio->SetVolume(Menu::GetVolume());
-    }*/
+        mainMenuAudio.SetVolume(Menu::GetVolume());
+    }
+
+    // If the main menu music isn't playing, play it and set the bool to true
+    if (!musicPlaying)
+    {
+        mainMenuAudio.PlayAudio();
+        musicPlaying = true;
+    }
 
     switch (action)
     {
     case MenuAction::StartGame:
-        //mainMenuAudio->StopAudio();
+
+        // If the main menu music is playing, stop the music and set the bool to false
+        if (musicPlaying)
+        {
+            mainMenuAudio.StopAudio();
+            musicPlaying = false;
+        }
+
+        if (Menu::nextDayUnlocked != false) Menu::nextDayUnlocked = false;
         sceneManager->ChangeScene("Game");
         break;
 

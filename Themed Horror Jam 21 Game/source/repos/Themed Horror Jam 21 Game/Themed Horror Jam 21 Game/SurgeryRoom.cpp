@@ -35,7 +35,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
     try
     {
         // Use the SpriteTexture class to load the background
-        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0), 
+        backgroundSprite = backgroundSpriteTexture.InitializeSprite(Backgroundpath, sf::Vector2f(0, 0),
             Vector2f(screenResolution.x / 1920.0f, screenResolution.y / 1080.0f));
 
         // Load the bottom UI sprite
@@ -55,15 +55,15 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         DeathSprite_1 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), Size);
         DeathSprite_2 = DeathSpriteTexture.InitializeSprite(DeathPath, sf::Vector2f(0, 0), Size);
 
-		// Load notes sprite
-		NotesSprite = NotesSpriteTexture.InitializeSprite(NotePath, NotesSpritePos, Size);
-		// Load bag sprite
-		BagSprite = BagSpriteTexture.InitializeSprite(BagPath, BagSpritePos, Size);
-		// Load table UI sprite
-		TableUISprite = TableUISpriteTexture.InitializeSprite(TableUIPath, TableUISpritePos, Size);
+        // Load notes sprite
+        NotesSprite = NotesSpriteTexture.InitializeSprite(NotePath, NotesSpritePos, Size);
+        // Load bag sprite
+        BagSprite = BagSpriteTexture.InitializeSprite(BagPath, BagSpritePos, Size);
+        // Load table UI sprite
+        TableUISprite = TableUISpriteTexture.InitializeSprite(TableUIPath, TableUISpritePos, Size);
 
-		// Load operation table sprite
-		OperationTableSprite = OperationTableSpriteTexture.InitializeSprite(OperationTablePath, OperationTableSpritePos, Size);
+        // Load operation table sprite
+        OperationTableSprite = OperationTableSpriteTexture.InitializeSprite(OperationTablePath, OperationTableSpritePos, Size);
 
         // Load all timer sprites
         // Load timer textures first
@@ -94,12 +94,13 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         BouttomUISprite.setPosition({ bottomUIposition });
 
         // Position top UI at top center
-        TopUISprite.setPosition({ topUIposition });
+        TopUISprite.setPosition({ topUIposition.x ,topUIposition.y });
+        TopUISprite.setOrigin({ TopUISprite.getLocalBounds().size.x / 2.0f , TopUISprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
 
         // Position timer sprite at the bottom left corner
         TimerSprite.setPosition({ timerSpritePosition });
 
-      
+
         // Set positions for life sprites
         LifeSprite_0.setPosition({ lifeSprite0position });
         LifeSprite_1.setPosition({ lifeSprite1position });
@@ -110,13 +111,24 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         DeathSprite_1.setPosition({ deathSprite1position });
         DeathSprite_2.setPosition({ deathSprite2position });
 
-		//set Positions for Notes, Bag and Table UI sprites
-		NotesSprite.setPosition(NotesSpritePos);
-		BagSprite.setPosition(BagSpritePos);
-        TableUISprite.setPosition(TableUISpritePos);
-        TableUISprite.setScale({ 0.2f , 0.2f });
-        OperationTableSprite.setPosition(OperationTableSpritePos);
+        //set Positions for Notes, Bag and Table UI sprites
+        NotesSprite.setPosition({ NotesSpritePos.x, NotesSpritePos.y+50 });
+        NotesSprite.setOrigin({ NotesSprite.getLocalBounds().size.x / 2.0f, NotesSprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
+
+
+        BagSprite.setPosition({ BagSpritePos.x, BagSpritePos.y+50 });
+        BagSprite.setOrigin({ BagSprite.getLocalBounds().size.x / 2.0f, BagSprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
+
+        TableUISprite.setPosition({ TableUISpritePos.x,  TableUISpritePos.y+50});
+        TableUISprite.setScale({ 0.2f * Size.x , 0.2f * Size.y });
+        TableUISprite.setOrigin({ TableUISprite.getLocalBounds().size.x / 2.0f, TableUISprite.getLocalBounds().size.y / 2.0f }); // Center horizontally
+
+
+        OperationTableSprite.setPosition({OperationTableSpritePos.x-50, OperationTableSpritePos.y});
         OperationTableSprite.setScale({ 0.4f * Size.x, 0.4f * Size.y });
+        OperationTableSprite.setOrigin({ 0, 0 }); // Center horizontally
+        
+        
         isLoaded = true;
         return true;
     }

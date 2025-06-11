@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "Engine.h"
+#include "GameScene.h"
 
 int Menu::volume = 100;
 std::vector<std::string> Menu::difficulty;
@@ -10,6 +11,8 @@ int Menu::currentDifficulty = 1;
 int Menu::currentFullscreenStatus = 1;
 int Menu::currentResolutionSize = 0;
 
+bool Menu::nextDayUnlocked = false;
+
 float ABOUT_CONTENT_CHARACTER_SIZE;
 float MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE;
 float MAIN_MENU_TEXT_CHARACTER_SIZE;
@@ -18,6 +21,7 @@ float SETTINGS_TITLE_TEXT_CHARACTER_SIZE;
 float MAIN_MENU_INSTRUCTION_TEXT_CHARACTER_SIZE;
 float SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE;
 float ABOUT_BACK_TEXT_CHARACTER_SIZE;
+float NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE;
 
 Menu::Menu()
     : currentState(MenuState::MainMenu)
@@ -61,6 +65,7 @@ void Menu::Initialize(Vector2u screenResolution)
     MAIN_MENU_INSTRUCTION_TEXT_CHARACTER_SIZE = 25.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE = 25.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     ABOUT_BACK_TEXT_CHARACTER_SIZE = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE = 35.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
     CreateMainMenuButtons();
     CreateMainMenuTexts();
@@ -237,6 +242,16 @@ void Menu::UpdateMainMenuColors()
     // Main menu texts
     float startY = resolution.y / 2.0f;
     float spacing = 80.0f;
+
+    // Initialize the next day unlocked text only if next day is unlocked (if it's set to true)
+    if (nextDayUnlocked == true)
+    {
+        std::string nextDayString = "Day ";
+        nextDayString.append(std::to_string(GameScene::currentDay) + " is unlocked!", 0, 14);
+
+        nextDayUnlockedText.InitializeText("Fonts/Roboto-Regular.ttf", nextDayString, NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE,
+            true, false, Color::Green, Vector2f(resolution.x / 2.0f, resolution.y / 2.85f));
+    }
 
     for (int i = 0; i < maxMainOptions; i++)
     {
@@ -744,6 +759,10 @@ void Menu::Render(RenderWindow& window)
         {
             window.draw(menuText.LoadText());
         }
+
+        // Only draw the next day unlocked text if a new day is unlocked
+        if (nextDayUnlocked == true) window.draw(nextDayUnlockedText.LoadText());
+
         break;
 
     case MenuState::About:

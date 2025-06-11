@@ -91,7 +91,7 @@ sf::Text Game::Text::InitializeText(const char* filePath_, sf::String string_, f
 	return text;
 }
 
-sf::Text Game::Text::LoadText()
+sf::Text& Game::Text::LoadText()
 {
 	return text;
 }
