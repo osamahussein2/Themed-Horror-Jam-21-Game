@@ -94,6 +94,9 @@ void Menu::CreateMainMenuTexts()
                 mainMenuButtons[i].GetSize() / 2.0f));
     }
 
+    nextDayUnlockedText.InitializeText("Fonts/Roboto-Regular.ttf", nextDayString, NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE,
+        true, false, Color::Green, Vector2f(resolution.x / 2.325f, resolution.y / 2.9f));
+
     // Instructions
     instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
         "Use UP/DOWN arrows to navigate • ENTER to select • ESC to exit",
@@ -246,11 +249,11 @@ void Menu::UpdateMainMenuColors()
     // Initialize the next day unlocked text only if next day is unlocked (if it's set to true)
     if (nextDayUnlocked == true)
     {
-        std::string nextDayString = "Day ";
+        nextDayString = "Day ";
         nextDayString.append(std::to_string(GameScene::currentDay) + " is unlocked!", 0, 14);
 
-        nextDayUnlockedText.InitializeText("Fonts/Roboto-Regular.ttf", nextDayString, NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE,
-            true, false, Color::Green, Vector2f(resolution.x / 2.0f, resolution.y / 2.85f));
+        if (nextDayUnlockedText.GetText() != nextDayString)
+            nextDayUnlockedText.SetText(nextDayString);
     }
 
     for (int i = 0; i < maxMainOptions; i++)

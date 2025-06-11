@@ -112,6 +112,8 @@ private:
     Color buttonHoverColor;
     Color buttonActiveColor;
 
+    std::string nextDayString{};
+
     // Static variables
     static int volume;
     static std::vector<std::string> difficulty;
