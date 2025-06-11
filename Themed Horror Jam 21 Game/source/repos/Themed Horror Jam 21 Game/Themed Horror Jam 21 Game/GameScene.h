@@ -11,6 +11,7 @@
 #include "OperationScene.h"
 #include "ItemTable.h"
 #include "Bag.h" // Include the Bag header
+#include "Audio.h"
 
 
 enum class SceneType {
@@ -143,6 +144,11 @@ private:
 
     // Disable/enable input
     bool isInputEnabled{true};
+
+    // Gameplay audio
+    Audio gameMusic;
+
+    bool musicPlaying{};
 };
 
 #endif

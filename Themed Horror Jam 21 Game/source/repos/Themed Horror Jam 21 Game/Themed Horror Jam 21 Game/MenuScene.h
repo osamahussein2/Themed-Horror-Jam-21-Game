@@ -24,7 +24,9 @@ private:
     Vector2u resolution;
     View mainMenuView;
 
-    //std::unique_ptr<Audio> mainMenuAudio;
+    Audio mainMenuAudio;
+
+    bool musicPlaying{};
 };
 
 #endif

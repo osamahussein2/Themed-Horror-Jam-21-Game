@@ -17,6 +17,8 @@ public:
 	int GetVolume();
 	void SetVolume(int volume_);
 
+	sf::Sound& GetAudio();
+
 private:
 	sf::SoundBuffer soundBuffer;
 	sf::Sound sound;

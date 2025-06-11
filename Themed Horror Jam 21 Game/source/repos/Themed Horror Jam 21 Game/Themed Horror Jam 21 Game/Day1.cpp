@@ -5,6 +5,12 @@ float DIALOGUE_TEXT_CHARACTER_SIZE;
 
 void GameScene::InitializeDay1()
 {
+    // Play the game music
+    gameMusic.InitializeAudio("Audio/Music/videogame2_horror_5_gameplay.mp3", true);
+
+    // Make sure the game music is equal to the volume variable set in the options menu
+    if (gameMusic.GetVolume() != Menu::GetVolume()) gameMusic.SetVolume(Menu::GetVolume());
+
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
@@ -95,6 +101,9 @@ void GameScene::InitializeDay1()
 
 void GameScene::UpdateDay1(float deltaTime)
 {
+    // Make sure the game music is equal to the volume variable set in the options menu if it isn't true already
+    if (gameMusic.GetVolume() != Menu::GetVolume()) gameMusic.SetVolume(Menu::GetVolume());
+
     // Update input cooldown
     if (inputCooldown > 0.0f)
     {
@@ -109,6 +118,13 @@ void GameScene::UpdateDay1(float deltaTime)
         return;
     }*/
 
+    // Play game music if music isn't playing yet
+    if (!musicPlaying)
+    {
+        gameMusic.PlayAudio();
+        musicPlaying = true;
+    }
+
     // Get mouse position for click detection
     Vector2i mousePixelPos = Mouse::getPosition(*Engine::Instance()->GetWindow());
     Vector2f mousePos = Engine::Instance()->GetWindow()->mapPixelToCoords(mousePixelPos);
@@ -116,6 +132,13 @@ void GameScene::UpdateDay1(float deltaTime)
     // Check for escape key to return to menu
     if (Keyboard::isKeyPressed(Keyboard::Key::Escape) && isInputEnabled)
     {
+        // If the game music is playing, stop the music and set the bool to false
+        if (musicPlaying)
+        {
+            gameMusic.StopAudio();
+            musicPlaying = false;
+        }
+
         typewriterEffect.Reset();
         itemTable.ResetCollectedItems();
         bag.ClearBag();
@@ -458,6 +481,13 @@ void GameScene::UpdateDay1(float deltaTime)
         // If failed text's alpha value goes down to 0, go back to main menu
         if (failedTextAlpha <= 0.0f)
         {
+            // If the game music is playing, stop the music and set the bool to false
+            if (musicPlaying)
+            {
+                gameMusic.StopAudio();
+                musicPlaying = false;
+            }
+
             typewriterEffect.Reset();
             itemTable.ResetCollectedItems();
             bag.ClearBag();
@@ -502,6 +532,13 @@ void GameScene::UpdateDay1(float deltaTime)
         // If day successful text's alpha value goes down to 0, go back to main menu and switch to the next day
         if (daySuccessfulTextAlpha <= 0.0f)
         {
+            // If the game music is playing, stop the music and set the bool to false
+            if (musicPlaying)
+            {
+                gameMusic.StopAudio();
+                musicPlaying = false;
+            }
+
             typewriterEffect.Reset();
             itemTable.ResetCollectedItems();
             bag.ClearBag();
