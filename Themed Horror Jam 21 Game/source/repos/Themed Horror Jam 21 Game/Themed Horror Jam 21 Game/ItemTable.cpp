@@ -13,7 +13,8 @@ ItemTable::~ItemTable()
 {
 }
 
-void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f scale_, bool centerTexture_)
+void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f scale_, Vector2f fitToResolution_,
+	bool centerTexture_)
 {
 	ItemtableTexture.loadFromFile(filePath_);
 
@@ -32,7 +33,7 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 
 	ItemtableSprite.setTexture(ItemtableTexture);
 	ItemtableSprite.setPosition(position_);
-	ItemtableSprite.setScale({ 1.8f,1.8f });
+	ItemtableSprite.setScale({ 1.8f * fitToResolution_.x, 1.8f * fitToResolution_.y });
 
 	GroundTexture.loadFromFile("Art Assets/SurgeryRoom/ground.png");
 	GroundSprite = sf::Sprite(GroundTexture);
@@ -50,10 +51,13 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	if (!bookTexture.loadFromFile(book)) {
 		std::cout << "Failed to load: " << book << std::endl;
 	}
+
 	bookSprite = sf::Sprite(bookTexture);
 	bookSprite.setTexture(bookTexture);
-	bookSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 200 });
-	bookSprite.setScale({ 0.8,0.8 });
+	bookSprite.setPosition({ tablePosition.x + (1000.0f * fitToResolution_.x),
+		tablePosition.y + (200.0f * fitToResolution_.y) });
+
+	bookSprite.setScale({ 0.8f * fitToResolution_.x, 0.8f * fitToResolution_.y });
 	bookSprite.setOrigin({ bookSprite.getGlobalBounds().size.x / 2, bookSprite.getGlobalBounds().size.y / 2 });
 
 	if (!ChickenTexture.loadFromFile(Chicken)) {
@@ -61,8 +65,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	ChickenSprite = sf::Sprite(ChickenTexture);
 	ChickenSprite.setTexture(ChickenTexture);
-	ChickenSprite.setPosition({ tablePosition.x + 1600,tablePosition.y + 300 });
-	ChickenSprite.setScale({ 0.5,0.5 });
+	ChickenSprite.setPosition({ tablePosition.x + (1600.0f * fitToResolution_.x), 
+		tablePosition.y + (300.0f * fitToResolution_.y) });
+
+	ChickenSprite.setScale({ 0.5f * fitToResolution_.x, 0.5f * fitToResolution_.y });
 	ChickenSprite.setOrigin({ ChickenSprite.getGlobalBounds().size.x / 2, ChickenSprite.getGlobalBounds().size.y / 2 });
 
 	if (!cobwebTexture.loadFromFile(cobweb)) {
@@ -70,8 +76,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	cobwebSprite = sf::Sprite(cobwebTexture);
 	cobwebSprite.setTexture(cobwebTexture);
-	cobwebSprite.setPosition({ tablePosition.x + 550 ,tablePosition.y + 600 });
-	cobwebSprite.setScale({ 0.99,0.99 });
+	cobwebSprite.setPosition({ tablePosition.x + (550.0f * fitToResolution_.x), 
+		tablePosition.y + (600.0f * fitToResolution_.y) });
+
+	cobwebSprite.setScale({ 0.99f * fitToResolution_.x, 0.99f * fitToResolution_.y });
 	cobwebSprite.setOrigin({ cobwebSprite.getGlobalBounds().size.x / 2, cobwebSprite.getGlobalBounds().size.y / 2 });
 
 	if (!Cramp_coineTexture.loadFromFile(Cramp_coine)) {
@@ -79,7 +87,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	Cramp_coineSprite = sf::Sprite(Cramp_coineTexture);
 	Cramp_coineSprite.setTexture(Cramp_coineTexture);
-	Cramp_coineSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 600 });
+	Cramp_coineSprite.setPosition({ tablePosition.x + (1000.0f * fitToResolution_.x), 
+		tablePosition.y + (600.0f * fitToResolution_.y) });
+
+	Cramp_coineSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	Cramp_coineSprite.setOrigin({ Cramp_coineSprite.getGlobalBounds().size.x / 2, Cramp_coineSprite.getGlobalBounds().size.y / 2 });
 
 	if (!CrucifixTexture.loadFromFile(Crucifix)) {
@@ -87,7 +98,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	CrucifixSprite = sf::Sprite(CrucifixTexture);
 	CrucifixSprite.setTexture(CrucifixTexture);
-	CrucifixSprite.setPosition({ tablePosition.x + 1000, tablePosition.y + 400 });
+	CrucifixSprite.setPosition({ tablePosition.x + (1000.0f * fitToResolution_.x), 
+		tablePosition.y + (400.0f * fitToResolution_.y) });
+
+	CrucifixSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	CrucifixSprite.setOrigin({ CrucifixSprite.getGlobalBounds().size.x / 2, CrucifixSprite.getGlobalBounds().size.y / 2 });
 
 	if (!CupOfAntimonyTexture.loadFromFile(CupOfAntimony)) {
@@ -95,8 +109,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	CupOfAntimonySprite = sf::Sprite(CupOfAntimonyTexture);
 	CupOfAntimonySprite.setTexture(CupOfAntimonyTexture);
-	CupOfAntimonySprite.setPosition({ tablePosition.x + 750,tablePosition.y + 200 });
-	CupOfAntimonySprite.setScale({ 1.5,1.5 });
+	CupOfAntimonySprite.setPosition({ tablePosition.x + (750.0f * fitToResolution_.x), 
+		tablePosition.y + (200.0f * fitToResolution_.y) });
+
+	CupOfAntimonySprite.setScale({ 1.5f * fitToResolution_.x, 1.5f * fitToResolution_.y });
 	CupOfAntimonySprite.setOrigin({ CupOfAntimonySprite.getGlobalBounds().size.x / 2, CupOfAntimonySprite.getGlobalBounds().size.y / 2 });
 
 	if (!MaggotsTexture.loadFromFile(Maggots)) {
@@ -104,7 +120,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	MaggotsSprite = sf::Sprite(MaggotsTexture);
 	MaggotsSprite.setTexture(MaggotsTexture);
-	MaggotsSprite.setPosition({ tablePosition.x + 400 , tablePosition.y + 150 });
+	MaggotsSprite.setPosition({ tablePosition.x + (400.0f * fitToResolution_.x), 
+		tablePosition.y + (150.0f * fitToResolution_.y) });
+
+	MaggotsSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	MaggotsSprite.setOrigin({ MaggotsSprite.getGlobalBounds().size.x / 2, MaggotsSprite.getGlobalBounds().size.y / 2 });
 
 	if (!OintmentTexture.loadFromFile(Ointment)) {
@@ -112,7 +131,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	OintmentSprite = sf::Sprite(OintmentTexture);
 	OintmentSprite.setTexture(OintmentTexture);
-	OintmentSprite.setPosition({ tablePosition.x + 400,tablePosition.y + 300 });
+	OintmentSprite.setPosition({ tablePosition.x + (400.0f * fitToResolution_.x), 
+		tablePosition.y + (300.0f * fitToResolution_.y) });
+
+	OintmentSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	OintmentSprite.setOrigin({ OintmentSprite.getGlobalBounds().size.x / 2, OintmentSprite.getGlobalBounds().size.y / 2 });
 
 	if (!ringTexture.loadFromFile(ring)) {
@@ -120,8 +142,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	ringSprite = sf::Sprite(ringTexture);
 	ringSprite.setTexture(ringTexture);
-	ringSprite.setPosition({ tablePosition.x + 1300 , tablePosition.y + 200 });
-	ringSprite.scale({ 0.5f, 0.5f });
+	ringSprite.setPosition({ tablePosition.x + (1300.0f * fitToResolution_.x), 
+		tablePosition.y + (200.0f * fitToResolution_.y) });
+
+	ringSprite.scale({ 0.5f * fitToResolution_.x, 0.5f * fitToResolution_.y });
 	ringSprite.setOrigin({ ringSprite.getGlobalBounds().size.x / 2, ringSprite.getGlobalBounds().size.y / 2 });
 
 	if (!ScalpelpngTexture.loadFromFile(Scalpelpng)) {
@@ -129,7 +153,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	ScalpelpngSprite = sf::Sprite(ScalpelpngTexture);
 	ScalpelpngSprite.setTexture(ScalpelpngTexture);
-	ScalpelpngSprite.setPosition({ tablePosition.x + 850 ,tablePosition.y + 600 });
+	ScalpelpngSprite.setPosition({ tablePosition.x + (850.0f * fitToResolution_.x), 
+		tablePosition.y + (600.0f * fitToResolution_.y) });
+
+	ScalpelpngSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	ScalpelpngSprite.setOrigin({ ScalpelpngSprite.getGlobalBounds().size.x / 2, ScalpelpngSprite.getGlobalBounds().size.y / 2 });
 
 	if (!MortarPestleTexture.loadFromFile(MortarPestle)) {
@@ -137,7 +164,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	MortarPestleSprite = sf::Sprite(MortarPestleTexture);
 	MortarPestleSprite.setTexture(MortarPestleTexture);
-	MortarPestleSprite.setPosition({ tablePosition.x + 550,tablePosition.y + 200 });
+	MortarPestleSprite.setPosition({ tablePosition.x + (550.0f * fitToResolution_.x), 
+		tablePosition.y + (200.0f * fitToResolution_.y) });
+
+	MortarPestleSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	MortarPestleSprite.setOrigin({ MortarPestleSprite.getGlobalBounds().size.x / 2, MortarPestleSprite.getGlobalBounds().size.y / 2 });
 
 	if (!hayTexture.loadFromFile(hay)) {
@@ -145,8 +175,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	haySprite = sf::Sprite(hayTexture);
 	haySprite.setTexture(hayTexture);
-	haySprite.setPosition({ tablePosition.x + 350, tablePosition.y + 850 });
-	haySprite.scale({ 1.5f, 1.5f });
+	haySprite.setPosition({ tablePosition.x + (350.0f * fitToResolution_.x), 
+		tablePosition.y + (850.0f * fitToResolution_.y) });
+
+	haySprite.scale({ 1.5f * fitToResolution_.x, 1.5f * fitToResolution_.y });
 	haySprite.setOrigin({ haySprite.getGlobalBounds().size.x / 2, haySprite.getGlobalBounds().size.y / 2 });
 
 	if (!potTexture.loadFromFile(pot)) {
@@ -154,7 +186,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	}
 	potSprite = sf::Sprite(potTexture);
 	potSprite.setTexture(potTexture);
-	potSprite.setPosition({ tablePosition.x + 1900 , tablePosition.y + 600 });
+	potSprite.setPosition({ tablePosition.x + (1900.0f * fitToResolution_.x), 
+		tablePosition.y + (600.0f * fitToResolution_.x) });
+
+	potSprite.setScale({ 1.0f * fitToResolution_.x, 1.0f * fitToResolution_.y });
 	potSprite.setOrigin({ potSprite.getGlobalBounds().size.x / 2, potSprite.getGlobalBounds().size.y / 2 });
 
 	// Initialize the table items map after all sprites are set up

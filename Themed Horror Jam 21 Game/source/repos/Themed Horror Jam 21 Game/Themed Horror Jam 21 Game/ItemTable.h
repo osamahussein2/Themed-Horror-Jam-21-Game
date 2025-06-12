@@ -27,7 +27,8 @@ public:
 	ItemTable();
 	~ItemTable();
 
-	void Initialize(const char* filePath_, Vector2f position_, Vector2f scale_, bool centerTexture_ = false);
+	void Initialize(const char* filePath_, Vector2f position_, Vector2f scale_, Vector2f fitToResolution_, 
+		bool centerTexture_ = false);
 
 	// Draw the surgery room to the render window
 	void Draw(RenderWindow& window);
