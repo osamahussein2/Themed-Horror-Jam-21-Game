@@ -185,6 +185,12 @@ void SurgeryRoom::StopTimer()
     timeRemaining = 0.0f;
 }
 
+void SurgeryRoom::ResetToStartTimeTexture()
+{
+    // Reset timer to show the start timer sprite
+    TimerSprite.setTexture(TimerTexture_Start);
+}
+
 void SurgeryRoom::UpdateTimerSprite()
 {
     if (!isLoaded) return;
@@ -192,19 +198,17 @@ void SurgeryRoom::UpdateTimerSprite()
     // Calculate time percentage remaining
     float timePercentage = timeRemaining / totalTime;
 
-    // Apparently, the timer texture files had 0-23 so start duration was set to 23 in GameScene.cpp
     int timeInInt = static_cast<int>(timeRemaining);
 
     // Store current position to maintain it when changing texture
     sf::Vector2f currentPosition = TimerSprite.getPosition();
 
     // Change sprite based on time remaining percentage
-    if (timePercentage > 0.95f) {
+    if (timePercentage >= 1.0f) {
         // Timer just started - use start sprite
         TimerSprite.setTexture(TimerTexture_Start);
     }
-    else if (timePercentage > 0.1f && timePercentage <= 0.95f) {
-        float frameNumber = 1.0f - (timePercentage / 0.75f);
+    else if (timePercentage > 0.1f && timePercentage < 1.0f) {
         std::string filename_ = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
 		TimerTexture_Mid.loadFromFile(filename_);
         TimerSprite.setTexture(TimerTexture_Mid);

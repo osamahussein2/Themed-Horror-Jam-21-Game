@@ -80,6 +80,10 @@ void Menu::CreateMainMenuTexts()
     titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE, true,
         false,titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
 
+    // Initialize main menu art sprite
+    mainMenuArt.InitializeSprite("Art Assets/MainMenu/mainmenu.png", Vector2f(0.0f, 0.0f), 
+        Vector2f(4.0f * (resolution.x / 1920.0f), 2.0f * (resolution.y / 1080.0f)));
+
     // Create main menu options
     mainMenuTexts.clear();
     mainMenuTexts.resize(maxMainOptions);
@@ -747,6 +751,9 @@ void Menu::Render(RenderWindow& window)
     switch (currentState)
     {
     case MenuState::MainMenu:
+
+        window.draw(mainMenuArt.LoadSprite());
+
         // Draw title and instructions
         window.draw(titleText.LoadText());
         window.draw(instructionsText.LoadText());
@@ -769,10 +776,12 @@ void Menu::Render(RenderWindow& window)
         break;
 
     case MenuState::About:
+        window.draw(mainMenuArt.LoadSprite());
         window.draw(aboutContentText.LoadText());
         break;
 
     case MenuState::Settings:
+        window.draw(mainMenuArt.LoadSprite());
         window.draw(settingsContentText.LoadText());
 
         for (auto& button : settingMenuButtons)

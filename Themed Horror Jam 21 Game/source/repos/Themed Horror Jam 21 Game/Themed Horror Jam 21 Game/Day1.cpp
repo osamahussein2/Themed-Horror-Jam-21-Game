@@ -30,6 +30,7 @@ void GameScene::InitializeDay1()
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
+        surgeryRoom.ResetToStartTimeTexture();
         surgeryRoom.StopTimer();
     }
 
@@ -258,12 +259,6 @@ void GameScene::UpdateDay1(float deltaTime)
                         sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
                         sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
                         sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
-
-                    if (!surgeryRoom.IsTimerRunning())
-                    {
-                        // Start the timer when operation scene becomes active
-                        surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
-                    }
                 }
 
                 operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
@@ -359,10 +354,13 @@ void GameScene::UpdateDay1(float deltaTime)
                     Vector2f(resolution.x / 2.8f, 0.0f),
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
+
                 if (!surgeryRoom.IsTimerRunning())
                 {
-                    // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    // Start the timer depending on current difficulty when operation scene becomes active
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(57.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(50.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(40.0f);
                 }
                 inputCooldown = INPUT_DELAY;
             }
@@ -726,10 +724,12 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    inputCooldown = INPUT_DELAY;
                 }
             }
         }
@@ -772,10 +772,12 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    inputCooldown = INPUT_DELAY;
                 }
             }
         }
@@ -819,10 +821,12 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    inputCooldown = INPUT_DELAY;
                 }
             }
         }

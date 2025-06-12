@@ -52,6 +52,7 @@ public:
     void StopTimer();
     bool IsTimerRunning() const { return timerRunning; }
     float GetTimeRemaining() const { return timeRemaining; }
+    void ResetToStartTimeTexture();
 
     // Life management functions
     void LoseLife(int lifeIndex); // Change a specific life sprite to death sprite (0, 1, or 2)
