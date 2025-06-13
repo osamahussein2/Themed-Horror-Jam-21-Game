@@ -69,9 +69,9 @@ private:
     Vector2u resolution;
 
     // Game objects
-    std::vector<Game::Text*> dialogueTexts;
+    std::vector<Game::Text> dialogueTexts;
     float typeTextTime;
-    DialoguePanel* dialoguePanel;
+    DialoguePanel dialoguePanel;
 
     // Code for different days in game
     void InitializeDay1();
@@ -125,6 +125,8 @@ private:
 
     bool operationSceneChanged{};
 
+    int successfulOperations{0};
+
     // Operation successful text
     Game::Text successfulText{};
 
@@ -144,6 +146,8 @@ private:
 
     // Disable/enable input
     bool isInputEnabled{true};
+
+    bool mouseClicked{false};
 
     // Gameplay audio
     Audio gameMusic;

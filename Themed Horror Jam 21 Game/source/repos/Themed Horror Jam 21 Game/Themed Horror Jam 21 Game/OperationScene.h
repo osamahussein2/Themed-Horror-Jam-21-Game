@@ -21,6 +21,9 @@ public:
 	void InitializeDot(Vector2f position_, float radius_, sf::Color fillColor_, sf::Color outlineColor_,
 		float outlineThickness_, float spacingX_, float spacingY_);
 
+	void InitializeDot(std::vector<Vector2f> position_, float radius_, sf::Color fillColor_, sf::Color outlineColor_,
+		float outlineThickness_);
+
 	void InitializeSuccessPanel(Vector2f position_, Vector2f scale_, sf::Color fillColor_, bool centerOrigin_ = false);
 
 	// Draw the surgery room to the render window

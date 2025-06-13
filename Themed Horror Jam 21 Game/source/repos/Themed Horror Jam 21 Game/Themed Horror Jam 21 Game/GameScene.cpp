@@ -11,7 +11,6 @@ GameScene::GameScene()
     , previousGameState(GameState::SURGERY_ROOM_ACTIVE)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
-    , dialoguePanel(nullptr)
     , dialogueSystemInitialized(false)
     , typeTextTime(0.0f)
 {
@@ -21,17 +20,7 @@ GameScene::~GameScene()
 {
     if (!dialogueTexts.empty())
     {
-        for (int i = 0; i < dialogueTexts.size(); i++)
-        {
-            delete dialogueTexts[i];
-            dialogueTexts[i] = nullptr;
-        }
         dialogueTexts.clear();
-    }
-
-    if (dialoguePanel)
-    {
-        delete dialoguePanel;
     }
 
     if (!dialoguePanelTextures.empty()) dialoguePanelTextures.clear();
@@ -244,23 +233,23 @@ void GameScene::UpdateDialoguePanelTexture()
     switch (currentDialogueIndex)
     {
     case 0:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
         {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
         }
         break;
 
     case 1:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
         {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
         }
         break;
 
     case 2:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
         {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
         }
         break;
 
