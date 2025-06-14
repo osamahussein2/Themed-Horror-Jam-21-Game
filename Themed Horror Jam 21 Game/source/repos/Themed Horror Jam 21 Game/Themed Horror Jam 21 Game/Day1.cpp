@@ -32,6 +32,7 @@ void GameScene::InitializeDay1()
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
     if (successfulOperations != 0) successfulOperations = 0;
+    if (dialogueSystemInitialized != false) dialogueSystemInitialized = false;
 
     // Timer related text initialization
     if (failedTextAlpha != 255.0f) failedTextAlpha = 255.0f;
@@ -56,7 +57,7 @@ void GameScene::InitializeDay1()
     dialoguePanel.InitializeDialoguePanel("Art Assets/Ui/chat_box_3.png", Vector2f(panelX, panelY),
         Vector2f(panelWidth, panelHeight));
 
-    maxDialogueTexts = 3;
+    maxDialogueTexts = 5;
 
     dialogueTexts.clear();
     dialogueTexts.resize(maxDialogueTexts);
@@ -70,16 +71,13 @@ void GameScene::InitializeDay1()
     float textPanelX = resolution.x / 25.0f; // Move text panels slightly to the right from the dialogue panel
     float textPanelY = resolution.y / 1.4f; // Move text panels slightly below from the dialogue panel
 
-    DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    DIALOGUE_TEXT_CHARACTER_SIZE = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
-    dialogueTexts[0].InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
-
-    dialogueTexts[1].InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
-
-    dialogueTexts[2].InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
+    for (int i = 0; i < maxDialogueTexts; i++)
+    {
+        dialogueTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
+            sf::Color::White, Vector2f(textPanelX, textPanelY));
+    }
 }
 
 void GameScene::UpdateDay1(float deltaTime)
