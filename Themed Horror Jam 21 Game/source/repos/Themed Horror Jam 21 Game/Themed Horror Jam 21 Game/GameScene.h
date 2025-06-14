@@ -82,18 +82,26 @@ private:
 
     void InitializeDay2();
     void UpdateDay2(float deltaTime);
+    void UpdateDay2Patients();
+    void UpdateDay2OperationScene(float deltaTime);
     void RenderDay2(RenderWindow& window);
 
     void InitializeDay3();
     void UpdateDay3(float deltaTime);
+    void UpdateDay3Patients();
+    void UpdateDay3OperationScene(float deltaTime);
     void RenderDay3(RenderWindow& window);
 
     void InitializeDay4();
     void UpdateDay4(float deltaTime);
+    void UpdateDay4Patients();
+    void UpdateDay4OperationScene(float deltaTime);
     void RenderDay4(RenderWindow& window);
 
     void InitializeDay5();
     void UpdateDay5(float deltaTime);
+    void UpdateDay5Patients();
+    void UpdateDay5OperationScene(float deltaTime);
     void RenderDay5(RenderWindow& window);
 
 
@@ -104,7 +112,7 @@ private:
     bool skippedTypewriting;
     bool dialogueSystemInitialized = false;
     int currentDialogueIndex;
-    int maxDialogueTexts = 3;
+    int maxDialogueTexts;
 
     std::vector<std::string> dialoguePanelTextures;
     std::vector<SpriteTexture> person;

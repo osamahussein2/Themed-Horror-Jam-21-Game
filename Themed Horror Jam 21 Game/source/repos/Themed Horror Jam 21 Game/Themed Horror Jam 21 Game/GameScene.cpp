@@ -141,13 +141,68 @@ void GameScene::InitializeGame()
 
 void GameScene::InitializeDialogueSystem()
 {
-    std::vector<TypewriterEffect::DialogueData> allDialogueData = {
-         TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
-         TypewriterEffect::DialogueData("Play!", 12.0f),
-         TypewriterEffect::DialogueData("Go!", 10.0f)
-    };
+    std::vector<TypewriterEffect::DialogueData> allDialogueData;
 
-    typewriterEffect.Initialize(allDialogueData);
+    switch (currentDay)
+    {
+    case 1:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
+             TypewriterEffect::DialogueData("Play!", 12.0f),
+             TypewriterEffect::DialogueData("Go!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 2:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
+             TypewriterEffect::DialogueData("Play!", 12.0f),
+             TypewriterEffect::DialogueData("Go!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 3:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
+             TypewriterEffect::DialogueData("Play!", 12.0f),
+             TypewriterEffect::DialogueData("Go!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 4:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
+             TypewriterEffect::DialogueData("Play!", 12.0f),
+             TypewriterEffect::DialogueData("Go!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 5:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
+             TypewriterEffect::DialogueData("Play!", 12.0f),
+             TypewriterEffect::DialogueData("Go!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    default:
+        break;
+    }
 }
 
 void GameScene::InitializeBag()
@@ -230,27 +285,156 @@ void GameScene::HandleBagClicks(Vector2f mousePos)
 
 void GameScene::UpdateDialoguePanelTexture()
 {
-    switch (currentDialogueIndex)
+    switch (currentDay)
     {
-    case 0:
-        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
-        {
-            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
-        }
-        break;
-
     case 1:
-        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+        switch (currentDialogueIndex)
         {
-            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
         }
+
         break;
 
     case 2:
-        if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+        switch (currentDialogueIndex)
         {
-            dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
         }
+
+        break;
+
+    case 3:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
+        break;
+
+    case 4:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
+        break;
+
+    case 5:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
         break;
 
     default:

@@ -20,8 +20,6 @@ void GameScene::InitializeDay1()
     maxPatients = 3;
     currentPatientIndex = 0;
 
-    dialogueTexts.clear();
-
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
@@ -57,6 +55,8 @@ void GameScene::InitializeDay1()
 
     dialoguePanel.InitializeDialoguePanel("Art Assets/Ui/chat_box_3.png", Vector2f(panelX, panelY),
         Vector2f(panelWidth, panelHeight));
+
+    maxDialogueTexts = 3;
 
     dialogueTexts.clear();
     dialogueTexts.resize(maxDialogueTexts);
