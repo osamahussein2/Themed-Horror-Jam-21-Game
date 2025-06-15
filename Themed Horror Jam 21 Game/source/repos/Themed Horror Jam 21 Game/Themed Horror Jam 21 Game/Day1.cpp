@@ -251,7 +251,7 @@ void GameScene::UpdateDay1(float deltaTime)
 
                 operationScene.maxDots = 4;
 
-                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.13f, resolution.y / 4.2f),
                     10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                     5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
                     50.0f * (resolution.x / 1920.0f),
@@ -728,11 +728,14 @@ void GameScene::UpdateDay1Patients()
 
             operationScene.maxDots = 6;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+            operationScene.InitializeDot( { Vector2f(resolution.x / 2.15f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 2.05f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 1.975f, resolution.y / 3.1f),
+                Vector2f(resolution.x / 1.975f, resolution.y / 3.5f),
+                Vector2f(resolution.x / 1.9f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 1.83f, resolution.y / 2.8f), },
                 10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (resolution.x / 1920.0f),
-                0.0f * (resolution.y / 1080.0f));
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
