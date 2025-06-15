@@ -229,7 +229,8 @@ void GameScene::UpdateDay4(float deltaTime)
                         sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
                         sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
                         sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
-                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
+                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f), // OperationTableSprite UI sprite position
+                        sf::Vector2f(resolution.x / 8.0f, resolution.y / 1.04f)); // timer text position
                 }
 
                 operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",

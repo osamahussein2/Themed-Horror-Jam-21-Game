@@ -5,6 +5,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
+#include "Text.h"
 
 using namespace sf;
 
@@ -31,7 +32,8 @@ public:
         Vector2f NotesSpritePos
         , Vector2f BagSpritePos,
         Vector2f TableUISpritePos, 
-        Vector2f OperationTableSpritePos);
+        Vector2f OperationTableSpritePos,
+        Vector2f TimerTextPos);
 
     // Draw the surgery room to the render window
     void Draw(RenderWindow& window, Sprite body);
@@ -153,6 +155,8 @@ private:
 	const char* BagPath = "Art Assets/SurgeryRoom/bag.png";
 	const char* TableUIPath = "Art Assets/SurgeryRoom/table.png";
 	const char* OperationTablePath = "Art Assets/SurgeryRoom/OperationTable.png";
+
+    Game::Text timerText;
 };
 
 #endif
