@@ -47,11 +47,12 @@ public:
     void SetScale(Sprite sprite, Vector2f scale);
 
     // Timer and animation functions
-    void StartTimer(float duration = 60.0f); // Start timer with duration in seconds
+    void StartTimer(int minutes, float duration); // Start timer with duration in seconds
     void UpdateTimer(float deltaTime); // Update timer (call this every frame)
     void StopTimer();
     bool IsTimerRunning() const { return timerRunning; }
     float GetTimeRemaining() const { return timeRemaining; }
+    float GetMinutesRemaining() const { return timeInMinutes; }
     void ResetToStartTimeTexture();
 
     // Life management functions
@@ -129,6 +130,7 @@ private:
     // Timer system
     bool timerRunning;
     float timeRemaining;
+    int timeInMinutes;
     float totalTime;
     Clock animationClock; // For animations
 

@@ -18,7 +18,8 @@ TableUISprite(TableUISprite),
 OperationTableSprite(OperationTableTexture),
 timerRunning(false),
 timeRemaining(0.0f),
-totalTime(0.0f)
+totalTime(0.0f),
+timeInMinutes(0)
 {
     // Initialize all lives as alive
     for (int i = 0; i < 3; i++) {
@@ -140,11 +141,12 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 }
 
 
-void SurgeryRoom::StartTimer(float duration)
+void SurgeryRoom::StartTimer(int minutes, float duration)
 {
     if (isLoaded) {
         totalTime = duration;
         timeRemaining = duration;
+        timeInMinutes = minutes;
         timerRunning = true;
         animationClock.restart();
 
@@ -164,7 +166,12 @@ void SurgeryRoom::UpdateTimer(float deltaTime)
     if (isLoaded && timerRunning) {
         timeRemaining -= deltaTime;
 
-        if (timeRemaining <= 0.0f) {
+        if (timeRemaining <= 0.0f && timeInMinutes > 0) {
+            timeInMinutes -= 1;
+            timeRemaining = totalTime;
+        }
+
+        if (timeRemaining <= 0.0f && timeInMinutes <= 0) {
             timeRemaining = 0.0f;
             timerRunning = false;
             std::cout << "Timer finished!" << std::endl;
@@ -183,6 +190,7 @@ void SurgeryRoom::StopTimer()
 {
     timerRunning = false;
     timeRemaining = 0.0f;
+    timeInMinutes = 0;
 }
 
 void SurgeryRoom::ResetToStartTimeTexture()
@@ -223,7 +231,8 @@ void SurgeryRoom::UpdateTimerSprite()
             TimerSprite.setColor(sf::Color::White);
         }
         else {
-            TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
+            if (timeInMinutes > 0) TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
+            else if (timeInMinutes <= 0) TimerSprite.setColor(sf::Color(255, 0, 0, 128));
         }
     }
 

@@ -71,7 +71,7 @@ void GameScene::InitializeDay5()
     float textPanelX = resolution.x / 25.0f; // Move text panels slightly to the right from the dialogue panel
     float textPanelY = resolution.y / 1.4f; // Move text panels slightly below from the dialogue panel
 
-    DIALOGUE_TEXT5_CHARACTER_SIZE = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    DIALOGUE_TEXT5_CHARACTER_SIZE = 40.0f * (resolution.x / 1920.0f);
 
     for (int i = 0; i < maxDialogueTexts; i++)
     {
@@ -138,7 +138,7 @@ void GameScene::UpdateDay5(float deltaTime)
         surgeryRoom.UpdateTimer(deltaTime);
 
         // Once timer runs out, change the current game state to show the fail state
-        if (surgeryRoom.GetTimeRemaining() <= 0.0f)
+        if (surgeryRoom.GetTimeRemaining() <= 0.0f && surgeryRoom.GetMinutesRemaining() <= 0)
             currentGameState = GameState::FAILURE_ACTIVE;
     }
 
@@ -237,10 +237,10 @@ void GameScene::UpdateDay5(float deltaTime)
                 operationScene.maxDots = 4;
 
                 operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                    10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                     5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+                    50.0f * (resolution.x / 1920.0f),
+                    0.0f * (resolution.y / 1080.0f));
 
                 person.resize(maxPatients);
 
@@ -329,9 +329,9 @@ void GameScene::UpdateDay5(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(57.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(50.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(40.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(0, 57.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 50.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 40.0f);
                 }
                 mouseClicked = true;
             }
@@ -696,10 +696,10 @@ void GameScene::UpdateDay5Patients()
             operationScene.maxDots = 6;
 
             operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                 5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+                50.0f * (resolution.x / 1920.0f),
+                0.0f * (resolution.y / 1080.0f));
 
             operationSceneChanged = true;
         }
@@ -717,10 +717,10 @@ void GameScene::UpdateDay5Patients()
             operationScene.maxDots = 8;
 
             operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                 5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+                30.0f * (resolution.x / 1920.0f),
+                50.0f * (resolution.y / 1080.0f));
 
             operationSceneChanged = true;
         }
