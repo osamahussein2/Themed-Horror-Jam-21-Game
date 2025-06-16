@@ -256,8 +256,7 @@ void SurgeryRoom::UpdateTimerSprite()
             TimerSprite.setColor(sf::Color::White);
         }
         else {
-            if (timeInMinutes > 0) TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
-            else if (timeInMinutes <= 0) TimerSprite.setColor(sf::Color(255, 0, 0, 128));
+            if (timeInMinutes <= 0) TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
         }
     }
 
