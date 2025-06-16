@@ -192,7 +192,7 @@ void SurgeryRoom::UpdateTimer(float deltaTime)
 
         if (timeRemaining <= 0.0f && timeInMinutes > 0) {
             timeInMinutes -= 1;
-            timeRemaining = 57;
+            timeRemaining = 59.99f;
         }
 
         if (timeRemaining <= 0.0f && timeInMinutes <= 0) {

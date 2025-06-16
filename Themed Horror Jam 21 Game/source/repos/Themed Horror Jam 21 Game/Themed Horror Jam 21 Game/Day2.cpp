@@ -238,13 +238,15 @@ void GameScene::UpdateDay2(float deltaTime)
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
 
-                operationScene.maxDots = 4;
+                operationScene.maxDots = 5;
 
-                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                operationScene.InitializeDot({ Vector2f(resolution.x / 2.25f, resolution.y / 1.3f),
+                    Vector2f(resolution.x / 2.15f, resolution.y / 1.4f),
+                    Vector2f(resolution.x / 2.0f, resolution.y / 1.5f),
+                    Vector2f(resolution.x / 1.85f, resolution.y / 1.4f),
+                    Vector2f(resolution.x / 1.75f, resolution.y / 1.3f) },
                     10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    50.0f * (resolution.x / 1920.0f),
-                    0.0f * (resolution.y / 1080.0f));
+                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
                 person.resize(maxPatients);
 
@@ -335,9 +337,9 @@ void GameScene::UpdateDay2(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(0, 57.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 50.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 40.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 1.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 51.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 41.0f);
                 }
                 mouseClicked = true;
             }
@@ -713,11 +715,14 @@ void GameScene::UpdateDay2Patients()
 
             operationScene.maxDots = 6;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.6f, resolution.y / 1.4f),
+                Vector2f(resolution.x / 2.5f, resolution.y / 1.6f),
+                Vector2f(resolution.x / 2.45f, resolution.y / 1.75f),
+                Vector2f(resolution.x / 1.645f, resolution.y / 1.75f),
+                Vector2f(resolution.x / 1.62f, resolution.y / 1.6f),
+                Vector2f(resolution.x / 1.6f, resolution.y / 1.4f)},
                 10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (resolution.x / 1920.0f),
-                0.0f * (resolution.y / 1080.0f));
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -734,11 +739,16 @@ void GameScene::UpdateDay2Patients()
 
             operationScene.maxDots = 8;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.025f, resolution.y / 20.0f),
+                Vector2f(resolution.x / 1.90f, resolution.y / 20.0f),
+                Vector2f(resolution.x / 2.0f, resolution.y / 9.0f),
+                Vector2f(resolution.x / 1.925f, resolution.y / 9.0f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 5.5f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.35f), 
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.475f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.60f) },
                 10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (resolution.x / 1920.0f),
-                50.0f * (resolution.y / 1080.0f));
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -754,11 +764,16 @@ void GameScene::UpdateDay2Patients()
 
             operationScene.maxDots = 8;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.19f, resolution.y / 1.36f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 1.76f), 
+                Vector2f(resolution.x / 1.95f, resolution.y / 2.74f), 
+                Vector2f(resolution.x / 1.72f, resolution.y / 3.67f),
+                Vector2f(resolution.x / 1.76f, resolution.y / 1.55f), 
+                Vector2f(resolution.x / 2.13f, resolution.y / 2.06f), 
+                Vector2f(resolution.x / 2.39f, resolution.y / 2.05f), 
+                Vector2f(resolution.x / 1.59f, resolution.y / 1.53f) },
                 10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (resolution.x / 1920.0f),
-                50.0f * (resolution.y / 1080.0f));
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -772,13 +787,20 @@ void GameScene::UpdateDay2Patients()
                 Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                 true);
 
-            operationScene.maxDots = 8;
+            operationScene.maxDots = 10;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.95f, resolution.y / 12.85f),
+                Vector2f(resolution.x / 2.01f, resolution.y / 5.42f), 
+                Vector2f(resolution.x / 1.92f, resolution.y / 5.42f), 
+                Vector2f(resolution.x / 2.23f, resolution.y / 1.39f),
+                Vector2f(resolution.x / 2.12f, resolution.y / 1.39f),
+                Vector2f(resolution.x / 1.99f, resolution.y / 1.39f),
+                Vector2f(resolution.x / 1.88f, resolution.y / 1.39f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 1.39f), 
+                Vector2f(resolution.x / 1.99f, resolution.y / 1.57f), 
+                Vector2f(resolution.x / 1.99f, resolution.y / 1.71f) },
                 10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (resolution.x / 1920.0f),
-                50.0f * (resolution.y / 1080.0f));
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -820,7 +842,8 @@ void GameScene::UpdateDay2OperationScene(float deltaTime)
         if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
             if (successfulOperations != 1) successfulOperations = 1;
@@ -1042,7 +1065,9 @@ void GameScene::UpdateDay2OperationScene(float deltaTime)
             operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[7].getFillColor() == Color::Green)
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
             if (successfulOperations != 5) successfulOperations = 5;
