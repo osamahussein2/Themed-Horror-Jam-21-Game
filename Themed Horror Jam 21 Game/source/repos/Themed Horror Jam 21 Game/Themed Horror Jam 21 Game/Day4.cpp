@@ -264,6 +264,89 @@ void GameScene::UpdateDay4(float deltaTime)
 
             inputCooldown = INPUT_DELAY;
         }
+
+        // Check mouse input for dialogue
+        if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+            Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
+        {
+            if (!typewriterEffect.IsCurrentDialogueComplete())
+            {
+                typewriterEffect.Skip();
+            }
+            else if (typewriterEffect.HasNextDialogue())
+            {
+                typewriterEffect.NextDialogue();
+                currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
+            }
+            else
+            {
+                currentGameState = GameState::DIALOGUE_HIDDEN;
+                // Activate surgery room when dialogue ends
+                gameBackground.Unload();
+
+                if (!surgeryRoom.IsLoaded())
+                {
+                    // Initialize surgery room with your asset paths
+                    surgeryRoom.Initialize(
+                        "Art Assets/SurgeryRoom/Background.png",
+                        "Art Assets/SurgeryRoom/BottomUI.png",
+                        "Art Assets/SurgeryRoom/TopUI.png",
+                        resolution,
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
+                        sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
+                        sf::Vector2f(resolution.x / 2.0f, resolution.y / 10.0f), // top UI
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
+                        sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
+                        sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
+                        sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
+                        sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
+                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f), // OperationTableSprite UI sprite position
+                        sf::Vector2f(resolution.x / 8.0f, resolution.y / 1.04f)); // timer text position
+                }
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                operationScene.maxDots = 4;
+
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
+                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                    50.0f * (resolution.x / 1920.0f),
+                    0.0f * (resolution.y / 1080.0f));
+
+                person.resize(maxPatients);
+
+                for (int i = 0; i < maxPatients; i++)
+                {
+                    person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
+                        Vector2f(resolution.x / 2.238f, resolution.y / 2.5f),
+                        Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+                }
+
+                // Initialize the bag when surgery room becomes active
+                InitializeBag();
+
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                alpha = 255.0f;
+            }
+
+            if (mouseClicked != true) mouseClicked = true;
+        }
+
+        else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked &&
+            !Mouse::isButtonPressed(Mouse::Button::Right) && mouseClicked)
+        {
+            if (mouseClicked != false) mouseClicked = false;
+        }
+
         break;
     }
 
