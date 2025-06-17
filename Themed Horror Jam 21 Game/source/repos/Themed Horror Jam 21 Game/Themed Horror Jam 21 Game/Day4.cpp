@@ -17,7 +17,7 @@ void GameScene::InitializeDay4()
     if (isInputEnabled != true) isInputEnabled = true;
     if (mouseClicked != false) mouseClicked = false;
 
-    maxPatients = 3;
+    maxPatients = 15;
     currentPatientIndex = 0;
 
     // Stop any running timer when reinitializing
@@ -238,13 +238,18 @@ void GameScene::UpdateDay4(float deltaTime)
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
 
-                operationScene.maxDots = 4;
+                operationScene.maxDots = 8;
 
-                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    50.0f * (resolution.x / 1920.0f),
-                    0.0f * (resolution.y / 1080.0f));
+                operationScene.InitializeDot({ Vector2f(resolution.x / 1.70f, resolution.y / 3.23f),
+                    Vector2f(resolution.x / 2.31f, resolution.y / 3.26f), 
+                    Vector2f(resolution.x / 2.40f, resolution.y / 1.94f), 
+                    Vector2f(resolution.x / 1.64f, resolution.y / 1.93f), 
+                    Vector2f(resolution.x / 1.90f, resolution.y / 11.87f), 
+                    Vector2f(resolution.x / 2.02f, resolution.y / 11.87f),
+                    Vector2f(resolution.x / 1.81f, resolution.y / 3.43f), 
+                    Vector2f(resolution.x / 2.09f, resolution.y / 4.37f) },
+                    7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                    3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
                 person.resize(maxPatients);
 
@@ -314,13 +319,18 @@ void GameScene::UpdateDay4(float deltaTime)
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
 
-                operationScene.maxDots = 4;
+                operationScene.maxDots = 8;
 
-                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    50.0f * (resolution.x / 1920.0f),
-                    0.0f * (resolution.y / 1080.0f));
+                operationScene.InitializeDot({ Vector2f(resolution.x / 1.70f, resolution.y / 3.23f),
+                    Vector2f(resolution.x / 2.31f, resolution.y / 3.26f),
+                    Vector2f(resolution.x / 2.40f, resolution.y / 1.94f),
+                    Vector2f(resolution.x / 1.64f, resolution.y / 1.93f),
+                    Vector2f(resolution.x / 1.90f, resolution.y / 11.87f),
+                    Vector2f(resolution.x / 2.02f, resolution.y / 11.87f),
+                    Vector2f(resolution.x / 1.81f, resolution.y / 3.43f),
+                    Vector2f(resolution.x / 2.09f, resolution.y / 4.37f) },
+                    7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                    3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
                 person.resize(maxPatients);
 
@@ -418,9 +428,9 @@ void GameScene::UpdateDay4(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(0, 57.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 50.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 40.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(4, 31.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(4, 1.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(3, 31.0f);
                 }
                 mouseClicked = true;
             }
@@ -793,20 +803,26 @@ void GameScene::UpdateDay4Patients()
                 Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                 true);
 
-            operationScene.maxDots = 6;
+            operationScene.maxDots = 9;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (resolution.x / 1920.0f),
-                0.0f * (resolution.y / 1080.0f));
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.77f, resolution.y / 3.88f),
+                Vector2f(resolution.x / 2.14f, resolution.y / 2.81f), 
+                Vector2f(resolution.x / 1.81f, resolution.y / 2.38f), 
+                Vector2f(resolution.x / 2.12f, resolution.y / 2.13f), 
+                Vector2f(resolution.x / 1.76f, resolution.y / 1.55f), 
+                Vector2f(resolution.x / 2.20f, resolution.y / 1.32f), 
+                Vector2f(resolution.x / 1.75f, resolution.y / 1.30f), 
+                Vector2f(resolution.x / 2.17f, resolution.y / 1.82f), 
+                Vector2f(resolution.x / 1.77f, resolution.y / 2.73f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
 
         break;
 
-    case 2: // 3rd and final patient
+    case 2: // 3rd patient
         if (!operationSceneChanged)
         {
             operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
@@ -814,13 +830,409 @@ void GameScene::UpdateDay4Patients()
                 Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                 true);
 
-            operationScene.maxDots = 8;
+            operationScene.maxDots = 11;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (resolution.x / 1920.0f),
-                50.0f * (resolution.y / 1080.0f));
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.80f, resolution.y / 3.93f),
+                Vector2f(resolution.x / 1.99f, resolution.y / 3.99f),
+                Vector2f(resolution.x / 2.22f, resolution.y / 3.58f),
+                Vector2f(resolution.x / 2.13f, resolution.y / 2.81f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 2.87),
+                Vector2f(resolution.x / 1.83f, resolution.y / 2.23f),
+                Vector2f(resolution.x / 2.12f, resolution.y / 2.21f),
+                Vector2f(resolution.x / 2.18f, resolution.y / 1.80f),
+                Vector2f(resolution.x / 1.75f, resolution.y / 1.79f),
+                Vector2f(resolution.x / 1.73f, resolution.y / 1.51f),
+                Vector2f(resolution.x / 2.25f, resolution.y / 1.50f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 3: // 4th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 12;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.25f, resolution.y / 1.38f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 1.49f),
+                Vector2f(resolution.x / 2.06f, resolution.y / 1.63f),
+                Vector2f(resolution.x / 2.00f, resolution.y / 1.78f),
+                Vector2f(resolution.x / 1.92f, resolution.y / 2.03),
+                Vector2f(resolution.x / 1.86f, resolution.y / 2.44f),
+                Vector2f(resolution.x / 1.79f, resolution.y / 3.12f),
+                Vector2f(resolution.x / 2.18f, resolution.y / 3.07f),
+                Vector2f(resolution.x / 1.75f, resolution.y / 1.33f),
+                Vector2f(resolution.x / 1.73f, resolution.y / 1.38f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.57f),
+                Vector2f(resolution.x / 2.00f, resolution.y / 2.03f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 4: // 5th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 13;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.17f, resolution.y / 3.65f),
+                Vector2f(resolution.x / 2.08f, resolution.y / 2.81f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 2.24f),
+                Vector2f(resolution.x / 1.88f, resolution.y / 1.82f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 1.56f),
+                Vector2f(resolution.x / 1.71f, resolution.y / 1.42f),
+                Vector2f(resolution.x / 2.27f, resolution.y / 1.42f),
+                Vector2f(resolution.x / 2.13f, resolution.y / 1.55f),
+                Vector2f(resolution.x / 2.04f, resolution.y / 1.70f),
+                Vector2f(resolution.x / 1.90f, resolution.y / 2.00f),
+                Vector2f(resolution.x / 1.82f, resolution.y / 2.40f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 2.98f),
+                Vector2f(resolution.x / 1.73f, resolution.y / 3.65f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 5: // 6th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 13;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.17f, resolution.y / 4.12f),
+                Vector2f(resolution.x / 2.04f, resolution.y / 4.06f),
+                Vector2f(resolution.x / 1.87f, resolution.y / 4.11f),
+                Vector2f(resolution.x / 1.74f, resolution.y / 4.09f),
+                Vector2f(resolution.x / 1.82f, resolution.y / 3.35f),
+                Vector2f(resolution.x / 1.88f, resolution.y / 2.92f),
+                Vector2f(resolution.x / 1.98f, resolution.y / 2.52f),
+                Vector2f(resolution.x / 2.06f, resolution.y / 2.25f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 2.03f),
+                Vector2f(resolution.x / 2.03f, resolution.y / 2.04f),
+                Vector2f(resolution.x / 1.94f, resolution.y / 2.04f),
+                Vector2f(resolution.x / 1.84f, resolution.y / 2.04f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 2.03f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 6: // 7th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 13;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.22f, resolution.y / 1.32f),
+                Vector2f(resolution.x / 2.12f, resolution.y / 1.32f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 1.32f),
+                Vector2f(resolution.x / 1.84f, resolution.y / 1.31f),
+                Vector2f(resolution.x / 1.75f, resolution.y / 1.31f),
+                Vector2f(resolution.x / 1.72f, resolution.y / 1.41f),
+                Vector2f(resolution.x / 1.72f, resolution.y / 1.55f),
+                Vector2f(resolution.x / 1.73f, resolution.y / 1.72f),
+                Vector2f(resolution.x / 1.76f, resolution.y / 1.86f),
+                Vector2f(resolution.x / 2.20f, resolution.y / 1.84f),
+                Vector2f(resolution.x / 2.24f, resolution.y / 1.72f),
+                Vector2f(resolution.x / 2.27f, resolution.y / 1.60f),
+                Vector2f(resolution.x / 2.27f, resolution.y / 1.42f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 7: // 8th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 14;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.50f, resolution.y / 1.56f),
+                Vector2f(resolution.x / 2.39f, resolution.y / 2.01f),
+                Vector2f(resolution.x / 2.30f, resolution.y / 2.79f),
+                Vector2f(resolution.x / 2.13f, resolution.y / 4.27f),
+                Vector2f(resolution.x / 1.94f, resolution.y / 5.51f),
+                Vector2f(resolution.x / 1.75f, resolution.y / 4.03f),
+                Vector2f(resolution.x / 1.69f, resolution.y / 2.90f),
+                Vector2f(resolution.x / 1.66f, resolution.y / 2.02f),
+                Vector2f(resolution.x / 1.59f, resolution.y / 1.56f),
+                Vector2f(resolution.x / 2.11f, resolution.y / 3.13f),
+                Vector2f(resolution.x / 2.04f, resolution.y / 2.73f),
+                Vector2f(resolution.x / 1.91f, resolution.y / 2.70f),
+                Vector2f(resolution.x / 1.82f, resolution.y / 3.11f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 1.43f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 8: // 9th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 14;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.24f, resolution.y / 1.37f),
+                Vector2f(resolution.x / 2.09f, resolution.y / 1.36f),
+                Vector2f(resolution.x / 1.92f, resolution.y / 1.36f),
+                Vector2f(resolution.x / 1.80f, resolution.y / 1.35f),
+                Vector2f(resolution.x / 1.72f, resolution.y / 1.35f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 1.86f, resolution.y / 2.12f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.06f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.55f, resolution.y / 1.35f),
+                Vector2f(resolution.x / 2.52f, resolution.y / 1.49f),
+                Vector2f(resolution.x / 1.57f, resolution.y / 1.34f),
+                Vector2f(resolution.x / 1.58f, resolution.y / 1.48f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 9: // 10th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 15;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.00f, resolution.y / 5.54f),
+                Vector2f(resolution.x / 1.90f, resolution.y / 5.48f),
+                Vector2f(resolution.x / 1.90f, resolution.y / 41.54f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 41.54f),
+                Vector2f(resolution.x / 2.01f, resolution.y / 41.54f),
+                Vector2f(resolution.x / 2.06f, resolution.y / 18.95f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 18.95f),
+                Vector2f(resolution.x / 1.90f, resolution.y / 17.14f),
+                Vector2f(resolution.x / 1.85f, resolution.y / 17.42f),
+                Vector2f(resolution.x / 1.89f, resolution.y / 10.69f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 10.69f),
+                Vector2f(resolution.x / 2.03f, resolution.y / 10.69f),
+                Vector2f(resolution.x / 1.92f, resolution.y / 8.06f),
+                Vector2f(resolution.x / 2.00f, resolution.y / 7.66f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 4.58f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 10: // 11th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 16;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.70f, resolution.y / 3.82f),
+                Vector2f(resolution.x / 1.70f, resolution.y / 3.28f),
+                Vector2f(resolution.x / 1.70f, resolution.y / 2.92f),
+                Vector2f(resolution.x / 1.69f, resolution.y / 2.54f),
+                Vector2f(resolution.x / 2.29f, resolution.y / 3.96f),
+                Vector2f(resolution.x / 2.31f, resolution.y / 3.44f),
+                Vector2f(resolution.x / 2.32f, resolution.y / 2.86f),
+                Vector2f(resolution.x / 2.34f, resolution.y / 2.47f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 3.54f),
+                Vector2f(resolution.x / 2.10f, resolution.y / 3.01f),
+                Vector2f(resolution.x / 2.01f, resolution.y / 2.73f),
+                Vector2f(resolution.x / 1.89f, resolution.y / 2.73f),\
+                Vector2f(resolution.x / 1.79f, resolution.y / 3.06f),
+                Vector2f(resolution.x / 1.79f, resolution.y / 3.69f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 1.35f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.48f), },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 11: // 12th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 17;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.95f, resolution.y / 5.45f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 4.58f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 3.71f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 3.17f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 2.77f),
+                Vector2f(resolution.x / 1.95f, resolution.y / 2.36f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 1.88f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 1.71f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.55f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.44f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.35f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 4.24f),
+                Vector2f(resolution.x / 2.27f, resolution.y / 3.74f),
+                Vector2f(resolution.x / 1.80f, resolution.y / 4.14f),
+                Vector2f(resolution.x / 1.70f, resolution.y / 3.53f),
+                Vector2f(resolution.x / 2.03f, resolution.y / 4.35f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 12: // 13th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 18;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.63f, resolution.y / 1.47f),
+                Vector2f(resolution.x / 2.50f, resolution.y / 1.47f),
+                Vector2f(resolution.x / 1.60f, resolution.y / 1.45f),
+                Vector2f(resolution.x / 1.55f, resolution.y / 1.46f),
+                Vector2f(resolution.x / 1.60f, resolution.y / 1.58f),
+                Vector2f(resolution.x / 2.48f, resolution.y / 1.60f),
+                Vector2f(resolution.x / 2.17f, resolution.y / 2.43f),
+                Vector2f(resolution.x / 2.10f, resolution.y / 2.42f),
+                Vector2f(resolution.x / 2.03f, resolution.y / 2.41f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 2.39f),
+                Vector2f(resolution.x / 1.87f, resolution.y / 2.39f),
+                Vector2f(resolution.x / 1.78f, resolution.y / 2.38f),
+                Vector2f(resolution.x / 1.79f, resolution.y / 2.12f),
+                Vector2f(resolution.x / 1.87f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 1.94f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.05f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 2.11f),
+                Vector2f(resolution.x / 2.18f, resolution.y / 1.95f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 13: // 14th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 19;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 2.51f, resolution.y / 1.57f),
+                Vector2f(resolution.x / 2.46f, resolution.y / 1.71f),
+                Vector2f(resolution.x / 2.42f, resolution.y / 1.93f),
+                Vector2f(resolution.x / 2.36f, resolution.y / 2.21f),
+                Vector2f(resolution.x / 2.31f, resolution.y / 2.63f),
+                Vector2f(resolution.x / 1.61f, resolution.y / 1.59f),
+                Vector2f(resolution.x / 1.62f, resolution.y / 1.74f),
+                Vector2f(resolution.x / 1.65f, resolution.y / 1.94f),
+                Vector2f(resolution.x / 1.67f, resolution.y / 2.24f),
+                Vector2f(resolution.x / 1.69f, resolution.y / 2.62f),
+                Vector2f(resolution.x / 2.17f, resolution.y / 2.42f),
+                Vector2f(resolution.x / 2.14f, resolution.y / 2.22f),
+                Vector2f(resolution.x / 2.16f, resolution.y / 2.02f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 2.43f),
+                Vector2f(resolution.x / 1.80f, resolution.y / 2.19f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 1.95f),
+                Vector2f(resolution.x / 2.12f, resolution.y / 1.28f),
+                Vector2f(resolution.x / 1.81f, resolution.y / 1.27f),
+                Vector2f(resolution.x / 1.80f, resolution.y / 3.48f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+
+            operationSceneChanged = true;
+        }
+        break;
+
+    case 14: // 15th patient
+        if (!operationSceneChanged)
+        {
+            operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                Vector2f(resolution.x / 2.8f, 0.0f),
+                Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                true);
+
+            operationScene.maxDots = 20;
+
+            operationScene.InitializeDot({ Vector2f(resolution.x / 1.96f, resolution.y / 15.43f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 10.38f),
+                Vector2f(resolution.x / 2.56f, resolution.y / 1.39f),
+                Vector2f(resolution.x / 1.74f, resolution.y / 3.70f),
+                Vector2f(resolution.x / 2.03f, resolution.y / 4.84f),
+                Vector2f(resolution.x / 1.87f, resolution.y / 4.01f),
+                Vector2f(resolution.x / 2.22f, resolution.y / 3.96f),
+                Vector2f(resolution.x / 2.34f, resolution.y / 2.90f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 2.87f),
+                Vector2f(resolution.x / 1.99f, resolution.y / 3.59f),
+                Vector2f(resolution.x / 2.15f, resolution.y / 2.45f),
+                Vector2f(resolution.x / 1.79f, resolution.y / 2.24f),
+                Vector2f(resolution.x / 1.97f, resolution.y / 1.89f),
+                Vector2f(resolution.x / 1.88f, resolution.y / 1.56f),
+                Vector2f(resolution.x / 1.77f, resolution.y / 1.29f),
+                Vector2f(resolution.x / 2.20f, resolution.y / 1.29f),
+                Vector2f(resolution.x / 2.02f, resolution.y / 1.31f),
+                Vector2f(resolution.x / 1.96f, resolution.y / 1.44f),
+                Vector2f(resolution.x / 2.22f, resolution.y / 1.56f),
+                Vector2f(resolution.x / 1.74f, resolution.y / 1.70f) },
+                7.5f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                3.75f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -861,7 +1273,11 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
         if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[3].getFillColor() == Color::Green)
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
             if (successfulOperations != 1) successfulOperations = 1;
@@ -873,7 +1289,7 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
             successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
                 std::to_string(maxPatients) + " operations successful!",
@@ -916,7 +1332,10 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
             operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[5].getFillColor() == Color::Green)
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
             if (successfulOperations != 2) successfulOperations = 2;
@@ -927,7 +1346,7 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
             successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
                 std::to_string(maxPatients) + " operations successful!",
@@ -946,7 +1365,7 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
 
         break;
 
-    case 2: // Third and final patient
+    case 2: // 3rd patient
         for (int i = 0; i < operationScene.maxDots; i++)
         {
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
@@ -972,7 +1391,10 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
             operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
             operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
-            operationScene.dotCircleShape[7].getFillColor() == Color::Green)
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
             if (successfulOperations != 3) successfulOperations = 3;
@@ -983,7 +1405,755 @@ void GameScene::UpdateDay4OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 3;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 3: // 4th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 4) successfulOperations = 4;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 4;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 4: // 5th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 5) successfulOperations = 5;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 5;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 5: // 6th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 6) successfulOperations = 6;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 6;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 6: // 7th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 7) successfulOperations = 7;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 7;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 7: // 8th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 8) successfulOperations = 8;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 8;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 8: // 9th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 9) successfulOperations = 9;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(420.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 9;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 9: // 10th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 10) successfulOperations = 10;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 10;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 10: // 11th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[15].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 11) successfulOperations = 11;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 11;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 11: // 12th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[15].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[16].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 12) successfulOperations = 12;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 12;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 12: // 13th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[15].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[16].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[17].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 13) successfulOperations = 13;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 13;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 13: // 14th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[15].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[16].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[17].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[18].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 14) successfulOperations = 14;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
+                successfulCharacterSize, true, false,
+                Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
+
+            if (successfulOperationTime >= 1.0f)
+            {
+                isInputEnabled = true;
+
+                successfulOperationTime = 0.0f;
+                currentPatientIndex = 14;
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+        }
+        break;
+
+    case 14: // 15th patient
+        for (int i = 0; i < operationScene.maxDots; i++)
+        {
+            if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
+            {
+                // Set up the operation scene after clicking the left mouse button
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                {
+                    if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
+                        operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
+                }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
+            }
+        }
+
+        if (operationScene.dotCircleShape[0].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[1].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[2].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[3].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[4].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[5].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[6].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[7].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[8].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[9].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[10].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[11].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[12].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[13].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[14].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[15].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[16].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[17].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[18].getFillColor() == Color::Green &&
+            operationScene.dotCircleShape[19].getFillColor() == Color::Green)
+        {
+            successfulOperationTime += deltaTime;
+            if (successfulOperations != 15) successfulOperations = 15;
+
+            if (operationSceneChanged != false) operationSceneChanged = false;
+            if (isInputEnabled != false) isInputEnabled = false;
+
+            float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+
+            operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
+                Vector2f(430.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
             successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
                 std::to_string(maxPatients) + " operations successful!",
