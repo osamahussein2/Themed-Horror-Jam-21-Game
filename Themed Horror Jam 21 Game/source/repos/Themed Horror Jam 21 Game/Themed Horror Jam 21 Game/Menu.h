@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Text.h"
 #include "Button.h"  // Add this include
+#include "SpriteTexture.h"
 #include <vector>
 
 using namespace sf;
@@ -111,6 +112,10 @@ private:
     Color buttonIdleColor;
     Color buttonHoverColor;
     Color buttonActiveColor;
+
+    std::string nextDayString{};
+
+    SpriteTexture mainMenuArt;
 
     // Static variables
     static int volume;

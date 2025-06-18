@@ -39,6 +39,7 @@ void OperationScene::Initialize(const char* filePath_, Vector2f position_, Vecto
     GroundSprite.setPosition({ GroundX,GroundY });
 }
 
+// This is for setting up the dots in an evenly spaced position
 void OperationScene::InitializeDot(Vector2f position_, float radius_, sf::Color fillColor_, sf::Color outlineColor_, 
     float outlineThickness_, float spacingX_, float spacingY_)
 {
@@ -53,6 +54,23 @@ void OperationScene::InitializeDot(Vector2f position_, float radius_, sf::Color 
         dotCircleShape[i].setOutlineThickness(outlineThickness_);
         dotCircleShape[i].setPosition(Vector2f(position_.x + (i * spacingX_), 
             position_.y + (i * spacingY_)));
+    }
+}
+
+// This is for setting up the dots in different positions manually
+void OperationScene::InitializeDot(std::vector<Vector2f> position_, float radius_, sf::Color fillColor_, 
+    sf::Color outlineColor_, float outlineThickness_)
+{
+    if (!dotCircleShape.empty()) dotCircleShape.clear();
+    dotCircleShape.resize(maxDots);
+
+    for (int i = 0; i < maxDots; i++)
+    {
+        dotCircleShape[i].setRadius(radius_);
+        dotCircleShape[i].setFillColor(fillColor_);
+        dotCircleShape[i].setOutlineColor(outlineColor_);
+        dotCircleShape[i].setOutlineThickness(outlineThickness_);
+        dotCircleShape[i].setPosition(Vector2f(position_[i].x, position_[i].y));
     }
 }
 

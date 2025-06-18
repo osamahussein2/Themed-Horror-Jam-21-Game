@@ -80,6 +80,10 @@ void Menu::CreateMainMenuTexts()
     titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE, true,
         false,titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
 
+    // Initialize main menu art sprite
+    mainMenuArt.InitializeSprite("Art Assets/MainMenu/mainmenu.png", Vector2f(0.0f, 0.0f), 
+        Vector2f(4.0f * (resolution.x / 1920.0f), 2.0f * (resolution.y / 1080.0f)));
+
     // Create main menu options
     mainMenuTexts.clear();
     mainMenuTexts.resize(maxMainOptions);
@@ -93,6 +97,9 @@ void Menu::CreateMainMenuTexts()
             false, textColor, Vector2f(mainMenuButtons[i].GetPosition() +
                 mainMenuButtons[i].GetSize() / 2.0f));
     }
+
+    nextDayUnlockedText.InitializeText("Fonts/Roboto-Regular.ttf", nextDayString, NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE,
+        true, false, Color::Green, Vector2f(resolution.x / 2.325f, resolution.y / 2.9f));
 
     // Instructions
     instructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
@@ -246,11 +253,11 @@ void Menu::UpdateMainMenuColors()
     // Initialize the next day unlocked text only if next day is unlocked (if it's set to true)
     if (nextDayUnlocked == true)
     {
-        std::string nextDayString = "Day ";
+        nextDayString = "Day ";
         nextDayString.append(std::to_string(GameScene::currentDay) + " is unlocked!", 0, 14);
 
-        nextDayUnlockedText.InitializeText("Fonts/Roboto-Regular.ttf", nextDayString, NEXT_DAY_UNLOCKED_TEXT_CHARACTER_SIZE,
-            true, false, Color::Green, Vector2f(resolution.x / 2.0f, resolution.y / 2.85f));
+        if (nextDayUnlockedText.GetText() != nextDayString)
+            nextDayUnlockedText.SetText(nextDayString);
     }
 
     for (int i = 0; i < maxMainOptions; i++)
@@ -744,6 +751,9 @@ void Menu::Render(RenderWindow& window)
     switch (currentState)
     {
     case MenuState::MainMenu:
+
+        window.draw(mainMenuArt.LoadSprite());
+
         // Draw title and instructions
         window.draw(titleText.LoadText());
         window.draw(instructionsText.LoadText());
@@ -766,10 +776,12 @@ void Menu::Render(RenderWindow& window)
         break;
 
     case MenuState::About:
+        window.draw(mainMenuArt.LoadSprite());
         window.draw(aboutContentText.LoadText());
         break;
 
     case MenuState::Settings:
+        window.draw(mainMenuArt.LoadSprite());
         window.draw(settingsContentText.LoadText());
 
         for (auto& button : settingMenuButtons)

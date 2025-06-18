@@ -18,7 +18,8 @@ TableUISprite(TableUISprite),
 OperationTableSprite(OperationTableTexture),
 timerRunning(false),
 timeRemaining(0.0f),
-totalTime(0.0f)
+totalTime(0.0f),
+timeInMinutes(0)
 {
     // Initialize all lives as alive
     for (int i = 0; i < 3; i++) {
@@ -30,7 +31,7 @@ SurgeryRoom::~SurgeryRoom()
 {
 }
 
-bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPath, const char* TopUIPath, Vector2u screenResolution, Vector2f Size, Vector2f bottomUIposition, Vector2f topUIposition, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position, Vector2f deathSprite0position, Vector2f deathSprite1position, Vector2f deathSprite2position, Vector2f timerSpritePosition, Vector2f NotesSpritePos, Vector2f BagSpritePos, Vector2f TableUISpritePos, Vector2f OperationTableSpritePos)
+bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPath, const char* TopUIPath, Vector2u screenResolution, Vector2f Size, Vector2f bottomUIposition, Vector2f topUIposition, Vector2f lifeSprite0position, Vector2f lifeSprite1position, Vector2f lifeSprite2position, Vector2f deathSprite0position, Vector2f deathSprite1position, Vector2f deathSprite2position, Vector2f timerSpritePosition, Vector2f NotesSpritePos, Vector2f BagSpritePos, Vector2f TableUISpritePos, Vector2f OperationTableSpritePos, Vector2f TimerTextPos)
 {
     try
     {
@@ -128,6 +129,10 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         OperationTableSprite.setScale({ 0.4f * Size.x, 0.4f * Size.y });
         OperationTableSprite.setOrigin({ 0, 0 }); // Center horizontally
         
+        float timerTextCharacterSize = 40.0 * (screenResolution.x / 1920.0f);
+
+        timerText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(timeInMinutes) + ":" + 
+            std::to_string(static_cast<int>(timeRemaining)), timerTextCharacterSize, true, false, Color::Black, TimerTextPos);
         
         isLoaded = true;
         return true;
@@ -140,11 +145,12 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 }
 
 
-void SurgeryRoom::StartTimer(float duration)
+void SurgeryRoom::StartTimer(int minutes, float duration)
 {
     if (isLoaded) {
         totalTime = duration;
         timeRemaining = duration;
+        timeInMinutes = minutes;
         timerRunning = true;
         animationClock.restart();
 
@@ -161,10 +167,35 @@ void SurgeryRoom::StartTimer(float duration)
 
 void SurgeryRoom::UpdateTimer(float deltaTime)
 {
+    // Make sure the timer is loaded and running to print the time if seconds is between 0-9
+    if (isLoaded && timerRunning && timeRemaining >= 0.0f && timeRemaining < 10.0f)
+    {
+        if (timerText.GetText() != sf::String(std::to_string(timeInMinutes) + ":0" +
+            std::to_string(static_cast<int>(timeRemaining))))
+        {
+            timerText.SetText(std::to_string(timeInMinutes) + ":0" + std::to_string(static_cast<int>(timeRemaining)));
+        }
+    }
+
+    // Make sure the timer is loaded and running to print the time if seconds is at least around 10 seconds
+    else if (isLoaded && timerRunning && timeRemaining >= 10.0f)
+    {
+        if (timerText.GetText() != sf::String(std::to_string(timeInMinutes) + ":" +
+            std::to_string(static_cast<int>(timeRemaining))))
+        {
+            timerText.SetText(std::to_string(timeInMinutes) + ":" + std::to_string(static_cast<int>(timeRemaining)));
+        }
+    }
+
     if (isLoaded && timerRunning) {
         timeRemaining -= deltaTime;
 
-        if (timeRemaining <= 0.0f) {
+        if (timeRemaining <= 0.0f && timeInMinutes > 0) {
+            timeInMinutes -= 1;
+            timeRemaining = 59.99f;
+        }
+
+        if (timeRemaining <= 0.0f && timeInMinutes <= 0) {
             timeRemaining = 0.0f;
             timerRunning = false;
             std::cout << "Timer finished!" << std::endl;
@@ -183,42 +214,55 @@ void SurgeryRoom::StopTimer()
 {
     timerRunning = false;
     timeRemaining = 0.0f;
+    timeInMinutes = 0;
+}
+
+void SurgeryRoom::ResetToStartTimeTexture()
+{
+    // Reset timer to show the start timer sprite
+    TimerSprite.setTexture(TimerTexture_Start);
+    TimerSprite.setColor(Color::White);
 }
 
 void SurgeryRoom::UpdateTimerSprite()
 {
     if (!isLoaded) return;
+
     // Calculate time percentage remaining
     float timePercentage = timeRemaining / totalTime;
-    // Apparently, the timer texture files had 0-23 so start duration was set to 23 in GameScene.cpp
+
     int timeInInt = static_cast<int>(timeRemaining);
+
     // Store current position to maintain it when changing texture
     sf::Vector2f currentPosition = TimerSprite.getPosition();
+
     // Change sprite based on time remaining percentage
-    if (timePercentage > 0.95f) {
+    if (timePercentage >= 1.0f) {
         // Timer just started - use start sprite
         TimerSprite.setTexture(TimerTexture_Start);
     }
-    else if (timePercentage > 0.1f && timePercentage <= 0.95f) {
-        float frameNumber = 1.0f - (timePercentage / 0.75f);
-        std::string filename = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
-        TimerTexture_Mid.loadFromFile(filename);
+    else if (timePercentage > 0.1f && timePercentage < 1.0f) {
+        std::string filename_ = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
+		TimerTexture_Mid.loadFromFile(filename_);
         TimerSprite.setTexture(TimerTexture_Mid);
     }
     else {
         // Very low or no time - use end sprite
         TimerSprite.setTexture(TimerTexture_End);
+
         // Optional: Add blinking effect for critical time
         float elapsed = animationClock.getElapsedTime().asSeconds();
-        if (static_cast<int>(elapsed * 0.1f) % 2 == 0) {  // Changed from * 4 to * 0.1
+        if (static_cast<int>(elapsed * 4) % 2 == 0) {
             TimerSprite.setColor(sf::Color::White);
         }
         else {
-            TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
+            if (timeInMinutes <= 0) TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
         }
     }
+
     // Restore position after texture change (texture change might reset position)
     TimerSprite.setPosition(currentPosition);
+
     // Ensure normal color for non-critical times
     if (timePercentage > 0.1f) {
         TimerSprite.setColor(sf::Color::White);
@@ -295,6 +339,8 @@ void SurgeryRoom::DrawUI(RenderWindow& window)
     window.draw(BagSprite);
     window.draw(TableUISprite);
     window.draw(OperationTableSprite);
+
+    if (timerRunning) window.draw(timerText.LoadText());
 }
 
 void SurgeryRoom::SetPosition(Sprite sprite, Vector2f position)

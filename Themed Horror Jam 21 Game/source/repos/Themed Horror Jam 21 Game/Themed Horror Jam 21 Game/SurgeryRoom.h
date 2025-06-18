@@ -5,6 +5,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
+#include "Text.h"
 
 using namespace sf;
 
@@ -31,7 +32,8 @@ public:
         Vector2f NotesSpritePos
         , Vector2f BagSpritePos,
         Vector2f TableUISpritePos, 
-        Vector2f OperationTableSpritePos);
+        Vector2f OperationTableSpritePos,
+        Vector2f TimerTextPos);
 
     // Draw the surgery room to the render window
     void Draw(RenderWindow& window, Sprite body);
@@ -47,11 +49,13 @@ public:
     void SetScale(Sprite sprite, Vector2f scale);
 
     // Timer and animation functions
-    void StartTimer(float duration = 60.0f); // Start timer with duration in seconds
+    void StartTimer(int minutes, float duration); // Start timer with duration in seconds
     void UpdateTimer(float deltaTime); // Update timer (call this every frame)
     void StopTimer();
     bool IsTimerRunning() const { return timerRunning; }
     float GetTimeRemaining() const { return timeRemaining; }
+    float GetMinutesRemaining() const { return timeInMinutes; }
+    void ResetToStartTimeTexture();
 
     // Life management functions
     void LoseLife(int lifeIndex); // Change a specific life sprite to death sprite (0, 1, or 2)
@@ -128,6 +132,7 @@ private:
     // Timer system
     bool timerRunning;
     float timeRemaining;
+    int timeInMinutes;
     float totalTime;
     Clock animationClock; // For animations
 
@@ -150,6 +155,8 @@ private:
 	const char* BagPath = "Art Assets/SurgeryRoom/bag.png";
 	const char* TableUIPath = "Art Assets/SurgeryRoom/table.png";
 	const char* OperationTablePath = "Art Assets/SurgeryRoom/OperationTable.png";
+
+    Game::Text timerText;
 };
 
 #endif

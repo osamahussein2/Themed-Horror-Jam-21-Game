@@ -11,7 +11,6 @@ GameScene::GameScene()
     , previousGameState(GameState::SURGERY_ROOM_ACTIVE)
     , skippedTypewriting(false)
     , inputCooldown(INPUT_DELAY)
-    , dialoguePanel(nullptr)
     , dialogueSystemInitialized(false)
     , typeTextTime(0.0f)
 {
@@ -21,17 +20,7 @@ GameScene::~GameScene()
 {
     if (!dialogueTexts.empty())
     {
-        for (int i = 0; i < dialogueTexts.size(); i++)
-        {
-            delete dialogueTexts[i];
-            dialogueTexts[i] = nullptr;
-        }
         dialogueTexts.clear();
-    }
-
-    if (dialoguePanel)
-    {
-        delete dialoguePanel;
     }
 
     if (!dialoguePanelTextures.empty()) dialoguePanelTextures.clear();
@@ -152,13 +141,76 @@ void GameScene::InitializeGame()
 
 void GameScene::InitializeDialogueSystem()
 {
-    std::vector<TypewriterEffect::DialogueData> allDialogueData = {
-         TypewriterEffect::DialogueData("Welcome to game!", 8.0f),
-         TypewriterEffect::DialogueData("Play!", 12.0f),
-         TypewriterEffect::DialogueData("Go!", 10.0f)
-    };
+    std::vector<TypewriterEffect::DialogueData> allDialogueData;
 
-    typewriterEffect.Initialize(allDialogueData);
+    switch (currentDay)
+    {
+    case 1:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Dies Mercurii, May, the year of our Lord 1346", 8.0f),
+             TypewriterEffect::DialogueData("At last, a chance to prove my worth! The magistrates of Assisi have called upon my services. A\ndisease spreads through their citizens, and they desire my medical aid. They report the disease has\nbasic symptoms: fevers, headaches, and vomiting. It sounds like a simple imbalance of yellow bile.\nEasy work, with good pay.", 12.0f),
+             TypewriterEffect::DialogueData("The magisters have asked me to handle the symptoms of 3 patients today. If I fail, they will send me\nhome without pay. I can use my textbook to diagnose symptoms, and use tools in my doctor’s bag\nto treat them.", 10.0f),
+             TypewriterEffect::DialogueData("The official scientific methods provide the best cures, but I can also use traditional folk methods.\nThey aren’t as well-tested, but they take much less time to perform. I doubt the peasants will notice\na difference.", 10.0f),
+             TypewriterEffect::DialogueData("Enough writing. I have a duty to perform!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 2:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Dies Jovis, May, the year of our Lord 1346", 8.0f),
+             TypewriterEffect::DialogueData("I’ve never seen anything like it! Boils the size of my hand, bubbling from the skin like liquid in a\ncauldron. When lanced, they burst with warm pus. It seems to help the patient recover, but oh, how\nthey scream!", 12.0f),
+             TypewriterEffect::DialogueData("This is a severe imbalance of the humors. I’m certain more symptoms will emerge that I have yet to\nsee. I must consult my textbook on anything strange and new. This is uncharted territory!", 10.0f),
+             TypewriterEffect::DialogueData("People continue to grow sick. The magistrates have asked me to handle 5 patients today. I will do\nmy duty.", 10.0f),
+             TypewriterEffect::DialogueData("I only hope what I saw yesterday was an isolated incident…", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 3:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Dies Veneris, May, the year of our Lord 1346", 8.0f),
+             TypewriterEffect::DialogueData("The symptoms worsen! Boils, inflammation, and more! I try my best to save these poor people, but I\nhave nothing to help with the pain. I should write to my teachers in Florence about this, but their reply\nwould take months! I do not have that time.", 12.0f),
+             TypewriterEffect::DialogueData("The magistrates are flooded with worry. They’ve demanded that I handle 10 patients today. I’ll treat\nas many as I can, but time works against me.", 10.0f),
+             TypewriterEffect::DialogueData("I may encounter more new symptoms today. I must be ready for them!", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 4:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Dies Saturni, May, the year of our Lord 1346", 8.0f),
+             TypewriterEffect::DialogueData("I see carts in the street, stacked with dead bodies. Some of my patients are among them. My\ntreatments are sound, yet still they perish. If all I can do is ease their suffering, then I must continue\nmy work.", 12.0f),
+             TypewriterEffect::DialogueData("I’m beginning to doubt this is an issue with humours, but what else could it be?! I must have faith in\nGod and in my treatments. If this is His will, then so be it. I will try my hardest to shepherd these\npoor souls to Him.", 10.0f),
+             TypewriterEffect::DialogueData("One of the magistrates took ill this morning. I asked if there was something I could do, but they’ve\nalready taken him to Florence. I wonder if he’ll survive the trip… They asked me to treat 15 patients\ntoday. I must not let them down.", 10.0f),
+             TypewriterEffect::DialogueData("I fear the symptoms will increase in intensity today. They may become more difficult to treat…", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    case 5:
+        allDialogueData = {
+             TypewriterEffect::DialogueData("Dies Solis, May, the year of our Lord 1346", 8.0f),
+             TypewriterEffect::DialogueData("The streets are deserted. People hide in their homes, or in the churches. I can hear them praying as\nI walk through the town. Some people slam their doors as I approach. They think I am an angel of\ndeath, spreading the plague with each step. I wonder if they are right…", 12.0f),
+             TypewriterEffect::DialogueData("The magistrates told me today would be my final day. They’ve called for more doctors from\nFlorence. I begged them to keep me on, but they refused. They said I’ve done more than enough.\nThese poor naive doctors will be walking into Death’s domain! I must help them lest they be eaten\nalive!", 10.0f),
+             TypewriterEffect::DialogueData("They demanded that I treat 20 patients today. If I finish, they’ll pay me, but this is beyond money\nnow. I know now what I must do.", 10.0f)
+        };
+
+        typewriterEffect.Initialize(allDialogueData);
+
+        break;
+
+    default:
+        break;
+    }
 }
 
 void GameScene::InitializeBag()
@@ -241,27 +293,156 @@ void GameScene::HandleBagClicks(Vector2f mousePos)
 
 void GameScene::UpdateDialoguePanelTexture()
 {
-    switch (currentDialogueIndex)
+    switch (currentDay)
     {
-    case 0:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
-        {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
-        }
-        break;
-
     case 1:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+        switch (currentDialogueIndex)
         {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
         }
+
         break;
 
     case 2:
-        if (dialoguePanel->GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+        switch (currentDialogueIndex)
         {
-            dialoguePanel->SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
         }
+
+        break;
+
+    case 3:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
+        break;
+
+    case 4:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
+        break;
+
+    case 5:
+        switch (currentDialogueIndex)
+        {
+        case 0:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[3].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[3].c_str());
+            }
+            break;
+
+        case 1:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+            }
+            break;
+
+        case 2:
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
+            {
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
+            }
+            break;
+
+        default:
+            break;
+        }
+
         break;
 
     default:

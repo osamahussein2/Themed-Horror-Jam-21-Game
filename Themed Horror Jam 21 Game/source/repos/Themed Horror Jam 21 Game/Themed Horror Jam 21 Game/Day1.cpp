@@ -15,21 +15,15 @@ void GameScene::InitializeDay1()
     currentGameState = GameState::DIALOGUE_ACTIVE;
 
     if (isInputEnabled != true) isInputEnabled = true;
+    if (mouseClicked != false) mouseClicked = false;
 
     maxPatients = 3;
     currentPatientIndex = 0;
 
-    // Clear previous dialogue texts
-    for (int i = 0; i < dialogueTexts.size(); i++)
-    {
-        delete dialogueTexts[i];
-        dialogueTexts[i] = nullptr;
-    }
-    dialogueTexts.clear();
-
     // Stop any running timer when reinitializing
     if (surgeryRoom.IsLoaded())
     {
+        surgeryRoom.ResetToStartTimeTexture();
         surgeryRoom.StopTimer();
     }
 
@@ -37,6 +31,8 @@ void GameScene::InitializeDay1()
     if (currentDialogueIndex != 0) currentDialogueIndex = 0;
     if (typeTextTime != 0.0f) typeTextTime = 0.0f;
     if (skippedTypewriting != false) skippedTypewriting = false;
+    if (successfulOperations != 0) successfulOperations = 0;
+    if (dialogueSystemInitialized != false) dialogueSystemInitialized = false;
 
     // Timer related text initialization
     if (failedTextAlpha != 255.0f) failedTextAlpha = 255.0f;
@@ -45,38 +41,28 @@ void GameScene::InitializeDay1()
     if (daySuccessfulTextAlpha != 255.0f) daySuccessfulTextAlpha = 255.0f;
     if (daySuccessfulTimer != 0.0f) daySuccessfulTimer = 0.0f;
 
+    if (successfulOperationTime != 0.0f) successfulOperationTime = 0.0f;
+
     if (!gameBackground.IsLoaded())
     {
         gameBackground.Initialize("Art Assets/Background.jpg", resolution);
     }
+    float panelWidth = 1820.0f * (resolution.x / 1920.0f);
+    float panelHeight = 700.0f * (resolution.y / 1080.0f);
 
-    if (!dialoguePanel)
-    {
-        dialoguePanel = new DialoguePanel();
+    float panelX = resolution.x / 35.0f;
+    float panelY = resolution.y / 3.0f;
 
-        float panelWidth = 1820.0f * (resolution.x / 1920.0f);
-        float panelHeight = 700.0f * (resolution.y / 1080.0f);
+    dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
+        "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
 
-        float panelX = resolution.x / 35.0f;
-        float panelY = resolution.y / 3.0f;
+    dialoguePanel.InitializeDialoguePanel("Art Assets/Ui/chat_box_3.png", Vector2f(panelX, panelY),
+        Vector2f(panelWidth, panelHeight));
 
-        dialoguePanelTextures = { "Art Assets/Ui/chat_box_0.png", "Art Assets/Ui/chat_box_1.png",
-            "Art Assets/Ui/chat_box_2.png", "Art Assets/Ui/chat_box_3.png", "Art Assets/Ui/chat_box_4.png" };
-
-        dialoguePanel->InitializeDialoguePanel("Art Assets/Ui/chat_box_3.png", Vector2f(panelX, panelY),
-            Vector2f(panelWidth, panelHeight));
-    }
+    maxDialogueTexts = 5;
 
     dialogueTexts.clear();
     dialogueTexts.resize(maxDialogueTexts);
-
-    for (int i = 0; i < dialogueTexts.size(); i++)
-    {
-        if (!dialogueTexts[i])
-        {
-            dialogueTexts[i] = new Game::Text();
-        }
-    }
 
     if (!dialogueSystemInitialized)
     {
@@ -87,16 +73,13 @@ void GameScene::InitializeDay1()
     float textPanelX = resolution.x / 25.0f; // Move text panels slightly to the right from the dialogue panel
     float textPanelY = resolution.y / 1.4f; // Move text panels slightly below from the dialogue panel
 
-    DIALOGUE_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    DIALOGUE_TEXT_CHARACTER_SIZE = 40.0f * (resolution.x / 1920.0f);
 
-    dialogueTexts[0]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
-
-    dialogueTexts[1]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
-
-    dialogueTexts[2]->InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
-        sf::Color::White, Vector2f(textPanelX, textPanelY));
+    for (int i = 0; i < maxDialogueTexts; i++)
+    {
+        dialogueTexts[i].InitializeText("Fonts/Roboto-Regular.ttf", DIALOGUE_TEXT_CHARACTER_SIZE, false, false,
+            sf::Color::White, Vector2f(textPanelX, textPanelY));
+    }
 }
 
 void GameScene::UpdateDay1(float deltaTime)
@@ -162,13 +145,14 @@ void GameScene::UpdateDay1(float deltaTime)
     }
 
     // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
-    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE ||
-        surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::SUCCESSFUL_DAY_ACTIVE)
+    if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE &&
+        successfulOperationTime <= 0.0f || surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && 
+        currentGameState != GameState::SUCCESSFUL_DAY_ACTIVE && successfulOperationTime <= 0.0f)
     {
         surgeryRoom.UpdateTimer(deltaTime);
 
         // Once timer runs out, change the current game state to show the fail state
-        if (surgeryRoom.GetTimeRemaining() <= 0.0f)
+        if (surgeryRoom.GetTimeRemaining() <= 0.0f && surgeryRoom.GetMinutesRemaining() <= 0)
             currentGameState = GameState::FAILURE_ACTIVE;
     }
 
@@ -211,11 +195,10 @@ void GameScene::UpdateDay1(float deltaTime)
         typewriterEffect.Update(deltaTime);
         UpdateDialoguePanelTexture();
 
-        if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size())
-            && dialogueTexts[currentDialogueIndex])
+        if (currentDialogueIndex >= 0 && currentDialogueIndex < static_cast<int>(dialogueTexts.size()))
         {
             std::string currentText = typewriterEffect.GetCurrentText();
-            dialogueTexts[currentDialogueIndex]->SetTypewriterString(sf::String(currentText));
+            dialogueTexts[currentDialogueIndex].SetTypewriterString(sf::String(currentText));
         }
 
         // Handle input for dialogue
@@ -257,13 +240,8 @@ void GameScene::UpdateDay1(float deltaTime)
                         sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
                         sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
                         sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
-                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f));// OperationTableSprite UI sprite position
-
-                    if (!surgeryRoom.IsTimerRunning())
-                    {
-                        // Start the timer when operation scene becomes active
-                        surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
-                    }
+                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f), // OperationTableSprite UI sprite position
+                        sf::Vector2f(resolution.x / 8.0f, resolution.y / 1.04f)); // timer text position
                 }
 
                 operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
@@ -273,11 +251,11 @@ void GameScene::UpdateDay1(float deltaTime)
 
                 operationScene.maxDots = 4;
 
-                operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                    10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.13f, resolution.y / 4.2f),
+                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                     5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                    0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+                    50.0f * (resolution.x / 1920.0f),
+                    0.0f * (resolution.y / 1080.0f));
 
                 person.resize(maxPatients);
                 
@@ -296,6 +274,88 @@ void GameScene::UpdateDay1(float deltaTime)
             }
 
             inputCooldown = INPUT_DELAY;
+        }
+
+        // Check mouse input for dialogue
+        if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked || 
+            Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
+        {
+            if (!typewriterEffect.IsCurrentDialogueComplete())
+            {
+                typewriterEffect.Skip();
+            }
+            else if (typewriterEffect.HasNextDialogue())
+            {
+                typewriterEffect.NextDialogue();
+                currentDialogueIndex = typewriterEffect.GetCurrentDialogueIndex();
+            }
+            else
+            {
+                currentGameState = GameState::DIALOGUE_HIDDEN;
+                // Activate surgery room when dialogue ends
+                gameBackground.Unload();
+
+                if (!surgeryRoom.IsLoaded())
+                {
+                    // Initialize surgery room with your asset paths
+                    surgeryRoom.Initialize(
+                        "Art Assets/SurgeryRoom/Background.png",
+                        "Art Assets/SurgeryRoom/BottomUI.png",
+                        "Art Assets/SurgeryRoom/TopUI.png",
+                        resolution,
+                        sf::Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),//size
+                        sf::Vector2f(0.0f, resolution.y / 1.35f), // bottom UI
+                        sf::Vector2f(resolution.x / 2.0f, resolution.y / 10.0f), // top UI
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // life sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // life sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // life sprite 2 position
+                        sf::Vector2f(resolution.x / 7.0f, resolution.y / 1.15f), // death sprite 0 position
+                        sf::Vector2f(resolution.x / 5.5f, resolution.y / 1.15f), // death sprite 1 position
+                        sf::Vector2f(resolution.x / 4.5f, resolution.y / 1.15f), // death sprite 2 position
+                        sf::Vector2f(resolution.x / 25.0f, resolution.y / 1.235f), // timer sprite position
+                        sf::Vector2f(resolution.x / 1.27f, resolution.y / 1.15f),// notes sprite position
+                        sf::Vector2f(resolution.x / 1.43f, resolution.y / 1.15f), // bag sprite position
+                        sf::Vector2f(resolution.x / 1.13f, resolution.y / 1.15f),// table UI sprite position
+                        sf::Vector2f(resolution.x / 1.53f, resolution.y / 1.22f), // OperationTableSprite UI sprite position
+                        sf::Vector2f(resolution.x / 8.0f, resolution.y / 1.04f)); // timer text position
+                }
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                operationScene.maxDots = 4;
+
+                operationScene.InitializeDot(Vector2f(resolution.x / 2.13f, resolution.y / 4.2f),
+                    10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                    5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
+                    50.0f * (resolution.x / 1920.0f),
+                    0.0f * (resolution.y / 1080.0f));
+
+                person.resize(maxPatients);
+
+                for (int i = 0; i < maxPatients; i++)
+                {
+                    person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
+                        Vector2f(resolution.x / 2.238f, resolution.y / 2.5f),
+                        Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
+                }
+
+                // Initialize the bag when surgery room becomes active
+                InitializeBag();
+
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                alpha = 255.0f;
+            }
+
+            if (mouseClicked != true) mouseClicked = true;
+        }
+
+        else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked &&
+            !Mouse::isButtonPressed(Mouse::Button::Right) && mouseClicked)
+        {
+            if (mouseClicked != false) mouseClicked = false;
         }
         break;
     }
@@ -320,20 +380,26 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
             {
                 std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
 
+                previousGameState = GameState::SURGERY_ROOM_ACTIVE;
+
                 itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
-                    Vector2f((resolution.x / 2.0f) - 990.0f, (resolution.y / 2.0f) - 500.0f),
+                    Vector2f(resolution.x / -64.0f, resolution.y / 27.0f),
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
                     true);
 
                 // Change to ITEM_TABLE_ACTIVE
                 currentGameState = GameState::ITEM_TABLE_ACTIVE;
-                inputCooldown = INPUT_DELAY;
+                mouseClicked = true;
+
                 std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
@@ -350,7 +416,7 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
             // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
             {
                 currentGameState = GameState::OPERATION_ACTIVE;
 
@@ -358,13 +424,18 @@ void GameScene::UpdateDay1(float deltaTime)
                     Vector2f(resolution.x / 2.8f, 0.0f),
                     Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
                     true);
+
                 if (!surgeryRoom.IsTimerRunning())
                 {
-                    // Start the timer when operation scene becomes active
-                    surgeryRoom.StartTimer(57.0f); // Start with 57 seconds, adjust as needed
+                    // Start the timer depending on current difficulty when operation scene becomes active
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(0, 51.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 41.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 31.0f);
                 }
-                inputCooldown = INPUT_DELAY;
+                mouseClicked = true;
             }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
         }
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
@@ -400,6 +471,58 @@ void GameScene::UpdateDay1(float deltaTime)
         {
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
+        }
+
+        // Check if mouse is hovered over table UI in operation scene
+        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.TableUISprite.getColor() != Color::Red)
+                surgeryRoom.TableUISprite.setColor(Color::Red);
+
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                previousGameState = GameState::OPERATION_ACTIVE;
+
+                itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
+                    Vector2f(resolution.x / -64.0f, resolution.y / 27.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
+                    true);
+
+                currentGameState = GameState::ITEM_TABLE_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.TableUISprite.getColor() != Color::White)
+                surgeryRoom.TableUISprite.setColor(Color::White);
+        }
+
+        // Handle operation table clicks
+        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
+                surgeryRoom.OperationTableSprite.setColor(Color::Red);
+
+            // Go back to surgery room after clicking the left mouse button
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+        else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        {
+            if (surgeryRoom.OperationTableSprite.getColor() != Color::White)
+                surgeryRoom.OperationTableSprite.setColor(Color::White);
         }
 
         UpdateDay1OperationScene(deltaTime);
@@ -440,16 +563,42 @@ void GameScene::UpdateDay1(float deltaTime)
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
             // Return to surgery room when Enter is pressed
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
 
         // Also allow clicking outside to close (optional)
         if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
         {
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
+
+        // Check if the mouse is hovering over the table UI
+        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.TableUISprite.getColor() != Color::Red)
+                surgeryRoom.TableUISprite.setColor(Color::Red);
+
+            // Check for left mouse press
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.TableUISprite.getColor() != Color::White)
+                surgeryRoom.TableUISprite.setColor(Color::White);
+        }
+
         break;
     }
 
@@ -567,15 +716,8 @@ void GameScene::RenderDay1(RenderWindow& window)
     {
         // Draw normal game background
         gameBackground.Draw(window);
-
-        if (dialogueTexts[currentDialogueIndex])
-        {
-            if (dialoguePanel)
-            {
-                dialoguePanel->DrawDialoguePanel(window);
-            }
-            window.draw(dialogueTexts[currentDialogueIndex]->LoadText());
-        }
+        dialoguePanel.DrawDialoguePanel(window);
+        window.draw(dialogueTexts[currentDialogueIndex].LoadText());
         break;
     }
 
@@ -630,12 +772,6 @@ void GameScene::RenderDay1(RenderWindow& window)
 
     case GameState::DIALOGUE_HIDDEN:
     {
-        // Clean up dialogue texts when hidden
-        for (int i = 0; i < dialogueTexts.size(); i++)
-        {
-            delete dialogueTexts[i];
-            dialogueTexts[i] = nullptr;
-        }
         break;
     }
 
@@ -674,11 +810,14 @@ void GameScene::UpdateDay1Patients()
 
             operationScene.maxDots = 6;
 
-            operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
-                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                0.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+            operationScene.InitializeDot( { Vector2f(resolution.x / 2.15f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 2.05f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 1.975f, resolution.y / 3.1f),
+                Vector2f(resolution.x / 1.975f, resolution.y / 3.5f),
+                Vector2f(resolution.x / 1.9f, resolution.y / 2.8f),
+                Vector2f(resolution.x / 1.83f, resolution.y / 2.8f), },
+                10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
+                5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
 
             operationSceneChanged = true;
         }
@@ -696,10 +835,10 @@ void GameScene::UpdateDay1Patients()
             operationScene.maxDots = 8;
 
             operationScene.InitializeDot(Vector2f(resolution.x / 2.25f, resolution.y / 4.0f),
-                10.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2), Color::Red, Color::Red,
+                10.0f * (resolution.x / 1920.0f), Color::Red, Color::Red,
                 5.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2),
-                50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2));
+                30.0f * (resolution.x / 1920.0f),
+                50.0f * (resolution.y / 1080.0f));
 
             operationSceneChanged = true;
         }
@@ -725,11 +864,16 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
                 }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
             }
         }
 
@@ -739,6 +883,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             operationScene.dotCircleShape[3].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
+            if (successfulOperations != 1) successfulOperations = 1;
 
             if (isInputEnabled != false) isInputEnabled = false;
 
@@ -747,9 +892,10 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
-            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
                 successfulCharacterSize, true, false,
                 Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
 
@@ -771,11 +917,16 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
                 }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
             }
         }
 
@@ -787,6 +938,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             operationScene.dotCircleShape[5].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
+            if (successfulOperations != 2) successfulOperations = 2;
 
             if (operationSceneChanged != false) operationSceneChanged = false;
             if (isInputEnabled != false) isInputEnabled = false;
@@ -794,9 +946,10 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
-            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
                 successfulCharacterSize, true, false,
                 Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
 
@@ -818,11 +971,16 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left))
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
+
+                    mouseClicked = true;
                 }
+
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                    mouseClicked = false;
             }
         }
 
@@ -836,6 +994,7 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             operationScene.dotCircleShape[7].getFillColor() == Color::Green)
         {
             successfulOperationTime += deltaTime;
+            if (successfulOperations != 3) successfulOperations = 3;
 
             if (operationSceneChanged != false) operationSceneChanged = false;
             if (isInputEnabled != false) isInputEnabled = false;
@@ -843,9 +1002,10 @@ void GameScene::UpdateDay1OperationScene(float deltaTime)
             float successfulCharacterSize = 30.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
 
             operationScene.InitializeSuccessPanel(Vector2(resolution.x / 1.95f, resolution.y / 2.375f),
-                Vector2f(335.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
+                Vector2f(410.0f * (resolution.x / 1920.0f), 50.0f * (resolution.y / 1080.0f)), Color::Black, true);
 
-            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", "Operation Successful!",
+            successfulText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(successfulOperations) + "/" +
+                std::to_string(maxPatients) + " operations successful!",
                 successfulCharacterSize, true, false,
                 Color::Green, Vector2(resolution.x / 1.95f, resolution.y / 2.4f));
 
