@@ -689,6 +689,7 @@ void GameScene::UpdateDay3(float deltaTime)
             typewriterEffect.Reset();
             itemTable.ResetCollectedItems();
             bag.ClearBag();
+            if (completedDays <= 5) completedDays++;
             currentDay = 4;
             Menu::nextDayUnlocked = true;
             sceneManager->ChangeScene("Menu");

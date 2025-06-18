@@ -50,6 +50,7 @@ public:
     std::string GetSceneName() const override;
 
     static int currentDay;
+    static int completedDays;
 
     Vector2u GetResolution() { return resolution; }
     void SetResolution(Vector2u newResolution) { resolution = newResolution; }

@@ -251,7 +251,7 @@ void Menu::UpdateMainMenuColors()
     float spacing = 80.0f;
 
     // Initialize the next day unlocked text only if next day is unlocked (if it's set to true)
-    if (nextDayUnlocked == true)
+    if (nextDayUnlocked == true && GameScene::completedDays <= 5)
     {
         nextDayString = "Day ";
         nextDayString.append(std::to_string(GameScene::currentDay) + " is unlocked!", 0, 14);
@@ -771,7 +771,7 @@ void Menu::Render(RenderWindow& window)
         }
 
         // Only draw the next day unlocked text if a new day is unlocked
-        if (nextDayUnlocked == true) window.draw(nextDayUnlockedText.LoadText());
+        if (nextDayUnlocked == true && GameScene::completedDays <= 5) window.draw(nextDayUnlockedText.LoadText());
 
         break;
 

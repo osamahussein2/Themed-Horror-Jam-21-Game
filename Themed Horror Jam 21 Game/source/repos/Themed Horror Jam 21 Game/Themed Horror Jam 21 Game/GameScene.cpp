@@ -4,6 +4,7 @@
 
 // Initialize current day to 1 to prevent errors in-game
 int GameScene::currentDay = 1;
+int GameScene::completedDays = 0;
 
 GameScene::GameScene()
     : currentDialogueIndex(0)
