@@ -119,7 +119,7 @@ void GameScene::UpdateDay5(float deltaTime)
     }
 
     // Check for inventory toggle (I key)
-    if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && currentGameState != GameState::FAILURE_ACTIVE
+    /*if (Keyboard::isKeyPressed(Keyboard::Key::I) && inputCooldown <= 0.0f && currentGameState != GameState::FAILURE_ACTIVE
         && isInputEnabled)
     {
         inputCooldown = INPUT_DELAY;
@@ -131,7 +131,7 @@ void GameScene::UpdateDay5(float deltaTime)
         {
             bag.Show();
         }
-    }
+    }*/
 
     // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
     if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE &&
@@ -146,7 +146,7 @@ void GameScene::UpdateDay5(float deltaTime)
     }
 
     // Check for bag sprite click (only when surgery room is active)
-    if (currentGameState == GameState::SURGERY_ROOM_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE ||
+    /*if (currentGameState == GameState::SURGERY_ROOM_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE ||
         currentGameState == GameState::OPERATION_ACTIVE && currentGameState != GameState::FAILURE_ACTIVE)
     {
         if (surgeryRoom.BagSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
@@ -173,7 +173,7 @@ void GameScene::UpdateDay5(float deltaTime)
             if (surgeryRoom.BagSprite.getColor() != Color::White)
                 surgeryRoom.BagSprite.setColor(Color::White);
         }
-    }
+    }*/
 
     // Update based on current game state
     switch (currentGameState)
@@ -367,10 +367,10 @@ void GameScene::UpdateDay5(float deltaTime)
     case GameState::SURGERY_ROOM_ACTIVE:
     {
         // Handle bag clicks when visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             HandleBagClicks(mousePos);
-        }
+        }*/
 
         if (!alphaIncrease) alpha -= 50.0f * deltaTime;
         else if (alphaIncrease) alpha += 50.0f * deltaTime;
@@ -457,10 +457,10 @@ void GameScene::UpdateDay5(float deltaTime)
     case GameState::OPERATION_ACTIVE:
     {
         // Handle bag clicks when visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             HandleBagClicks(mousePos);
-        }
+        }*/
 
         // Handle input for operation scene
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
@@ -555,10 +555,10 @@ void GameScene::UpdateDay5(float deltaTime)
     case GameState::ITEM_TABLE_ACTIVE:
     {
         // Handle bag clicks when visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             HandleBagClicks(mousePos);
-        }
+        }*/
 
         // Handle item table clicks
         HandleItemTableClicks(mousePos);
@@ -728,10 +728,10 @@ void GameScene::RenderDay5(RenderWindow& window)
         surgeryRoom.Draw(window, person[currentPatientIndex].LoadSprite());
 
         // Draw bag if visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             bag.Draw(window);
-        }
+        }*/
 
         break;
     }
@@ -743,10 +743,10 @@ void GameScene::RenderDay5(RenderWindow& window)
         surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
 
         // Draw bag if visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             bag.Draw(window);
-        }
+        }*/
 
         if (successfulOperationTime > 0.0f)
         {
@@ -763,10 +763,10 @@ void GameScene::RenderDay5(RenderWindow& window)
         surgeryRoom.DrawUI(window);  // Draw the UI elements on top of operation scene
 
         // Draw bag if visible
-        if (bag.IsVisible())
+        /*if (bag.IsVisible())
         {
             bag.Draw(window);
-        }
+        }*/
 
         break;
     }

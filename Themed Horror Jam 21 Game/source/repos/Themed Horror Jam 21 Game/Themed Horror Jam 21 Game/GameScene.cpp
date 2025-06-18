@@ -228,10 +228,10 @@ void GameScene::InitializeBag()
 
 void GameScene::HandleItemTableClicks(Vector2f mousePos)
 {
-    if (bag.IsVisible())
+    /*if (bag.IsVisible())
     {
         return; // Don't handle table clicks when bag is visible
-    }
+    }*/
 
     if (Mouse::isButtonPressed(Mouse::Button::Left) && inputCooldown <= 0.0f)
     {
