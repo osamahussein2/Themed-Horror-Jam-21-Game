@@ -165,6 +165,7 @@
     <ClCompile Include="SpriteTexture.cpp" />
     <ClCompile Include="SurgeryRoom.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextbookPages.cpp" />
     <ClCompile Include="TypewriterEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="SpriteTexture.h" />
     <ClInclude Include="SurgeryRoom.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="TextbookPages.h" />
     <ClInclude Include="TypewriterEffect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

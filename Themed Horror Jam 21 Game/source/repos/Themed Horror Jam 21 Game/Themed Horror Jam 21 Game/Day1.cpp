@@ -138,7 +138,7 @@ void GameScene::UpdateDay1(float deltaTime)
 
     // Update the timer in all relevant states (once the surgery room is loaded and timer is running)
     if (surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && currentGameState != GameState::FAILURE_ACTIVE &&
-        successfulOperationTime <= 0.0f || surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() && 
+        successfulOperationTime <= 0.0f || surgeryRoom.IsLoaded() && surgeryRoom.IsTimerRunning() &&
         currentGameState != GameState::SUCCESSFUL_DAY_ACTIVE && successfulOperationTime <= 0.0f)
     {
         surgeryRoom.UpdateTimer(deltaTime);
@@ -177,7 +177,7 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.BagSprite.setColor(Color::White);
         }
     }*/
-    
+
     // Update based on current game state
     switch (currentGameState)
     {
@@ -250,7 +250,7 @@ void GameScene::UpdateDay1(float deltaTime)
                     0.0f * (resolution.y / 1080.0f));
 
                 person.resize(maxPatients);
-                
+
                 for (int i = 0; i < maxPatients; i++)
                 {
                     person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
@@ -269,7 +269,7 @@ void GameScene::UpdateDay1(float deltaTime)
         }
 
         // Check mouse input for dialogue
-        if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked || 
+        if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
             Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
         {
             if (!typewriterEffect.IsCurrentDialogueComplete())
@@ -400,6 +400,39 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::White);
         }
 
+        // Check if mouse is inside the notes sprite
+        if (surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.NotesSprite.getColor() != Color::Red)
+                surgeryRoom.NotesSprite.setColor(Color::Red);
+
+            // Add input cooldown check here
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                previousGameState = GameState::SURGERY_ROOM_ACTIVE;
+
+                textbookPages.Initialize("Art Assets/SurgeryRoom/notes.png",
+                    Vector2f(resolution.x / resolution.x, (resolution.y / resolution.y) - 70.0f),
+                    Vector2f(12.5f * (resolution.x / 1920.0f), 9.0f * (resolution.y / 1080.0f)), false,
+                    "Fonts/Roboto-Regular.ttf", Vector2f(resolution.x / 9.7f, resolution.y / 4.5f),
+                    Vector2f(resolution.x / 1.9f, resolution.y / 4.5f), 30.0f * (resolution.x / 1920.0f),
+                    Vector2(300.0f * (resolution.x / 1920.0f), 200.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 5.0f, resolution.y / 2.0f), Vector2f(resolution.x / 1.6f, resolution.y / 2.0f));
+
+                // Change to TEXTBOOK_ACTIVE
+                currentGameState = GameState::TEXTBOOK_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.NotesSprite.getColor() != Color::White)
+                surgeryRoom.NotesSprite.setColor(Color::White);
+        }
+
         // Handle operation table clicks
         if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -494,6 +527,39 @@ void GameScene::UpdateDay1(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::White);
         }
 
+        // Check if mouse is inside the notes sprite
+        if (surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.NotesSprite.getColor() != Color::Red)
+                surgeryRoom.NotesSprite.setColor(Color::Red);
+
+            // Add input cooldown check here
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                previousGameState = GameState::OPERATION_ACTIVE;
+
+                textbookPages.Initialize("Art Assets/SurgeryRoom/notes.png",
+                    Vector2f(resolution.x / resolution.x, (resolution.y / resolution.y) - 70.0f),
+                    Vector2f(12.5f * (resolution.x / 1920.0f), 9.0f * (resolution.y / 1080.0f)), false,
+                    "Fonts/Roboto-Regular.ttf", Vector2f(resolution.x / 9.7f, resolution.y / 4.5f),
+                    Vector2f(resolution.x / 1.9f, resolution.y / 4.5f), 30.0f * (resolution.x / 1920.0f),
+                    Vector2(300.0f * (resolution.x / 1920.0f), 200.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 5.0f, resolution.y / 2.0f), Vector2f(resolution.x / 1.6f, resolution.y / 2.0f));
+
+                // Change to TEXTBOOK_ACTIVE
+                currentGameState = GameState::TEXTBOOK_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.NotesSprite.getColor() != Color::White)
+                surgeryRoom.NotesSprite.setColor(Color::White);
+        }
+
         // Handle operation table clicks
         if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -556,7 +622,7 @@ void GameScene::UpdateDay1(float deltaTime)
         {
             // Return to surgery room when Enter is pressed
             if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
+            else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
 
@@ -564,7 +630,7 @@ void GameScene::UpdateDay1(float deltaTime)
         if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
         {
             if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
+            else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
 
@@ -578,7 +644,7 @@ void GameScene::UpdateDay1(float deltaTime)
             if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
             {
                 if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-                if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
+                else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
                 mouseClicked = true;
             }
 
@@ -589,6 +655,61 @@ void GameScene::UpdateDay1(float deltaTime)
             // Reset color when not hovering
             if (surgeryRoom.TableUISprite.getColor() != Color::White)
                 surgeryRoom.TableUISprite.setColor(Color::White);
+        }
+
+        break;
+    }
+
+    case GameState::TEXTBOOK_ACTIVE:
+    {
+        textbookPages.UpdateTextbookPages(mousePos);
+
+        // Handle input for textbook active
+        if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
+        {
+            // Return to last previous game state
+            if (previousGameState == GameState::SURGERY_ROOM_ACTIVE)
+            {
+                textbookPages.ClearTextVector();
+                currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+            }
+            else if (previousGameState == GameState::OPERATION_ACTIVE)
+            {
+                textbookPages.ClearTextVector();
+                currentGameState = GameState::OPERATION_ACTIVE;
+            }
+            inputCooldown = INPUT_DELAY;
+        }
+
+        // Check if mouse is inside the notes sprite
+        if (surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.NotesSprite.getColor() != Color::Red)
+                surgeryRoom.NotesSprite.setColor(Color::Red);
+
+            // Check for mouse press
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) 
+                {
+                    textbookPages.ClearTextVector();
+                    currentGameState = GameState::SURGERY_ROOM_ACTIVE;
+                }
+                else if (previousGameState == GameState::OPERATION_ACTIVE)
+                {
+                    textbookPages.ClearTextVector();
+                    currentGameState = GameState::OPERATION_ACTIVE;
+                }
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.NotesSprite.getColor() != Color::White)
+                surgeryRoom.NotesSprite.setColor(Color::White);
         }
 
         break;
@@ -655,7 +776,7 @@ void GameScene::UpdateDay1(float deltaTime)
             daySuccessfulTimer += deltaTime;
 
             daySuccessfulText.InitializeText("Fonts/Roboto-Regular.ttf", "You passed Day 1!", daySuccessfulCharacterSize,
-                true, false, Color(daySuccessfulRedValue, daySuccessfulGreenValue, daySuccessfulBlueValue, daySuccessfulTextAlpha), 
+                true, false, Color(daySuccessfulRedValue, daySuccessfulGreenValue, daySuccessfulBlueValue, daySuccessfulTextAlpha),
                 Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
         }
 
@@ -760,6 +881,13 @@ void GameScene::RenderDay1(RenderWindow& window)
             bag.Draw(window);
         }*/
 
+        break;
+    }
+
+    case GameState::TEXTBOOK_ACTIVE:
+    {
+        textbookPages.Draw(window);
+        surgeryRoom.DrawUI(window);  // Draw the UI elements on top of textbook
         break;
     }
 

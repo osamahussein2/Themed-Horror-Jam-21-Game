@@ -10,6 +10,7 @@
 #include "SurgeryRoom.h"
 #include "OperationScene.h"
 #include "ItemTable.h"
+#include "TextbookPages.h"
 #include "Bag.h" // Include the Bag header
 #include "Audio.h"
 
@@ -30,6 +31,7 @@ enum class GameState {
     SURGERY_ROOM_ACTIVE,
     OPERATION_ACTIVE,
     ITEM_TABLE_ACTIVE,
+    TEXTBOOK_ACTIVE,
     INITIALIZING,
     FAILURE_ACTIVE,
     SUCCESSFUL_DAY_ACTIVE
@@ -66,6 +68,7 @@ private:
     Bag bag; // Add the bag instance
     TypewriterEffect typewriterEffect;
 
+    TextbookPages textbookPages;
 
     Vector2u resolution;
 
