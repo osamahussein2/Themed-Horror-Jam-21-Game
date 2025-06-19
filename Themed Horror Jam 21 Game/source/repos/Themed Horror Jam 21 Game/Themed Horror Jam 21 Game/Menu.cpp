@@ -44,6 +44,7 @@ Menu::Menu()
     , wasEnterPressed(false)
     , wasEscapePressed(false)
     , settingsBackButton(nullptr)
+    , aboutBackButton(nullptr)
 {
 }
 
@@ -51,6 +52,9 @@ Menu::~Menu()
 {
     delete settingsBackButton;
     settingsBackButton = nullptr;
+
+    delete aboutBackButton;
+    aboutBackButton = nullptr;
 }
 
 void Menu::Initialize(Vector2u screenResolution)
@@ -168,7 +172,7 @@ void Menu::CreateAboutText()
     std::string aboutContent = "HORROR GAME\n\n"
         "Created for Themed Horror Jam 21\n\n"
         "Controls:\n"
-        "• WASD or Arrow Keys to move\n"
+        "• Left mouse/Enter key for interaction\n"
         "• ESC to pause/return to menu\n\n"
         "Programmer by Osama Hussein\n"
         "Programmer/Graphics by ScriptFox\n"
@@ -178,10 +182,24 @@ void Menu::CreateAboutText()
     aboutContentText.InitializeText("Fonts/Roboto-Regular.ttf", aboutContent, ABOUT_CONTENT_CHARACTER_SIZE, true, false,
         normalColor, Vector2f(resolution.x / 2.0f, resolution.y / 2.0f));
 
-    backInstructionText.InitializeText("Fonts/Roboto-Regular.ttf",
-        "Press ESC to return to main menu",
-        ABOUT_BACK_TEXT_CHARACTER_SIZE, true, false, Color({ 128, 128,128 }),
-        Vector2f(resolution.x / 2.0f, resolution.y - 100.0f));
+    // Initialize back button (positioned at bottom of screen)
+    float backButtonX = resolution.x / 2.2f;
+    float backButtonY = resolution.y / 1.25f;
+
+    if (!aboutBackButton)
+    {
+        aboutBackButton = new Button(backButtonX, backButtonY, 200.0f * (resolution.x / 1920.0f),
+            50.0f * (resolution.y / 1080.0f), buttonIdleColor, buttonHoverColor, buttonActiveColor);
+    }
+
+    aboutBackText.InitializeText("Fonts/Roboto-Regular.ttf", "Back", SETTINGS_MENU_TEXT_CHARACTER_SIZE, false,
+        false, Color::White, Vector2f(aboutBackButton->GetPosition().x + aboutBackButton->GetSize().x / 3.8f,
+            aboutBackButton->GetPosition().y + aboutBackButton->GetSize().y / 7.6f));
+
+    // Instructions for about menu
+    aboutInstructionsText.InitializeText("Fonts/Roboto-Regular.ttf",
+        "ESC to go back to main menu", SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE, true, false, Color({ 128, 128,128 }),
+        Vector2f(resolution.x / 2.0f, resolution.y / 1.1f));
 }
 
 void Menu::CreateSettingsText()
@@ -343,7 +361,9 @@ MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
         action = (inputCooldown <= 0.0f) ? HandleSettingsInput(mousePos) : MenuAction::None;
         break;
     case MenuState::About:
-        action = (inputCooldown <= 0.0f) ? HandleSubMenuInput() : MenuAction::None;
+        aboutBackButton->update(mousePos);
+
+        action = (inputCooldown <= 0.0f) ? HandleSubMenuInput(mousePos) : MenuAction::None;
         break;
     }
 
@@ -723,13 +743,19 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
 
     return action;
 }
-MenuAction Menu::HandleSubMenuInput()
+MenuAction Menu::HandleSubMenuInput(Vector2f mousePos)
 {
     MenuAction action = MenuAction::None;
 
     bool isEscapePressed = Keyboard::isKeyPressed(Keyboard::Key::Escape);
 
-   
+    // If the about button is pressed, go back to the main menu
+    if (aboutBackButton->isPressed() && inputCooldown <= 0.0f)
+    {
+        currentState = MenuState::MainMenu;
+        action = MenuAction::BackToMain;
+        inputCooldown = INPUT_DELAY;
+    }
 
     // Handle keyboard input
     if (isEscapePressed && !wasEscapePressed && inputCooldown <= 0.0f)
@@ -778,6 +804,9 @@ void Menu::Render(RenderWindow& window)
     case MenuState::About:
         window.draw(mainMenuArt.LoadSprite());
         window.draw(aboutContentText.LoadText());
+        aboutBackButton->draw(&window);
+        window.draw(aboutBackText.LoadText());
+        window.draw(aboutInstructionsText.LoadText());
         break;
 
     case MenuState::Settings:

@@ -89,6 +89,7 @@ private:
     std::vector<Game::Text> settingMenuOptionsTexts;
     Game::Text instructionsText;
     Game::Text settingsInstructionsText;
+    Game::Text aboutInstructionsText;
 
     // Button objects for main menu
     std::vector<Button> mainMenuButtons;  // Add this
@@ -141,7 +142,7 @@ private:
 
     MenuAction HandleMainMenuInput(Vector2f mousePos);  // Add mousePos parameter
     MenuAction HandleSettingsInput(Vector2f mousePos);
-    MenuAction HandleSubMenuInput();   // Add mousePos parameter
+    MenuAction HandleSubMenuInput(Vector2f mousePos);   // Add mousePos parameter
 
     // Declared in Resolution.cpp to prevent Menu.cpp from having too much code
     void InitializeScreenResolution();
@@ -159,6 +160,9 @@ private:
 
     Button* settingsBackButton;
     Game::Text settingsBackText;
+
+    Button* aboutBackButton;
+    Game::Text aboutBackText;
 
     const Vector2u NINETEEN_TWENTY_BY_TEN_EIGHTY = Vector2u(1920, 1080); //check
     const Vector2u SIXTEEN_EIGHTY_BY_TEN_FIFTY = Vector2u(1680, 1050); //check
