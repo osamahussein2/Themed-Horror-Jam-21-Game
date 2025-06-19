@@ -77,7 +77,7 @@ void Menu::Initialize(Vector2u screenResolution)
 void Menu::CreateMainMenuTexts()
 {
     // Create title
-    titleText.InitializeText("Fonts/Roboto-Regular.ttf", "HORROR GAME", MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE, true,
+    titleText.InitializeText("Fonts/Roboto-Regular.ttf", "Bubonica", MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE, true,
         false,titleColor, Vector2f(resolution.x / 2.0f, resolution.y / 5.0f));
 
     // Initialize main menu art sprite
