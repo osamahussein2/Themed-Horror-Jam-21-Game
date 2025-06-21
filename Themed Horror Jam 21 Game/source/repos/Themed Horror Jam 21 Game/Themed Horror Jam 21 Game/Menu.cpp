@@ -17,6 +17,8 @@ float ABOUT_CONTENT_CHARACTER_SIZE;
 float MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE;
 float MAIN_MENU_TEXT_CHARACTER_SIZE;
 float SETTINGS_MENU_TEXT_CHARACTER_SIZE;
+float SETTINGS_LEFT_ARROW_TEXT_CHARACTER_SIZE;
+float SETTINGS_RIGHT_ARROW_TEXT_CHARACTER_SIZE;
 float SETTINGS_TITLE_TEXT_CHARACTER_SIZE;
 float MAIN_MENU_INSTRUCTION_TEXT_CHARACTER_SIZE;
 float SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE;
@@ -65,6 +67,8 @@ void Menu::Initialize(Vector2u screenResolution)
     MAIN_MENU_TITLE_TEXT_CHARACTER_SIZE = 80.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     MAIN_MENU_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     SETTINGS_MENU_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    SETTINGS_LEFT_ARROW_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
+    SETTINGS_RIGHT_ARROW_TEXT_CHARACTER_SIZE = 50.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     SETTINGS_TITLE_TEXT_CHARACTER_SIZE = 35.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     MAIN_MENU_INSTRUCTION_TEXT_CHARACTER_SIZE = 25.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
     SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE = 25.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
@@ -142,6 +146,12 @@ void Menu::CreateSettingsButtons()
     settingMenuButtons.clear();
     settingMenuButtons.reserve(maxSettingsOptions);
 
+    leftModifierButtons.clear();
+    leftModifierButtons.reserve(maxSettingsOptions);
+
+    rightModifierButtons.clear();
+    rightModifierButtons.reserve(maxSettingsOptions);
+
     float buttonWidth = 700.0f;
     float buttonHeight = 65.0f;
     float startY = resolution.y / 3.4f;
@@ -154,6 +164,17 @@ void Menu::CreateSettingsButtons()
 
         settingMenuButtons.emplace_back(buttonX, buttonY, buttonWidth * (resolution.x / 1920.0f),
             buttonHeight * (resolution.y / 1080.0f), buttonIdleColor, buttonHoverColor, buttonActiveColor);
+
+        float leftButtonX = resolution.x / 3.5f;
+        float modifierButtonY = resolution.y / 3.3f + (i * spacing);
+
+        leftModifierButtons.emplace_back(leftButtonX, modifierButtonY, 50.0f * (resolution.x / 1920.0f),
+            50.0f * (resolution.y / 1080.0f), buttonIdleColor, buttonHoverColor, buttonActiveColor);
+
+        float rightButtonX = resolution.x / 1.4f;
+
+        rightModifierButtons.emplace_back(rightButtonX, modifierButtonY, 50.0f * (resolution.x / 1920.0f),
+            50.0f * (resolution.y / 1080.0f), buttonIdleColor, buttonHoverColor, buttonActiveColor);
     }
 
     // Initialize back button (positioned at bottom of screen)
@@ -218,6 +239,12 @@ void Menu::CreateSettingsText()
 
     resolutionSize.clear();
 
+    leftArrowText.clear();
+    leftArrowText.resize(maxSettingsOptions);
+
+    rightArrowText.clear();
+    rightArrowText.resize(maxSettingsOptions);
+
     difficulty = { "Easy", "Normal", "Hard" };
     fullscreenStatus = { "Off", "On" };
 
@@ -258,6 +285,22 @@ void Menu::CreateSettingsText()
         "Use UP/DOWN arrows to navigate • Use LEFT/RIGHT arrows to modify setting • ENTER to select • ESC to go back to main menu",
         SETTINGS_INSTRUCTION_TEXT_CHARACTER_SIZE, true, false, Color({ 128, 128,128 }),
         Vector2f(resolution.x / 2.0f, resolution.y - 80.0f));
+
+    for (int i = 0; i < leftArrowText.size(); i++)
+    {
+        leftArrowText[i].InitializeText("Fonts/Roboto-Regular.ttf", "<",
+            SETTINGS_LEFT_ARROW_TEXT_CHARACTER_SIZE, true, false, Color::White,
+            Vector2f(leftModifierButtons[i].GetPosition().x + leftModifierButtons[i].GetSize().x / 2.0f,
+                leftModifierButtons[i].GetPosition().y + leftModifierButtons[i].GetSize().y / 2.0f));
+    }
+
+    for (int i = 0; i < rightArrowText.size(); i++)
+    {
+        rightArrowText[i].InitializeText("Fonts/Roboto-Regular.ttf", ">",
+            SETTINGS_RIGHT_ARROW_TEXT_CHARACTER_SIZE, true, false, Color::White,
+            Vector2f(rightModifierButtons[i].GetPosition().x + rightModifierButtons[i].GetSize().x / 2.0f,
+                rightModifierButtons[i].GetPosition().y + rightModifierButtons[i].GetSize().y / 2.0f));
+    }
 }
 
 void Menu::UpdateMainMenuColors()
@@ -355,6 +398,9 @@ MenuAction Menu::Update(float deltaTime, Vector2f mousePos)
         {
             button.update(mousePos);
         }
+
+        for (auto& leftButton : leftModifierButtons) leftButton.update(mousePos);
+        for (auto& rightButton : rightModifierButtons) rightButton.update(mousePos);
 
         settingsBackButton->update(mousePos);
 
@@ -557,6 +603,112 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
             settingsAction = SettingsMenuAction::ModifyNone;
             UpdateSettingsMenuColors();
             inputCooldown = INPUT_DELAY;
+        }
+    }
+
+    for (int i = 0; i < maxSettingsOptions; i++)
+    {
+        // Check if left or right modifier buttons have been pressed to modify settings
+        switch (i)
+        {
+        case 0:
+            if (leftModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                volume -= 1;
+                if (volume <= 0) volume = 0;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+
+            if (rightModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                volume += 1;
+                if (volume >= 100) volume = 100;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+
+        case 1:
+            if (leftModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                currentDifficulty--;
+                if (currentDifficulty <= 0) currentDifficulty = 0;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+
+            if (rightModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                currentDifficulty++;
+                if (currentDifficulty >= difficulty.size() - 1) currentDifficulty = difficulty.size() - 1;
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+
+        case 2:
+            if (leftModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                if (currentFullscreenStatus > 0)
+                {
+                    currentFullscreenStatus--;
+                    ToggleFullscreen();
+                }
+
+                else if (currentFullscreenStatus <= 0) currentFullscreenStatus = 0;
+
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+
+            if (rightModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                if (currentFullscreenStatus < fullscreenStatus.size() - 1)
+                {
+                    currentFullscreenStatus++;
+                    ToggleFullscreen();
+                }
+
+                else if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
+
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+
+        case 3:
+            if (leftModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                if (currentResolutionSize > 0)
+                {
+                    currentResolutionSize--;
+                    ChangeResolution();
+                }
+
+                else if (currentResolutionSize <= 0) currentResolutionSize = 0;
+
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+
+            if (rightModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
+            {
+                if (currentFullscreenStatus < fullscreenStatus.size() - 1)
+                {
+                    currentFullscreenStatus++;
+                    ToggleFullscreen();
+                }
+
+                else if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
+
+                UpdateSettingsMenuColors();
+                inputCooldown = INPUT_DELAY;
+            }
+            break;
+
+        default:
+            break;
         }
     }
 
@@ -820,6 +972,15 @@ void Menu::Render(RenderWindow& window)
 
         settingsBackButton->draw(&window);
         window.draw(settingsBackText.LoadText());
+
+        if (settingsAction != SettingsMenuAction::ModifyNone)
+        {
+            leftModifierButtons[selectedSettingsOption].draw(&window);
+            rightModifierButtons[selectedSettingsOption].draw(&window);
+            
+            window.draw(leftArrowText[selectedSettingsOption].LoadText());
+            window.draw(rightArrowText[selectedSettingsOption].LoadText());
+        }
 
         for (auto& settingText : settingMenuTexts)
         {

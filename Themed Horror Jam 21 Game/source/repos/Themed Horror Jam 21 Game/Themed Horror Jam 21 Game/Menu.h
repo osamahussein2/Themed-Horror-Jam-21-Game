@@ -95,6 +95,13 @@ private:
     std::vector<Button> mainMenuButtons;  // Add this
     std::vector<Button> settingMenuButtons;
 
+    // For modifying settings options
+    std::vector<Button> leftModifierButtons;
+    std::vector<Button> rightModifierButtons;
+
+    std::vector<Game::Text> leftArrowText;
+    std::vector<Game::Text> rightArrowText;
+
     // Text objects for sub-menus
     Game::Text aboutContentText;
     Game::Text settingsContentText;
