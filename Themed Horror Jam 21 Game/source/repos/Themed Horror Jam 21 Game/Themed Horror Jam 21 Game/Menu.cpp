@@ -694,13 +694,13 @@ MenuAction Menu::HandleSettingsInput(Vector2f mousePos)
 
             if (rightModifierButtons[i].isPressed() && inputCooldown <= 0.0f && settingsAction != SettingsMenuAction::ModifyNone)
             {
-                if (currentFullscreenStatus < fullscreenStatus.size() - 1)
+                if (currentResolutionSize < resolutionSize.size() - 1)
                 {
-                    currentFullscreenStatus++;
-                    ToggleFullscreen();
+                    currentResolutionSize++;
+                    ChangeResolution();
                 }
 
-                else if (currentFullscreenStatus >= fullscreenStatus.size() - 1) currentFullscreenStatus = fullscreenStatus.size() - 1;
+                else if (currentResolutionSize >= resolutionSize.size() - 1) currentResolutionSize = resolutionSize.size() - 1;
 
                 UpdateSettingsMenuColors();
                 inputCooldown = INPUT_DELAY;
