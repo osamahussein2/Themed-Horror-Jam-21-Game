@@ -623,6 +623,12 @@ void GameScene::UpdateDay3(float deltaTime)
         // Handle item table clicks
         HandleItemTableClicks(mousePos);
 
+        if (!alphaIncrease) alpha -= 50.0f * deltaTime;
+        else if (alphaIncrease) alpha += 50.0f * deltaTime;
+
+        if (alpha >= 255.0f) alphaIncrease = false;
+        else if (alpha <= 125.0f) alphaIncrease = true;
+
         // Handle input for item table
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
@@ -638,6 +644,42 @@ void GameScene::UpdateDay3(float deltaTime)
             if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
+        }
+
+        // Handle operation table clicks
+        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (alpha != 255.0f) alpha = 255.0f;
+            if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
+                surgeryRoom.OperationTableSprite.setColor(Color::Red);
+
+            // Set up the operation scene after clicking the left mouse button
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                currentGameState = GameState::OPERATION_ACTIVE;
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                if (!surgeryRoom.IsTimerRunning())
+                {
+                    // Start the timer depending on current difficulty when operation scene becomes active
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(2, 41.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(2, 21.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(2, 1.0f);
+                }
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+        else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        {
+            if (surgeryRoom.OperationTableSprite.getColor() != Color(255, 255, 255, alpha))
+                surgeryRoom.OperationTableSprite.setColor(Color(255, 255, 255, alpha));
         }
 
         // Check if the mouse is hovering over the table UI
@@ -670,6 +712,12 @@ void GameScene::UpdateDay3(float deltaTime)
     {
         textbookPages.UpdateTextbookPages(mousePos);
 
+        if (!alphaIncrease) alpha -= 50.0f * deltaTime;
+        else if (alphaIncrease) alpha += 50.0f * deltaTime;
+
+        if (alpha >= 255.0f) alphaIncrease = false;
+        else if (alpha <= 125.0f) alphaIncrease = true;
+
         // Handle input for textbook active
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
@@ -685,6 +733,42 @@ void GameScene::UpdateDay3(float deltaTime)
                 currentGameState = GameState::OPERATION_ACTIVE;
             }
             inputCooldown = INPUT_DELAY;
+        }
+
+        // Handle operation table clicks
+        if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (alpha != 255.0f) alpha = 255.0f;
+            if (surgeryRoom.OperationTableSprite.getColor() != Color::Red)
+                surgeryRoom.OperationTableSprite.setColor(Color::Red);
+
+            // Set up the operation scene after clicking the left mouse button
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                currentGameState = GameState::OPERATION_ACTIVE;
+
+                operationScene.Initialize("Art Assets/SurgeryRoom/sickness/basebody.png",
+                    Vector2f(resolution.x / 2.8f, 0.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    true);
+
+                if (!surgeryRoom.IsTimerRunning())
+                {
+                    // Start the timer depending on current difficulty when operation scene becomes active
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(2, 41.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(2, 21.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(2, 1.0f);
+                }
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
+        else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
+        {
+            if (surgeryRoom.OperationTableSprite.getColor() != Color(255, 255, 255, alpha))
+                surgeryRoom.OperationTableSprite.setColor(Color(255, 255, 255, alpha));
         }
 
         // Check if mouse is inside the notes sprite

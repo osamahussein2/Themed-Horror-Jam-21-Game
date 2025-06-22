@@ -148,7 +148,7 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
 void SurgeryRoom::StartTimer(int minutes, float duration)
 {
     if (isLoaded) {
-        totalTime = duration;
+        totalTime = 60.0f;
         timeRemaining = duration;
         timeInMinutes = minutes;
         timerRunning = true;
@@ -237,16 +237,17 @@ void SurgeryRoom::UpdateTimerSprite()
     sf::Vector2f currentPosition = TimerSprite.getPosition();
 
     // Change sprite based on time remaining percentage
-    if (timePercentage >= 1.0f) {
+    if (timePercentage >= 1.0f && timeInMinutes >= 0) {
         // Timer just started - use start sprite
         TimerSprite.setTexture(TimerTexture_Start);
     }
-    else if (timePercentage > 0.1f && timePercentage < 1.0f) {
+    else if (timePercentage > 0.0f && timePercentage < 1.0f && timeInMinutes > 0 ||
+        timePercentage > 0.1f && timePercentage < 1.0f && timeInMinutes <= 0) {
         std::string filename_ = "Art Assets/SurgeryRoom/Timer/Timer_" + std::to_string(timeInInt) + ".png";
 		TimerTexture_Mid.loadFromFile(filename_);
         TimerSprite.setTexture(TimerTexture_Mid);
     }
-    else {
+    else if (timePercentage <= 0.1f && timeInMinutes <= 0) {
         // Very low or no time - use end sprite
         TimerSprite.setTexture(TimerTexture_End);
 
@@ -256,7 +257,7 @@ void SurgeryRoom::UpdateTimerSprite()
             TimerSprite.setColor(sf::Color::White);
         }
         else {
-            if (timeInMinutes <= 0) TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
+            TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
         }
     }
 
@@ -264,7 +265,7 @@ void SurgeryRoom::UpdateTimerSprite()
     TimerSprite.setPosition(currentPosition);
 
     // Ensure normal color for non-critical times
-    if (timePercentage > 0.1f) {
+    if (timePercentage > 0.1f && timeInMinutes >= 0) {
         TimerSprite.setColor(sf::Color::White);
     }
 }
@@ -334,7 +335,7 @@ void SurgeryRoom::DrawUI(RenderWindow& window)
     }
 
     // Draw remaining UI elements
-    window.draw(TimerSprite);
+    if (timerRunning) window.draw(TimerSprite);
     window.draw(NotesSprite);
     window.draw(BagSprite);
     window.draw(TableUISprite);
