@@ -640,6 +640,37 @@ void GameScene::UpdateDay1(float deltaTime)
             inputCooldown = INPUT_DELAY;
         }
 
+        // Check if mouse is inside the notes sprite
+        if (surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.NotesSprite.getColor() != Color::Red)
+                surgeryRoom.NotesSprite.setColor(Color::Red);
+
+            // Add input cooldown check here
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                textbookPages.Initialize("Art Assets/SurgeryRoom/notes.png",
+                    Vector2f(resolution.x / resolution.x, (resolution.y / resolution.y) - 70.0f),
+                    Vector2f(12.5f * (resolution.x / 1920.0f), 9.0f * (resolution.y / 1080.0f)), false,
+                    "Fonts/Roboto-Regular.ttf", Vector2f(resolution.x / 9.7f, resolution.y / 4.5f),
+                    Vector2f(resolution.x / 1.9f, resolution.y / 4.5f), 30.0f * (resolution.x / 1920.0f),
+                    Vector2(300.0f * (resolution.x / 1920.0f), 200.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 5.0f, resolution.y / 2.0f), Vector2f(resolution.x / 1.6f, resolution.y / 2.0f));
+
+                // Change to TEXTBOOK_ACTIVE
+                currentGameState = GameState::TEXTBOOK_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.NotesSprite.getColor() != Color::White)
+                surgeryRoom.NotesSprite.setColor(Color::White);
+        }
+
         // Handle operation table clicks
         if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -727,6 +758,34 @@ void GameScene::UpdateDay1(float deltaTime)
                 currentGameState = GameState::OPERATION_ACTIVE;
             }
             inputCooldown = INPUT_DELAY;
+        }
+
+        if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
+        {
+            if (surgeryRoom.TableUISprite.getColor() != Color::Red)
+                surgeryRoom.TableUISprite.setColor(Color::Red);
+
+            // Add input cooldown check here
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            {
+                itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
+                    Vector2f(resolution.x / -64.0f, resolution.y / 27.0f),
+                    Vector2f(3.0f * (resolution.x / 1920.0f), 3.0f * (resolution.y / 1080.0f)),
+                    Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f),
+                    true);
+
+                // Change to ITEM_TABLE_ACTIVE
+                currentGameState = GameState::ITEM_TABLE_ACTIVE;
+                mouseClicked = true;
+            }
+
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+        }
+        else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
+        {
+            // Reset color when not hovering
+            if (surgeryRoom.TableUISprite.getColor() != Color::White)
+                surgeryRoom.TableUISprite.setColor(Color::White);
         }
 
         // Handle operation table clicks
