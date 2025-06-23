@@ -5,6 +5,8 @@ float DIALOGUE_TEXT3_CHARACTER_SIZE;
 
 void GameScene::InitializeDay3()
 {
+    if (Menu::nextDayUnlocked != false) Menu::nextDayUnlocked = false;
+
     // Play the game music
     gameMusic.InitializeAudio("Audio/Music/videogame2_horror_5_gameplay.mp3", true);
 

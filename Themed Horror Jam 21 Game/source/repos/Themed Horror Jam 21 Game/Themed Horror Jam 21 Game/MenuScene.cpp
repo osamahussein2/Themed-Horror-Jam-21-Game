@@ -56,8 +56,6 @@ void MenuScene::Update(float deltaTime)
             mainMenuAudio.StopAudio();
             musicPlaying = false;
         }
-
-        if (Menu::nextDayUnlocked != false) Menu::nextDayUnlocked = false;
         sceneManager->ChangeScene("Game");
         break;
 
