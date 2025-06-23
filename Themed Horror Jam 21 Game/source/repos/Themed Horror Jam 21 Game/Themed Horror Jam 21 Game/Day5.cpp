@@ -503,13 +503,6 @@ void GameScene::UpdateDay5(float deltaTime)
             inputCooldown = INPUT_DELAY;
         }
 
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
-        {
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
-
         // Check if mouse is hovered over table UI in operation scene
         if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -579,14 +572,16 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
             // Go back to surgery room after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 currentGameState = GameState::SURGERY_ROOM_ACTIVE;
 
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right) 
+                && mouseClicked) mouseClicked = false;
         }
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
@@ -605,13 +600,6 @@ void GameScene::UpdateDay5(float deltaTime)
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f)
         {
             // Return to surgery room when Enter is pressed
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
-
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
-        {
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
@@ -675,14 +663,6 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.NotesSprite.setColor(Color::White);
         }
 
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
-        {
-            if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
-
         // Handle operation table clicks
         if (surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -726,14 +706,16 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
             // Check for left mouse press
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
                 else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right) 
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {

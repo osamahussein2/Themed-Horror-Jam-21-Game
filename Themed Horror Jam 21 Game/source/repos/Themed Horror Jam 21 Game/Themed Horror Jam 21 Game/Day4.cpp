@@ -499,13 +499,6 @@ void GameScene::UpdateDay4(float deltaTime)
             inputCooldown = INPUT_DELAY;
         }
 
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
-        {
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
-
         // Check if mouse is hovered over table UI in operation scene
         if (surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos) && isInputEnabled)
         {
@@ -604,13 +597,6 @@ void GameScene::UpdateDay4(float deltaTime)
             currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             inputCooldown = INPUT_DELAY;
         }
-
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f)
-        {
-            currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
         break;
     }
 
@@ -635,14 +621,6 @@ void GameScene::UpdateDay4(float deltaTime)
         if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && inputCooldown <= 0.0f && isInputEnabled)
         {
             // Return to surgery room when Enter is pressed
-            if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
-            else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
-            inputCooldown = INPUT_DELAY;
-        }
-
-        // Also allow clicking outside to close (optional)
-        if (Mouse::isButtonPressed(Mouse::Button::Right) && inputCooldown <= 0.0f && isInputEnabled)
-        {
             if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
             else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
             inputCooldown = INPUT_DELAY;
@@ -722,14 +700,16 @@ void GameScene::UpdateDay4(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
             // Check for left mouse press
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 if (previousGameState == GameState::SURGERY_ROOM_ACTIVE) currentGameState = GameState::SURGERY_ROOM_ACTIVE;
                 else if (previousGameState == GameState::OPERATION_ACTIVE) currentGameState = GameState::OPERATION_ACTIVE;
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right) 
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
