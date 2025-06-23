@@ -355,8 +355,8 @@ void GameScene::UpdateDay5(float deltaTime)
             if (mouseClicked != true) mouseClicked = true;
         }
 
-        else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked &&
-            !Mouse::isButtonPressed(Mouse::Button::Right) && mouseClicked)
+        else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+            && mouseClicked)
         {
             if (mouseClicked != false) mouseClicked = false;
         }
@@ -384,7 +384,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 std::cout << "TopUI clicked! Changing to ITEM_TABLE_ACTIVE" << std::endl;
 
@@ -403,7 +404,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 std::cout << "State changed to: " << static_cast<int>(currentGameState) << std::endl;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
@@ -419,7 +421,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.NotesSprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 previousGameState = GameState::SURGERY_ROOM_ACTIVE;
 
@@ -436,7 +439,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
         {
@@ -453,7 +457,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
             // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 currentGameState = GameState::OPERATION_ACTIVE;
 
@@ -472,7 +477,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
@@ -509,7 +515,8 @@ void GameScene::UpdateDay5(float deltaTime)
             if (surgeryRoom.TableUISprite.getColor() != Color::Red)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 previousGameState = GameState::OPERATION_ACTIVE;
 
@@ -523,7 +530,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
@@ -539,7 +547,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.NotesSprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 previousGameState = GameState::OPERATION_ACTIVE;
 
@@ -556,7 +565,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
         {
@@ -639,7 +649,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.NotesSprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 textbookPages.Initialize("Art Assets/SurgeryRoom/notes.png",
                     Vector2f(resolution.x / resolution.x, (resolution.y / resolution.y) - 70.0f),
@@ -654,7 +665,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
         {
@@ -671,7 +683,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
             // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 currentGameState = GameState::OPERATION_ACTIVE;
 
@@ -690,7 +703,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
@@ -760,7 +774,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.TableUISprite.setColor(Color::Red);
 
             // Add input cooldown check here
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 itemTable.Initialize("Art Assets/SurgeryRoom/items_table/table.png",
                     Vector2f(resolution.x / -64.0f, resolution.y / 27.0f),
@@ -773,7 +788,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.TableUISprite.getGlobalBounds().contains(mousePos))
         {
@@ -790,7 +806,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.OperationTableSprite.setColor(Color::Red);
 
             // Set up the operation scene after clicking the left mouse button
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 currentGameState = GameState::OPERATION_ACTIVE;
 
@@ -809,7 +826,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         // Otherwise, reset the sprite's color back to white once the mouse is no longer hovering on the sprite
         else if (!surgeryRoom.OperationTableSprite.getGlobalBounds().contains(mousePos))
@@ -825,7 +843,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 surgeryRoom.NotesSprite.setColor(Color::Red);
 
             // Check for mouse press
-            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+            if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
             {
                 if (previousGameState == GameState::SURGERY_ROOM_ACTIVE)
                 {
@@ -840,7 +859,8 @@ void GameScene::UpdateDay5(float deltaTime)
                 mouseClicked = true;
             }
 
-            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked) mouseClicked = false;
+            else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                && mouseClicked) mouseClicked = false;
         }
         else if (!surgeryRoom.NotesSprite.getGlobalBounds().contains(mousePos))
         {
@@ -1798,7 +1818,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -1806,7 +1827,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -1857,7 +1879,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -1865,7 +1888,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -1917,7 +1941,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -1925,7 +1950,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -1978,7 +2004,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -1986,7 +2013,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2040,7 +2068,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2048,7 +2077,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2102,7 +2132,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2110,7 +2141,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2166,7 +2198,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2174,7 +2207,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2230,7 +2264,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2238,7 +2273,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2295,7 +2331,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2303,7 +2340,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2360,7 +2398,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2368,7 +2407,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2427,7 +2467,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2435,7 +2476,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2496,7 +2538,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2504,7 +2547,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2566,7 +2610,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2574,7 +2619,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2637,7 +2683,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2645,7 +2692,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2708,7 +2756,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2716,7 +2765,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2780,7 +2830,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2788,7 +2839,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2853,7 +2905,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2861,7 +2914,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -2926,7 +2980,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -2934,7 +2989,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -3001,7 +3057,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -3009,7 +3066,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
@@ -3076,7 +3134,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
             if (operationScene.dotCircleShape[i].getGlobalBounds().contains(mousePos) && isInputEnabled)
             {
                 // Set up the operation scene after clicking the left mouse button
-                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
+                if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked ||
+                    Mouse::isButtonPressed(Mouse::Button::Right) && !mouseClicked)
                 {
                     if (operationScene.dotCircleShape[i].getFillColor() != Color::Green)
                         operationScene.dotCircleShape[i].setFillColor(Color::Green);
@@ -3084,7 +3143,8 @@ void GameScene::UpdateDay5OperationScene(float deltaTime)
                     mouseClicked = true;
                 }
 
-                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && mouseClicked)
+                else if (!Mouse::isButtonPressed(Mouse::Button::Left) && !Mouse::isButtonPressed(Mouse::Button::Right)
+                    && mouseClicked)
                     mouseClicked = false;
             }
         }
