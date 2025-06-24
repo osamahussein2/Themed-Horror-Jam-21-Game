@@ -282,7 +282,7 @@ void GameScene::UpdateDay4(float deltaTime)
                 for (int i = 0; i < maxPatients; i++)
                 {
                     person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
-                        Vector2f(resolution.x / 2.238f, resolution.y / 2.5f),
+                        Vector2f(resolution.x / (1.2f + (rand() % 16)), resolution.y / (2.5f + (rand() % 4))),
                         Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
                 }
 
@@ -363,7 +363,7 @@ void GameScene::UpdateDay4(float deltaTime)
                 for (int i = 0; i < maxPatients; i++)
                 {
                     person[i].InitializeSprite("Art Assets/SurgeryRoom/sickness/basebody.png",
-                        Vector2f(resolution.x / 2.238f, resolution.y / 2.5f),
+                        Vector2f(resolution.x / (1.2f + (rand() % 16)), resolution.y / (2.5f + (rand() % 4))),
                         Vector2f(resolution.x / 1920.0f, resolution.y / 1080.0f));
                 }
 
