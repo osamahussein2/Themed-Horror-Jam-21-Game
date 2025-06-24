@@ -166,8 +166,11 @@ private:
 
     // Successful sound
     std::array<Audio, 2> successfulDaySound;
-
     int successfulDaySoundIndex;
+
+    // Failed sound
+    std::array<Audio, 2> failedDaySound;
+    int failedDaySoundIndex;
 
     bool musicPlaying{};
 };

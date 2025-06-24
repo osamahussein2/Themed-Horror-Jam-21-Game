@@ -10,8 +10,20 @@ void GameScene::InitializeDay2()
     // Play the game music
     gameMusic.InitializeAudio("Audio/Music/videogame2_horror_5_gameplay.mp3", true);
 
+    successfulDaySound[0].InitializeAudio("Audio/Sounds/fx 6 good ending_n.wav");
+    successfulDaySound[1].InitializeAudio("Audio/Sounds/fx 6 good ending2_n-2.wav");
+
+    failedDaySound[0].InitializeAudio("Audio/Sounds/fx 6 bad ending_n.wav");
+    failedDaySound[1].InitializeAudio("Audio/Sounds/fx 6 bad ending2_n.wav");
+
     // Make sure the game music is equal to the volume variable set in the options menu
     if (gameMusic.GetVolume() != Menu::GetVolume()) gameMusic.SetVolume(Menu::GetVolume());
+
+    for (int i = 0; i < successfulDaySound.size(); i++)
+        if (successfulDaySound[i].GetVolume() != Menu::GetVolume()) successfulDaySound[i].SetVolume(Menu::GetVolume());
+
+    for (int i = 0; i < failedDaySound.size(); i++)
+        if (failedDaySound[i].GetVolume() != Menu::GetVolume()) failedDaySound[i].SetVolume(Menu::GetVolume());
 
     // Reset to initial state
     currentGameState = GameState::DIALOGUE_ACTIVE;
@@ -86,6 +98,14 @@ void GameScene::InitializeDay2()
 
 void GameScene::UpdateDay2(float deltaTime)
 {
+    if (gameMusic.GetVolume() != Menu::GetVolume()) gameMusic.SetVolume(Menu::GetVolume());
+
+    for (int i = 0; i < successfulDaySound.size(); i++)
+        if (successfulDaySound[i].GetVolume() != Menu::GetVolume()) successfulDaySound[i].SetVolume(Menu::GetVolume());
+
+    for (int i = 0; i < failedDaySound.size(); i++)
+        if (failedDaySound[i].GetVolume() != Menu::GetVolume()) failedDaySound[i].SetVolume(Menu::GetVolume());
+
     // Update input cooldown
     if (inputCooldown > 0.0f)
     {
@@ -146,6 +166,7 @@ void GameScene::UpdateDay2(float deltaTime)
         if (surgeryRoom.GetTimeRemaining() <= 0.0f && surgeryRoom.GetMinutesRemaining() <= 0)
         {
             surgeryRoom.StopLowTimeAudio();
+            failedDaySoundIndex = rand() % failedDaySound.size();
             currentGameState = GameState::FAILURE_ACTIVE;
         }
     }
@@ -874,6 +895,15 @@ void GameScene::UpdateDay2(float deltaTime)
         float dayFailedCharacterSize = 40.0f * (((resolution.x / 1920.0f) + (resolution.y / 1080.0f)) / 2);
         if (isInputEnabled != false) isInputEnabled = false;
 
+        // If the game music is playing, stop the music and set the bool to false
+        if (musicPlaying)
+        {
+            gameMusic.StopAudio();
+            musicPlaying = false;
+        }
+
+        if (failedTimer <= 0.0f) failedDaySound[failedDaySoundIndex].PlayAudio();
+
         // If failed timer is less than 1 second, initialize the failed text and increment the failed timer for text fade
         if (failedTimer < 1.0f)
         {
@@ -897,12 +927,7 @@ void GameScene::UpdateDay2(float deltaTime)
         // If failed text's alpha value goes down to 0, go back to main menu
         if (failedTextAlpha <= 0.0f)
         {
-            // If the game music is playing, stop the music and set the bool to false
-            if (musicPlaying)
-            {
-                gameMusic.StopAudio();
-                musicPlaying = false;
-            }
+            for (int i = 0; i < failedDaySound.size(); i++) failedDaySound[i].StopAudio();
 
             typewriterEffect.Reset();
             itemTable.ResetCollectedItems();
