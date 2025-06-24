@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
 #include "Text.h"
+#include "Audio.h"
 
 using namespace sf;
 
@@ -56,6 +57,8 @@ public:
     float GetTimeRemaining() const { return timeRemaining; }
     float GetMinutesRemaining() const { return timeInMinutes; }
     void ResetToStartTimeTexture();
+
+    void StopLowTimeAudio();
 
     // Life management functions
     void LoseLife(int lifeIndex); // Change a specific life sprite to death sprite (0, 1, or 2)
@@ -128,6 +131,7 @@ private:
     SpriteTexture OperationTableSpriteTexture;
 	Texture OperationTableTexture;
 
+    std::array<Audio, 4> lowTimeAlert;
 
     // Timer system
     bool timerRunning;

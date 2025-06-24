@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
 #include "Bag.h" // Include the Bag header
-
+#include "Audio.h"
 
 using namespace sf;
 
@@ -113,6 +113,8 @@ private:
 
 	// Map to store all table items for easy access
 	std::map<ItemType, TableItem> tableItems;
+
+	Audio itemPickUpSound;
 };
 
 #endif

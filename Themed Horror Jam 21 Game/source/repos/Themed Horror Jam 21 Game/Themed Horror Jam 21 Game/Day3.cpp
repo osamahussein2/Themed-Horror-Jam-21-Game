@@ -144,7 +144,10 @@ void GameScene::UpdateDay3(float deltaTime)
 
         // Once timer runs out, change the current game state to show the fail state
         if (surgeryRoom.GetTimeRemaining() <= 0.0f && surgeryRoom.GetMinutesRemaining() <= 0)
+        {
+            surgeryRoom.StopLowTimeAudio();
             currentGameState = GameState::FAILURE_ACTIVE;
+        }
     }
 
     // Check for bag sprite click (only when surgery room is active)
@@ -922,6 +925,15 @@ void GameScene::UpdateDay3(float deltaTime)
         uint8_t daySuccessfulGreenValue{ 255 };
         uint8_t daySuccessfulBlueValue{ 0 };
 
+        // If the game music is playing, stop the music and set the bool to false
+        if (musicPlaying)
+        {
+            gameMusic.StopAudio();
+            musicPlaying = false;
+        }
+
+        if (daySuccessfulTimer <= 0.0f) successfulDaySound[successfulDaySoundIndex].PlayAudio();
+
         /* If day successful timer is less than 1 second, initialize the day successful text and increment the day
         successful timer for text fade */
         if (daySuccessfulTimer < 1.0f)
@@ -947,12 +959,7 @@ void GameScene::UpdateDay3(float deltaTime)
         // If day successful text's alpha value goes down to 0, go back to main menu and switch to the next day
         if (daySuccessfulTextAlpha <= 0.0f)
         {
-            // If the game music is playing, stop the music and set the bool to false
-            if (musicPlaying)
-            {
-                gameMusic.StopAudio();
-                musicPlaying = false;
-            }
+            for (int i = 0; i < successfulDaySound.size(); i++) successfulDaySound[i].StopAudio();
 
             typewriterEffect.Reset();
             itemTable.ResetCollectedItems();
@@ -1945,6 +1952,7 @@ void GameScene::UpdateDay3OperationScene(float deltaTime)
             {
                 isInputEnabled = true;
                 successfulOperationTime = 0.0f;
+                successfulDaySoundIndex = rand() % successfulDaySound.size();
                 currentGameState = GameState::SUCCESSFUL_DAY_ACTIVE;
             }
         }

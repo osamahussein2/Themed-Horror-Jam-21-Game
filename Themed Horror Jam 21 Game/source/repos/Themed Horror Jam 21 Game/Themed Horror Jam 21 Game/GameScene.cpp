@@ -14,6 +14,7 @@ GameScene::GameScene()
     , inputCooldown(INPUT_DELAY)
     , dialogueSystemInitialized(false)
     , typeTextTime(0.0f)
+    , successfulDaySoundIndex(0)
 {
 }
 
@@ -30,10 +31,16 @@ GameScene::~GameScene()
 void GameScene::Initialize()
 {
     resolution = Engine::Instance()->GetResolution();
+
+    successfulDaySound[0].InitializeAudio("Audio/Sounds/fx 6 good ending_n.wav");
+    successfulDaySound[1].InitializeAudio("Audio/Sounds/fx 6 good ending2_n-2.wav");
 }
 
 void GameScene::Update(float deltaTime)
 {
+    for (int i = 0; i < successfulDaySound.size(); i++)
+        if (successfulDaySound[i].GetVolume() != Menu::GetVolume()) successfulDaySound[i].SetVolume(Menu::GetVolume());
+
     switch (currentDay)
     {
     case 1:

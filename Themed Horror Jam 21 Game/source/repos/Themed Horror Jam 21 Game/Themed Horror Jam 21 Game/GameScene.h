@@ -164,6 +164,11 @@ private:
     // Gameplay audio
     Audio gameMusic;
 
+    // Successful sound
+    std::array<Audio, 2> successfulDaySound;
+
+    int successfulDaySoundIndex;
+
     bool musicPlaying{};
 };
 

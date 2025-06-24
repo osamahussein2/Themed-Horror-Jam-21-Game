@@ -1,4 +1,5 @@
 #include "TextbookPages.h"
+#include "Menu.h"
 
 TextbookPages::TextbookPages() : textbookSprite(textbookTexture), GroundSprite(GroundTexture), mouseClicked(false),
 pageNumber(0)
@@ -82,10 +83,14 @@ void TextbookPages::Initialize(const char* filePath_, Vector2f position_, Vector
     turnPageRightButton.setSize(buttonSize_);
     turnPageRightButton.setFillColor(Color::White);
     turnPageRightButton.setPosition(rightButtonPosition_);
+
+    pageFlipSound.InitializeAudio("Audio/Sounds/fx 3 page flip_d.wav");
 }
 
 void TextbookPages::UpdateTextbookPages(Vector2f mousePos)
 {
+    if (pageFlipSound.GetVolume() != Menu::GetVolume()) pageFlipSound.SetVolume(Menu::GetVolume());
+
     // Check if the mouse is hovering over the turn left page button 
     if (turnPageLeftButton.getGlobalBounds().contains(mousePos))
     {
@@ -93,7 +98,11 @@ void TextbookPages::UpdateTextbookPages(Vector2f mousePos)
 
         if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
         {
-            if (pageNumber > 0) pageNumber--;
+            if (pageNumber > 0) 
+            {
+                pageFlipSound.PlayAudio();
+                pageNumber--;
+            }
             mouseClicked = true;
         }
 
@@ -112,7 +121,11 @@ void TextbookPages::UpdateTextbookPages(Vector2f mousePos)
 
         if (Mouse::isButtonPressed(Mouse::Button::Left) && !mouseClicked)
         {
-            if (pageNumber < rightPageTexts.size() - 1) pageNumber++;
+            if (pageNumber < rightPageTexts.size() - 1)
+            {
+                pageFlipSound.PlayAudio();
+                pageNumber++;
+            }
             mouseClicked = true;
         }
 

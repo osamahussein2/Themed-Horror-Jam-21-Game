@@ -1,4 +1,5 @@
 #include "ItemTable.h"
+#include "Menu.h"
 
 ItemTable::ItemTable() : ItemtableSprite(ItemtableTexture), GroundSprite(GroundTexture),
 bookSprite(bookTexture), ChickenSprite(ChickenTexture), cobwebSprite(cobwebTexture),
@@ -196,6 +197,10 @@ void ItemTable::Initialize(const char* filePath_, Vector2f position_, Vector2f s
 	InitializeTableItems();
 
 	std::cout << "ItemTable initialized with " << tableItems.size() << " items" << std::endl;
+
+	itemPickUpSound.InitializeAudio("Audio/Sounds/fx 1 pick up_n.wav");
+	
+	if (itemPickUpSound.GetVolume() != Menu::GetVolume()) itemPickUpSound.SetVolume(Menu::GetVolume());
 }
 
 void ItemTable::Draw(RenderWindow& window)
@@ -260,6 +265,7 @@ bool ItemTable::CollectItem(ItemType itemType)
 	auto it = tableItems.find(itemType);
 	if (it != tableItems.end() && !it->second.isCollected) {
 		it->second.isCollected = true;
+		itemPickUpSound.PlayAudio();
 		std::cout << "Collected item: " << it->second.name << std::endl;
 		return true;
 	}

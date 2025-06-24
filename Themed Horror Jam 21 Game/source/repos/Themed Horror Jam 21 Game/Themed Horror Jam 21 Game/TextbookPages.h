@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "SpriteTexture.h"
 #include "Text.h"
+#include "Audio.h"
 
 using namespace sf;
 
@@ -46,6 +47,8 @@ private:
     SpriteTexture GroundSpriteTexture;
     Texture GroundTexture;
     Sprite GroundSprite;
+
+    Audio pageFlipSound;
 
     Game::Text leftPageText;
     Game::Text rightPageText;

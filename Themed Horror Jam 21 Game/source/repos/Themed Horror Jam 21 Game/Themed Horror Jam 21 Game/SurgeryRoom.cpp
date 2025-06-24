@@ -1,5 +1,8 @@
 #include "SurgeryRoom.h"
+#include "Menu.h"
 #include <algorithm>
+
+int lowTimeSoundIndex = 0;
 
 SurgeryRoom::SurgeryRoom() : isLoaded(false), TimerValue(0),
 backgroundSprite(backgroundTexture),
@@ -134,6 +137,11 @@ bool SurgeryRoom::Initialize(const char* Backgroundpath, const char* BouttomUIPa
         timerText.InitializeText("Fonts/Roboto-Regular.ttf", std::to_string(timeInMinutes) + ":" + 
             std::to_string(static_cast<int>(timeRemaining)), timerTextCharacterSize, true, false, Color::Black, TimerTextPos);
         
+        lowTimeAlert[0].InitializeAudio("Audio/Sounds/fx 5 alert if time is low_n.wav");
+        lowTimeAlert[1].InitializeAudio("Audio/Sounds/fx 5 alert if time is low3_n.wav");
+        lowTimeAlert[2].InitializeAudio("Audio/Sounds/fx 5 alert if time is low4_n.wav");
+        lowTimeAlert[3].InitializeAudio("Audio/Sounds/fx 5 alert if time is low4_n.wav");
+        
         isLoaded = true;
         return true;
     }
@@ -167,6 +175,9 @@ void SurgeryRoom::StartTimer(int minutes, float duration)
 
 void SurgeryRoom::UpdateTimer(float deltaTime)
 {
+    for (int i = 0; i < lowTimeAlert.size(); i++)
+        if (lowTimeAlert[i].GetVolume() != Menu::GetVolume()) lowTimeAlert[i].SetVolume(Menu::GetVolume());
+
     // Make sure the timer is loaded and running to print the time if seconds is between 0-9
     if (isLoaded && timerRunning && timeRemaining >= 0.0f && timeRemaining < 10.0f)
     {
@@ -224,6 +235,11 @@ void SurgeryRoom::ResetToStartTimeTexture()
     TimerSprite.setColor(Color::White);
 }
 
+void SurgeryRoom::StopLowTimeAudio()
+{
+    for (int i = 0; i < lowTimeAlert.size(); i++) lowTimeAlert[i].StopAudio();
+}
+
 void SurgeryRoom::UpdateTimerSprite()
 {
     if (!isLoaded) return;
@@ -253,10 +269,13 @@ void SurgeryRoom::UpdateTimerSprite()
 
         // Optional: Add blinking effect for critical time
         float elapsed = animationClock.getElapsedTime().asSeconds();
-        if (static_cast<int>(elapsed * 4) % 2 == 0) {
+        if (static_cast<int>(elapsed * 4) % 2 == 0) 
+        {
+            lowTimeSoundIndex = rand() % lowTimeAlert.size();
             TimerSprite.setColor(sf::Color::White);
         }
         else {
+            lowTimeAlert[lowTimeSoundIndex].PlayAudio();
             TimerSprite.setColor(sf::Color(255, 255, 255, 128)); // Semi-transparent for blink
         }
     }
