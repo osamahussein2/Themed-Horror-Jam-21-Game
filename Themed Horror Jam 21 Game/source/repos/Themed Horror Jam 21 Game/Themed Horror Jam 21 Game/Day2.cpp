@@ -488,9 +488,9 @@ void GameScene::UpdateDay2(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 1.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 51.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 41.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 16.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(1, 6.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 51.0f);
                 }
                 mouseClicked = true;
             }
@@ -714,9 +714,9 @@ void GameScene::UpdateDay2(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 1.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 51.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 41.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 16.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(1, 6.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 51.0f);
                 }
                 mouseClicked = true;
             }
@@ -837,9 +837,9 @@ void GameScene::UpdateDay2(float deltaTime)
                 if (!surgeryRoom.IsTimerRunning())
                 {
                     // Start the timer depending on current difficulty when operation scene becomes active
-                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 1.0f);
-                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(0, 51.0f);
-                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 41.0f);
+                    if (Menu::GetDifficulty() == "Easy") surgeryRoom.StartTimer(1, 16.0f);
+                    else if (Menu::GetDifficulty() == "Normal") surgeryRoom.StartTimer(1, 6.0f);
+                    else if (Menu::GetDifficulty() == "Hard") surgeryRoom.StartTimer(0, 51.0f);
                 }
                 mouseClicked = true;
             }
