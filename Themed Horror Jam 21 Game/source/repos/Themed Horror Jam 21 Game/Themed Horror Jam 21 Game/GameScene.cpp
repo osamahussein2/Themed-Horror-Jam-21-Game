@@ -309,9 +309,9 @@ void GameScene::UpdateDialoguePanelTexture()
             break;
 
         case 1:
-            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
             {
-                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
             }
             break;
 
@@ -339,9 +339,9 @@ void GameScene::UpdateDialoguePanelTexture()
             break;
 
         case 1:
-            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
             {
-                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
             }
             break;
 
@@ -369,9 +369,9 @@ void GameScene::UpdateDialoguePanelTexture()
             break;
 
         case 1:
-            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
             {
-                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
             }
             break;
 
@@ -399,9 +399,9 @@ void GameScene::UpdateDialoguePanelTexture()
             break;
 
         case 1:
-            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
             {
-                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
             }
             break;
 
@@ -429,9 +429,9 @@ void GameScene::UpdateDialoguePanelTexture()
             break;
 
         case 1:
-            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[2].c_str())
+            if (dialoguePanel.GetDialoguePanelTexture() != dialoguePanelTextures[1].c_str())
             {
-                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[2].c_str());
+                dialoguePanel.SetDialoguePanelTexture(dialoguePanelTextures[1].c_str());
             }
             break;
 
