@@ -131,7 +131,7 @@ private:
     SpriteTexture OperationTableSpriteTexture;
 	Texture OperationTableTexture;
 
-    std::array<Audio, 4> lowTimeAlert;
+    Audio lowTimeAlert;
 
     // Timer system
     bool timerRunning;
