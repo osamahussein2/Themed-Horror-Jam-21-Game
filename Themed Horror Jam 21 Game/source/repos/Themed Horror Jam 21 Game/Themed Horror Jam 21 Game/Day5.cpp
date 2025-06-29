@@ -10,8 +10,8 @@ void GameScene::InitializeDay5()
     // Play the game music
     gameMusic.InitializeAudio("Audio/Music/videogame2_horror_5_gameplay.mp3", true);
 
-    successfulDaySound[0].InitializeAudio("Audio/Sounds/fx 6 good ending_n.wav");
-    successfulDaySound[1].InitializeAudio("Audio/Sounds/fx 6 good ending2_n-2.wav");
+    successfulDaySound[0].InitializeAudio("Audio/Sounds/theme final short 1 version.wav");
+    successfulDaySound[1].InitializeAudio("Audio/Sounds/theme final short 1 version.wav");
 
     failedDaySound[0].InitializeAudio("Audio/Sounds/fx 6 bad ending_n.wav");
     failedDaySound[1].InitializeAudio("Audio/Sounds/fx 6 bad ending2_n.wav");
